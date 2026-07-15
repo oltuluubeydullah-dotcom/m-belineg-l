@@ -1,0 +1,21 @@
+{
+  "name": "Möbel İnegöl",
+  "short_name": "Möbel İnegöl",
+  "description": "Evinize Değer Katar — İnegöl Mobilyası Avrupa Teslimat",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF8F3",
+  "theme_color": "#E8B84B",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
