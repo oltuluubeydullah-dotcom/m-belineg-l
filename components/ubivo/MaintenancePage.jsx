@@ -30,7 +30,7 @@ export default function MaintenancePage({ message }) {
           <p className="text-sm text-brand-ink/60 mb-4">Acil durumlar için iletişim:</p>
           <div className="space-y-3">
             <a
-              href="https://wa.me/905360400108"
+              href="https://wa.me/905360400118"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 w-full py-3 px-5 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors"

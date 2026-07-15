@@ -431,7 +431,7 @@ export default function KilavuzSayfasi() {
           />
           <Sorun
             soru="WhatsApp linki açılmıyor"
-            cevap="Ayarlar → WhatsApp numarası kontrolü. Başında + veya 0 olmadan, 90 ile başlasın. Örn: 905360400108"
+            cevap="Ayarlar → WhatsApp numarası kontrolü. Başında + veya 0 olmadan, 90 ile başlasın. Örn: 905360400118"
           />
           <Sorun
             soru="Türkçe karakterler bozuk görünüyor (ışŞğĞ)"

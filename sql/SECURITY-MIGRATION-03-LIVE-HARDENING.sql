@@ -32,7 +32,7 @@ AS $$
     WHERE id = auth.uid()
       AND email_confirmed_at IS NOT NULL          -- onaysız e-posta admin OLAMAZ
       AND lower(email) = ANY (ARRAY[
-        'info@mobelinegol.com'                   -- 👈 admin 1
+        'mobelinegol16@gmail.com'                   -- 👈 admin 1
         -- ,'ikinci@admin.com'                     --   admin 2 (gerekirse aç)
       ]::text[])
   );

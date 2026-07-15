@@ -18,7 +18,7 @@ import { revalidatePaths, tumSiteRevalidatePaths } from '@/lib/revalidate';
 export default function AyarlarFormu({ ilkAyarlar }) {
   const [veri, setVeri] = useState(() => ({
     id: ilkAyarlar?.id || null,
-    whatsapp_number:           ilkAyarlar?.whatsapp_number || '905360400108',
+    whatsapp_number:           ilkAyarlar?.whatsapp_number || '905360400118',
     business_name:             ilkAyarlar?.business_name || 'Möbel İnegöl',
     business_tagline:          ilkAyarlar?.business_tagline || 'Hayalindeki Eve Bir Adım',
     business_address:          ilkAyarlar?.business_address || 'İnegöl / Bursa',
@@ -122,7 +122,7 @@ export default function AyarlarFormu({ ilkAyarlar }) {
               label={<><IconBrandWhatsapp size={14} className="inline mr-1 text-green-600" />WhatsApp Numarası</>}
               value={veri.whatsapp_number}
               onChange={(e) => guncelle('whatsapp_number', e.target.value)}
-              placeholder="905360400108"
+              placeholder="905360400118"
               required
             />
           </div>

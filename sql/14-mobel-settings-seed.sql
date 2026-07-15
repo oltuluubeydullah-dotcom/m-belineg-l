@@ -16,11 +16,11 @@ INSERT INTO public.settings (
   announcement_bar_highlight,
   announcement_bar_active
 ) VALUES (
-  '905360400108',
+  '905360400118',
   'Möbel İnegöl',
   'Evinize Değer Katar',
-  'İnegöl / Bursa',
-  '+90 536 040 01 08',
+  'Wobilimo AVM, 2. Kat No.122, İnegöl / Bursa',
+  '+90 536 040 01 18',
   'info@mobelinegol.com',
   jsonb_build_object(
     'instagram', 'https://www.instagram.com/mobelinegol',

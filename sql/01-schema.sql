@@ -123,7 +123,7 @@ INSERT INTO public.settings (
   announcement_bar_text, announcement_bar_highlight,
   social_links
 ) values (
-  '905360400108',
+  '905360400118',
   'Möbel İnegöl',
   'Evinize Değer Katar',
   'İnegöl / Bursa',
