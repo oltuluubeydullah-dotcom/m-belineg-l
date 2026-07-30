@@ -18,6 +18,7 @@ import { createPublicClient } from '@/lib/supabase/public';
 import { URUN_LISTE_SELECT } from '@/lib/supabase/queries';
 import { KATEGORILER } from '@/lib/constants';
 import { kategoriAnahtar, kategoriSirala } from '@/lib/kategoriGorsel';
+import { gorselSrc } from '@/lib/gorsel';
 import { genelDestekLinki } from '@/lib/whatsapp';
 
 /**
@@ -175,6 +176,13 @@ export default async function AnaSayfa({ params: { locale } }) {
     gorsel: gorselMap.get(kat.slug) || null,
   }));
 
+  // Kategori tanıtım bölümleri için kapak görseli (statik oda görseli > kategori kapağı)
+  const katKapak = (slug, statik) => {
+    if (statik) return statik;
+    const g = gorselMap.get(slug);
+    return g ? gorselSrc(g) : null;
+  };
+
   // ─── İndirimli Kategori bölümü (Nakit/Taksit üstü) ───
   // 4 sabit kategori; kapak = admin'in discount_cover_product_id seçimi,
   // yoksa kategorinin otomatik ürün görseli (showcase ile aynı mantık).
@@ -211,14 +219,40 @@ export default async function AnaSayfa({ params: { locale } }) {
         inspect={t('category_inspect')}
       />
 
-      {/* Kategoriye özel tanıtım — Yatak Odası (yemek görseli gelince eklenecek) */}
+      {/* Kategoriye özel tanıtım bölümleri — dönüşümlü (image left/right) */}
       <KategoriTanitim
-        image="/marka/hero-yatak.jpg"
+        image={katKapak('yatak-odasi', '/marka/hero-yatak.jpg')}
         kicker={tKat('yatak_kicker')}
         title={tKat('yatak_title')}
         body={tKat('yatak_body')}
         cta={tKat('yatak_cta')}
         href="/kategori/yatak-odasi"
+      />
+      <KategoriTanitim
+        image={katKapak('koltuk-takimi', '/marka/hero-koltuk.jpg')}
+        kicker={tKat('koltuk_kicker')}
+        title={tKat('koltuk_title')}
+        body={tKat('koltuk_body')}
+        cta={tKat('koltuk_cta')}
+        href="/kategori/koltuk-takimi"
+        reverse
+      />
+      <KategoriTanitim
+        image={katKapak('kose-koltuk')}
+        kicker={tKat('kose_kicker')}
+        title={tKat('kose_title')}
+        body={tKat('kose_body')}
+        cta={tKat('kose_cta')}
+        href="/kategori/kose-koltuk"
+      />
+      <KategoriTanitim
+        image={katKapak('yemek-odasi')}
+        kicker={tKat('yemek_kicker')}
+        title={tKat('yemek_title')}
+        body={tKat('yemek_body')}
+        cta={tKat('yemek_cta')}
+        href="/kategori/yemek-odasi"
+        reverse
       />
 
       {/* Ürün seçkisi */}

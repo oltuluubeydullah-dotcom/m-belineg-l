@@ -150,7 +150,10 @@ export default function UrunlerYonetim({ ilkUrunler, toplamSayi = 0, sayfaBoyu =
         goster('Ürün eklendi', 'basari');
       }
       // Anasayfa + kategoriler cache temizle (anlık görünür olsun)
-      revalidatePaths(urunRevalidatePaths(veri.slug, veri.categorySlug)).catch(() => {});
+      // FIX: categorySlug her zaman category_id'den türetilir (form vermese de
+      // kategori sayfası revalidate edilsin → yeni ürün anında görünsün).
+      const revalKatSlug = kategoriler.find((k) => k.id === veri.category_id)?.slug || veri.categorySlug;
+      revalidatePaths(urunRevalidatePaths(veri.slug, revalKatSlug)).catch(() => {});
       setFormAcik(false);
       setDuzenlenenUrun(null);
     } catch (err) {
