@@ -127,6 +127,13 @@ export default async function KategoriSayfasi({ params, searchParams }) {
   const toplam  = sayimRes.count || 0;
   const sonSayfa = Math.max(1, Math.ceil(toplam / URUN_SAYFA_BOYUTU));
 
+  // FIX (Agent #54 #1): sorgu hatasını "ürün yok" gibi göstermeyi ENGELLE.
+  // Hata varsa logla + boş-durum yerine "geçici sorun" mesajı göster.
+  const sorguHatasi = urunlerRes.error || sayimRes.error;
+  if (sorguHatasi) {
+    console.error('[kategori] ürün/sayım sorgusu hatası:', sorguHatasi.message || sorguHatasi);
+  }
+
   // BreadcrumbList — Google kırıntı yolu + AEO
   const SITE = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobelinegol.com';
   const lp = params.locale === 'tr' ? '' : '/' + params.locale;
@@ -162,9 +169,9 @@ export default async function KategoriSayfasi({ params, searchParams }) {
             {kategoriAdiniAl(kategori, params.locale || 'tr')}
           </h1>
 
-          {kategori.description && (
+          {kategoriAciklamasiniAl(kategori, params.locale || 'tr') && (
             <p className="text-white/90 font-sans mt-4 max-w-2xl mx-auto leading-relaxed drop-shadow-sm">
-              {kategori.description}
+              {kategoriAciklamasiniAl(kategori, params.locale || 'tr')}
             </p>
           )}
         </div>
@@ -184,10 +191,10 @@ export default async function KategoriSayfasi({ params, searchParams }) {
         {urunler.length === 0 ? (
           <div className="text-center py-20 border-2 border-dashed border-brand-dark/10 rounded-2xl">
             <p className="font-display text-2xl text-brand-dark/60 mb-2">
-              Bu kategoride henüz ürün yok
+              {sorguHatasi ? 'Ürünler şu an yüklenemedi' : 'Bu kategoride henüz ürün yok'}
             </p>
             <p className="text-sm text-brand-ink/50 mb-6">
-              Yakında bu kategoriyi ürünlerle dolduracağız.
+              {sorguHatasi ? 'Geçici bir sorun oluştu, lütfen birazdan tekrar deneyin.' : 'Yakında bu kategoriyi ürünlerle dolduracağız.'}
             </p>
             <Link href={ROTALAR.anasayfa} className="btn-ghost inline-flex">
               <IconArrowLeft size={18} />

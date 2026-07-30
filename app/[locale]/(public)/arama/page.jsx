@@ -50,7 +50,7 @@ export default async function AramaSayfasi({ params: { locale }, searchParams })
     if (!tsBasarili) {
       const safe = q.replace(/[%_]/g, '');
       // v12.7: product_code de aramaya dahil
-      const { data, count } = await supabase
+      const { data, count, error: ilikeErr } = await supabase
         .from('products')
         .select('*, categories!category_id(name, slug, translations)', { count: 'exact' })
         .eq('is_active', true)
@@ -58,6 +58,8 @@ export default async function AramaSayfasi({ params: { locale }, searchParams })
         .order('is_featured', { ascending: false })
         .order('created_at', { ascending: false })
         .limit(48);
+      // FIX (Agent #54 #3): ilike fallback hatası "sonuç yok" gibi görünmesin — logla
+      if (ilikeErr) console.error('[arama] ilike sorgusu hatası:', ilikeErr.message);
       sonuclar = data || [];
       toplamSayi = count || 0;
     }

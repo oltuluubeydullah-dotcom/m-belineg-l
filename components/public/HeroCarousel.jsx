@@ -227,9 +227,12 @@ export default function HeroCarousel({ banners = [] }) {
     return () => clearInterval(timerRef.current);
   }, [ileri]);
 
+  // FIX (Agent #15 B6): elle gezindikten sonra otomatik geçiş DURMASIN —
+  // eski interval'i temizle, aksiyonu uygula, timer'ı yeniden başlat.
   const handleManual = (action) => {
     if (timerRef.current) clearInterval(timerRef.current);
     action();
+    timerRef.current = setInterval(ileri, 4500);
   };
 
   const swipeStart = useRef(0);

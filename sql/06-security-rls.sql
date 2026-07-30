@@ -49,6 +49,10 @@ DROP POLICY IF EXISTS "public insert inquiries"       ON public.inquiries;
 DROP POLICY IF EXISTS "anyone can insert"             ON public.inquiries;
 DROP POLICY IF EXISTS "admin read inquiries"          ON public.inquiries;
 DROP POLICY IF EXISTS "Admin manage inquiries"        ON public.inquiries;
+-- GÜVENLİK FIX (v57 · Agent #07 H-1): 01-schema.sql anon INSERT policy'sini
+-- gerçek adıyla düşür — yoksa anon key ile /api/inquiries bypass edilip
+-- doğrudan REST INSERT yapılabiliyordu (rate-limit/KVKK/fiyat recompute atlanır).
+DROP POLICY IF EXISTS "inquiries_insert_public"        ON public.inquiries;
 
 -- Okuma: sadece admin
 CREATE POLICY "admin_read_inquiries"

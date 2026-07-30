@@ -93,6 +93,8 @@ export default async function UrunSayfasi({ params: { locale, slug } }) {
   ]);
 
   const ilgili  = ilgiliRes.data;
+  // FIX (Agent #54 #5): yorum sorgusu hatası "0 yorum" gibi görünmesin — logla
+  if (yorumlarRes.error) console.error('[urun] yorum sorgusu hatası:', yorumlarRes.error.message);
   const yorumlar = yorumlarRes.data;
 
   const reviewSayi = yorumlar?.length || 0;
