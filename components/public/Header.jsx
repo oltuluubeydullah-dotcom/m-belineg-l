@@ -14,7 +14,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link, useRouter, usePathname } from '@/lib/i18n/navigation';
 import {
-  IconMenu2, IconX, IconShoppingCart, IconSearch,
+  IconMenu2, IconX, IconShoppingCart, IconSearch, IconPhone,
 } from '@tabler/icons-react';
 import { ISLETME, KATEGORILER as KAT_FALLBACK } from '@/lib/constants';
 import { useCart } from '@/context/CartContext';
@@ -75,42 +75,85 @@ export default function Header({ kategoriler }) {
         }`}
       >
         <div className="container mx-auto">
-          {/* ─── ÜST SATIR: [logo sol | arama orta | aksiyonlar sağ] ─── */}
-          <div className="flex items-center gap-3 md:gap-6 px-4 py-3 md:py-4">
-            {/* Mobil hamburger */}
-            <button
-              type="button"
-              onClick={() => setMenuAcik(!menuAcik)}
-              className="md:hidden p-2 -ml-1 inline-flex items-center justify-center text-brand-ink hover:text-brand-teal transition-colors flex-shrink-0"
-              aria-label={t('menu_label')}
-              aria-expanded={menuAcik}
-            >
-              <IconMenu2 size={26} />
-            </button>
+          {/* ─── MOBİL ÜST BAR: [arama + telefon | LOGO orta | sepet + menü] ─── */}
+          <div className="md:hidden grid grid-cols-3 items-center px-3 py-2.5">
+            {/* Sol: arama + telefon (iletişim) */}
+            <div className="flex items-center gap-0.5 justify-self-start">
+              <button
+                type="button"
+                onClick={() => setAramaAcik(!aramaAcik)}
+                className="p-2 inline-flex items-center justify-center text-brand-ink hover:text-brand-teal transition-colors"
+                aria-label={t('search_button')}
+              >
+                {aramaAcik ? <IconX size={22} /> : <IconSearch size={22} />}
+              </button>
+              <a
+                href="tel:+905360400108"
+                className="p-2 inline-flex items-center justify-center text-brand-ink hover:text-brand-teal transition-colors"
+                aria-label="Telefonla ara"
+              >
+                <IconPhone size={22} />
+              </a>
+            </div>
 
-            {/* SOL: Logo */}
-            <Link
-              href="/"
-              className="flex items-center min-w-0 flex-shrink-0 md:pl-2"
-              aria-label={ISLETME.ad}
-            >
+            {/* Orta: Logo */}
+            <Link href="/" aria-label={ISLETME.ad} className="justify-self-center flex items-center">
               <Image
                 src="/marka/mobel-logo.png"
                 alt={ISLETME.ad}
                 width={361}
                 height={120}
                 priority
-                className="h-20 w-auto md:h-28 object-contain"
-                sizes="(max-width: 768px) 360px, 520px"
+                className="h-16 w-auto object-contain"
+                sizes="240px"
               />
             </Link>
 
-            {/* ORTA: Arama (masaüstü) — daha kompakt, logoya alan bırakır */}
+            {/* Sağ: sepet + menü */}
+            <div className="flex items-center gap-0.5 justify-self-end">
+              <Link
+                href="/sepet"
+                className="p-2 text-brand-ink hover:text-brand-teal transition-colors relative inline-flex items-center justify-center"
+                aria-label={t('cart_label')}
+              >
+                <IconShoppingCart size={23} stroke={1.8} />
+                {toplamAdet > 0 && (
+                  <span className="absolute top-0 right-0 bg-brand-gold text-brand-dark text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center animate-fade-in">
+                    {toplamAdet > 99 ? '99+' : toplamAdet}
+                  </span>
+                )}
+              </Link>
+              <button
+                type="button"
+                onClick={() => setMenuAcik(!menuAcik)}
+                className="p-2 inline-flex items-center justify-center text-brand-ink hover:text-brand-teal transition-colors"
+                aria-label={t('menu_label')}
+                aria-expanded={menuAcik}
+              >
+                <IconMenu2 size={26} />
+              </button>
+            </div>
+          </div>
+
+          {/* ─── MASAÜSTÜ ÜST BAR: [logo sol | arama orta | dil + sepet sağ] ─── */}
+          <div className="hidden md:flex items-center gap-6 px-4 py-4">
+            <Link href="/" className="flex items-center min-w-0 flex-shrink-0 pl-2" aria-label={ISLETME.ad}>
+              <Image
+                src="/marka/mobel-logo.png"
+                alt={ISLETME.ad}
+                width={361}
+                height={120}
+                priority
+                className="h-28 w-auto object-contain"
+                sizes="520px"
+              />
+            </Link>
+
             <form
               action={locale === 'tr' ? '/arama' : `/${locale}/arama`}
               method="GET"
               onSubmit={(e) => { const q = e.currentTarget.q?.value; if (q) reklamEvent('Search', { search_string: q }); }}
-              className="hidden md:flex items-center w-full max-w-md ml-auto mr-4 lg:mr-8 bg-white border border-brand-dark/15 rounded-full
+              className="flex items-center w-full max-w-md ml-auto mr-4 lg:mr-8 bg-white border border-brand-dark/15 rounded-full
                          focus-within:border-brand-teal focus-within:ring-1 focus-within:ring-brand-teal/30 transition-colors"
             >
               <input
@@ -129,19 +172,8 @@ export default function Header({ kategoriler }) {
               </button>
             </form>
 
-            {/* SAĞ: arama (mobil) + dil + sepet */}
-            <div className="flex items-center gap-0.5 md:gap-2 ml-auto md:ml-0 flex-shrink-0">
-              <button
-                type="button"
-                onClick={() => setAramaAcik(!aramaAcik)}
-                className="md:hidden p-2.5 inline-flex items-center justify-center text-brand-ink hover:text-brand-teal transition-colors"
-                aria-label={t('search_button')}
-              >
-                {aramaAcik ? <IconX size={22} /> : <IconSearch size={22} />}
-              </button>
-
+            <div className="flex items-center gap-2 flex-shrink-0">
               <LanguageSwitcher />
-
               <Link
                 href="/sepet"
                 className="p-2 text-brand-ink hover:text-brand-teal transition-colors relative inline-flex items-center justify-center"
@@ -149,9 +181,7 @@ export default function Header({ kategoriler }) {
               >
                 <IconShoppingCart size={24} stroke={1.8} />
                 {toplamAdet > 0 && (
-                  <span className="absolute top-0 right-0 bg-brand-gold text-brand-dark
-                                   text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center
-                                   animate-fade-in">
+                  <span className="absolute top-0 right-0 bg-brand-gold text-brand-dark text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center animate-fade-in">
                     {toplamAdet > 99 ? '99+' : toplamAdet}
                   </span>
                 )}
@@ -248,10 +278,12 @@ export default function Header({ kategoriler }) {
               </button>
             </div>
 
-            {/* Kategori linkleri — anasayfada GİZLİ (zaten görselli şerit var),
-                iç sayfalarda GÖRÜNÜR (mobil kategori navigasyonu korunur). */}
+            {/* Kategori linkleri — mobilde HER SAYFADA görünür (anasayfa dahil) */}
             <nav className="flex-1 py-3">
-              {!anasayfa && KATEGORILER.map((kat) => (
+              <p className="px-5 pb-1.5 text-[11px] font-semibold uppercase tracking-widest text-brand-gold">
+                {tNav('categories')}
+              </p>
+              {KATEGORILER.map((kat) => (
                 <Link
                   key={kat.slug}
                   href={`/kategori/${kat.slug}`}
@@ -263,7 +295,7 @@ export default function Header({ kategoriler }) {
               ))}
 
               {/* Yardımcı linkler */}
-              <div className={anasayfa ? '' : 'border-t border-brand-dark/10 mt-3 pt-3'}>
+              <div className="border-t border-brand-dark/10 mt-3 pt-3">
                 <Link href="/magazalarimiz" onClick={() => setMenuAcik(false)} className="block py-3 px-5 text-sm font-semibold text-brand-teal hover:bg-brand-dark/5">
                   {tNav('stores')}
                 </Link>
@@ -276,6 +308,11 @@ export default function Header({ kategoriler }) {
                 <Link href="/iletisim" onClick={() => setMenuAcik(false)} className="block py-3 px-5 text-sm text-brand-ink hover:bg-brand-dark/5">
                   {tNav('contact')}
                 </Link>
+              </div>
+
+              {/* Dil seçici */}
+              <div className="border-t border-brand-dark/10 mt-3 pt-4 px-5">
+                <LanguageSwitcher />
               </div>
             </nav>
           </aside>

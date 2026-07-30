@@ -25,6 +25,7 @@
   },
   "Nav": {
     "home": "Home",
+    "categories": "Categories",
     "about": "About Us",
     "blog": "Blog",
     "contact": "Contact",

@@ -1,8 +1,8 @@
 // ════════════════════════════════════════════════════════════
-// KategoriShowcase — Hero'nun hemen altı (v56 · premium kategori tile)
+// KategoriShowcase — Hero'nun hemen altı (v57 · görsel ön planda + isim overlay)
 // ════════════════════════════════════════════════════════════
-// Her kart: görsel (kapak > otomatik ilk ürün) + isim + gold ok footer.
-// Görsel yoksa nötr placeholder gösterilir — SVG çizim YOK.
+// Her kart: görsel tam kaplar (kapak > otomatik ilk ürün); kategori ismi
+// fotoğrafın ÜSTÜNDE (alt karartma scrim ile okunur). Görsel yoksa placeholder.
 // ════════════════════════════════════════════════════════════
 
 import Image from 'next/image';
@@ -36,41 +36,38 @@ export default function KategoriShowcase({ kategoriler = [], locale, kicker, tit
               aria-label={ad}
               className="group block"
             >
-              <div className="relative rounded-3xl bg-white border border-brand-gold/20 shadow-card overflow-hidden transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-card-h group-hover:border-brand-gold/60">
-                {/* Görsel alanı */}
-                <div className="relative aspect-[4/3] bg-gradient-to-br from-brand-cream/50 via-white to-white overflow-hidden">
-                  {k.gorsel ? (
-                    <Image
-                      src={gorselSrc(k.gorsel)}
-                      alt={ad}
-                      fill
-                      sizes="(max-width: 768px) 50vw, 33vw"
-                      className="object-contain p-4 md:p-6 transition-transform duration-500 ease-out group-hover:scale-[1.07]"
-                    />
-                  ) : (
-                    // Görsel yoksa nötr placeholder (çizim yok) — ürün/kapak eklenince otomatik dolar
-                    <div className="absolute inset-0 flex items-center justify-center text-brand-gold/30">
-                      <IconPhoto size={44} strokeWidth={1.4} />
-                    </div>
-                  )}
-                  {/* Üstte hafif gold ışıma — premium his */}
-                  <div className="pointer-events-none absolute -top-8 -right-8 w-28 h-28 rounded-full bg-brand-gold/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                </div>
-
-                {/* Footer — isim + ok */}
-                <div className="flex items-center justify-between gap-2 px-4 py-3.5 border-t border-brand-gold/15 bg-gradient-to-b from-white to-brand-cream/30">
-                  <div className="min-w-0">
-                    <p className="font-semibold text-sm md:text-base uppercase tracking-wide text-brand-dark leading-tight truncate group-hover:text-brand-teal2 transition-colors">
-                      {ad}
-                    </p>
-                    <p className="text-[11px] md:text-xs text-brand-muted group-hover:text-brand-gold transition-colors">
-                      {inspect}
-                    </p>
+              <div className="relative aspect-square rounded-3xl overflow-hidden shadow-card border border-brand-gold/20 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-card-h group-hover:border-brand-gold/60">
+                {k.gorsel ? (
+                  <Image
+                    src={gorselSrc(k.gorsel)}
+                    alt={ad}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"
+                  />
+                ) : (
+                  // Görsel yoksa nötr placeholder (çizim yok) — ürün/kapak eklenince otomatik dolar
+                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-brand-cream to-white text-brand-gold/30">
+                    <IconPhoto size={44} strokeWidth={1.4} />
                   </div>
-                  <span className="shrink-0 w-9 h-9 rounded-full bg-brand-gold/15 text-brand-gold flex items-center justify-center transition-all duration-300 group-hover:bg-brand-gold group-hover:text-white group-hover:translate-x-0.5">
-                    <IconArrowRight size={17} />
+                )}
+
+                {/* Alt karartma — isim okunsun */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
+
+                {/* Kategori ismi — fotoğrafın üstünde */}
+                <div className="absolute inset-x-0 bottom-0 p-4 md:p-5">
+                  <p className="text-white font-semibold uppercase tracking-wide text-sm md:text-lg leading-tight drop-shadow-md">
+                    {ad}
+                  </p>
+                  <span className="mt-0.5 inline-flex items-center gap-1 text-white/85 text-[11px] md:text-xs group-hover:text-brand-gold transition-colors">
+                    {inspect}
+                    <IconArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
                   </span>
                 </div>
+
+                {/* Alt gold çizgi — hover vurgusu */}
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-brand-gold to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-300" />
               </div>
             </Link>
           );

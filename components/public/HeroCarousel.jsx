@@ -45,7 +45,7 @@ function BannerYasam({ banner, t }) {
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={bgImage} alt="" className="absolute inset-0 w-full h-full object-cover object-center" loading="eager" fetchPriority="high" decoding="async" />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(20,18,15,0.82) 0%, rgba(20,18,15,0.55) 50%, rgba(20,18,15,0.35) 100%)' }} aria-hidden="true" />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(20,18,15,0.72) 0%, rgba(20,18,15,0.36) 45%, rgba(20,18,15,0.04) 80%)' }} aria-hidden="true" />
         </>
       )}
 
@@ -114,7 +114,7 @@ function BannerYatak({ banner, t }) {
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={bgImage} alt="" className="absolute inset-0 w-full h-full object-cover object-center" loading="eager" fetchPriority="high" decoding="async" />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(20,18,15,0.82) 0%, rgba(20,18,15,0.55) 50%, rgba(20,18,15,0.35) 100%)' }} aria-hidden="true" />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(20,18,15,0.72) 0%, rgba(20,18,15,0.36) 45%, rgba(20,18,15,0.04) 80%)' }} aria-hidden="true" />
         </>
       )}
 
