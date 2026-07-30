@@ -10,6 +10,7 @@ import SeoTanitim from '@/components/public/SeoTanitim';
 import TrustBadges from '@/components/public/TrustBadges';
 import IndirimliKategoriler from '@/components/public/IndirimliKategoriler';
 import KategoriShowcase from '@/components/public/KategoriShowcase';
+import KategoriTanitim from '@/components/public/KategoriTanitim';
 import InstagramYurtdisiSection from '@/components/public/InstagramYurtdisiSection';
 import BlogSection from '@/components/public/BlogSection';
 import FeaturedProductsInfiniteScroll from '@/components/public/FeaturedProductsInfiniteScroll';
@@ -71,6 +72,7 @@ async function kategoriGorselleriniTopluGetir(supabase, kategoriler) {
 export default async function AnaSayfa({ params: { locale } }) {
   setRequestLocale(locale);
   const t = await getTranslations('Home');
+  const tKat = await getTranslations('KategoriTanitim');
   const supabase = createPublicClient();
 
   // PERFORMANCE FIX: Sıralı await → paralel Promise.all (4 sorgu aynı anda)
@@ -207,6 +209,16 @@ export default async function AnaSayfa({ params: { locale } }) {
         title={t('categories_title')}
         titleEm={t('categories_title_em')}
         inspect={t('category_inspect')}
+      />
+
+      {/* Kategoriye özel tanıtım — Yatak Odası (yemek görseli gelince eklenecek) */}
+      <KategoriTanitim
+        image="/marka/hero-yatak.jpg"
+        kicker={tKat('yatak_kicker')}
+        title={tKat('yatak_title')}
+        body={tKat('yatak_body')}
+        cta={tKat('yatak_cta')}
+        href="/kategori/yatak-odasi"
       />
 
       {/* Ürün seçkisi */}
