@@ -9,6 +9,7 @@ import HeroCarousel from '@/components/public/HeroCarousel';
 import SeoTanitim from '@/components/public/SeoTanitim';
 import TrustBadges from '@/components/public/TrustBadges';
 import IndirimliKategoriler from '@/components/public/IndirimliKategoriler';
+import KategoriShowcase from '@/components/public/KategoriShowcase';
 import InstagramYurtdisiSection from '@/components/public/InstagramYurtdisiSection';
 import BlogSection from '@/components/public/BlogSection';
 import FeaturedProductsInfiniteScroll from '@/components/public/FeaturedProductsInfiniteScroll';
@@ -197,6 +198,16 @@ export default async function AnaSayfa({ params: { locale } }) {
       <div className="container mx-auto pt-4 md:pt-6">
         <HeroCarousel banners={banners} />
       </div>
+
+      {/* Kategori kartları — hero'nun hemen altı (özel çizim illüstrasyonlar) */}
+      <KategoriShowcase
+        kategoriler={sergilenecek}
+        locale={locale}
+        kicker={t('categories_kicker')}
+        title={t('categories_title')}
+        titleEm={t('categories_title_em')}
+        inspect={t('category_inspect')}
+      />
 
       {/* Ürün seçkisi */}
       <section className="container mx-auto py-6 md:py-10">

@@ -34,20 +34,16 @@ export default function InstagramYurtdisiSection() {
                 <div className="relative rounded-[2rem] border-[6px] border-brand-dark bg-brand-dark shadow-2xl overflow-hidden">
                   {/* Çentik */}
                   <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-16 h-4 bg-brand-dark rounded-full z-10" />
-                  {/* v52: CSS-çizimi profil — gerçek ekran görüntüsü gelince Image ile değiştirilebilir */}
-                  <div className="aspect-[9/19] rounded-[1.6rem] overflow-hidden bg-white flex flex-col">
-                    <div className="pt-7 pb-3 px-3 text-center border-b border-brand-subtle">
-                      <div className="w-14 h-14 mx-auto rounded-full bg-brand-gold flex items-center justify-center mb-2 ring-2 ring-brand-gold/40 ring-offset-2">
-                        <span className="font-display text-xl font-bold text-brand-dark">Mİ</span>
-                      </div>
-                      <p className="text-[11px] font-bold text-brand-dark leading-tight">@mobelinegol</p>
-                      <p className="text-[9px] text-brand-muted mt-0.5">Möbel İnegöl · Mobilya</p>
-                    </div>
-                    <div className="flex-1 grid grid-cols-3 gap-px bg-brand-subtle p-px">
-                      {[...Array(9)].map((_, i) => (
-                        <div key={i} className={`${i % 3 === 1 ? 'bg-brand-teallt' : i % 2 === 0 ? 'bg-brand-cream' : 'bg-brand-gold/25'}`} />
-                      ))}
-                    </div>
+                  {/* v53: gerçek Instagram profil ekran görüntüsü */}
+                  <div className="aspect-[9/19] rounded-[1.6rem] overflow-hidden bg-white">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/marka/instagram-profil.jpg"
+                      alt="@mobelinegol Instagram profili — 20 binden fazla takipçi"
+                      className="w-full h-full object-cover object-top"
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </div>
                 </div>
                 <p className="text-center text-xs md:text-sm font-semibold text-brand-dark mt-3 group-hover:text-brand-gold transition-colors">

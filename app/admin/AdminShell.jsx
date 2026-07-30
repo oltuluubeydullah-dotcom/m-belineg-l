@@ -95,7 +95,7 @@ export default function AdminShell({ children, user }) {
           <div className="flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/marka/mobel-logo.png"
+              src="/marka/mobel-logo-white.png"
               alt="Möbel İnegöl"
               className="h-9 w-auto object-contain"
               width="361"
