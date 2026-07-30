@@ -10,7 +10,7 @@ import {
   IconBrandInstagram, IconBrandFacebook, IconDeviceFloppy, IconBuildingStore,
 } from '@tabler/icons-react';
 import Button from '@/components/ui/Button';
-import { Input, Checkbox } from '@/components/ui/Input';
+import { Input } from '@/components/ui/Input';
 import { useToast } from '@/context/ToastContext';
 import { getSupabaseClient } from '@/lib/supabase/client';
 import { revalidatePaths, tumSiteRevalidatePaths } from '@/lib/revalidate';

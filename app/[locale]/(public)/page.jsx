@@ -17,7 +17,7 @@ import FeaturedProductsInfiniteScroll from '@/components/public/FeaturedProducts
 import { createPublicClient } from '@/lib/supabase/public';
 import { URUN_LISTE_SELECT } from '@/lib/supabase/queries';
 import { KATEGORILER } from '@/lib/constants';
-import { kategoriAnahtar, kategoriSirala } from '@/lib/kategoriGorsel';
+import { kategoriSirala } from '@/lib/kategoriGorsel';
 import { gorselSrc } from '@/lib/gorsel';
 import { genelDestekLinki } from '@/lib/whatsapp';
 
