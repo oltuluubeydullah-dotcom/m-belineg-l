@@ -4,15 +4,15 @@
 // html/body sadece burada bulunmalı; alt layout'lar html/body üretmemeli.
 // ════════════════════════════════════════════════════════════
 
-// ─── Self-hosted fonts (build-safe, ağ bağımsız) ───
-// Cormorant Garamond → başlıklar (lüks serif)
-// Inter Variable → gövde (modern sans)
-import '@fontsource/cormorant-garamond/400.css';
-import '@fontsource/cormorant-garamond/500.css';
-import '@fontsource/cormorant-garamond/600.css';
-import '@fontsource/cormorant-garamond/700.css';
-import '@fontsource/cormorant-garamond/400-italic.css';
-import '@fontsource-variable/inter';
+// ─── Self-hosted font (build-safe, ağ bağımsız) ───
+// Poppins → tüm site (başlık + gövde + ürün sayfaları) tek font, geometrik sans
+import '@fontsource/poppins/300.css';
+import '@fontsource/poppins/400.css';
+import '@fontsource/poppins/500.css';
+import '@fontsource/poppins/600.css';
+import '@fontsource/poppins/700.css';
+import '@fontsource/poppins/400-italic.css';
+import '@fontsource/poppins/600-italic.css';
 import '@/app/globals.css';
 import { headers } from 'next/headers';
 
