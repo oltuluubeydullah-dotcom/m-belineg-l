@@ -11,12 +11,12 @@ export default function SeoTanitim() {
   const locale = useLocale();
   const yil = new Date().getFullYear();
 
-  // 4 kart da aynı stilde gold marka rozeti (şeffaf) — küçük kartta net + tutarlı
+  // garanti + whatsapp şeffaf rozet (ortada); nakliye + avrupa kare afiş (tam-kanama kapak)
   const stats = [
-    { v: tStats('warranty_value'),    l: tStats('warranty'),    img: '/marka/trust-garanti.png'  },
-    { v: tStats('delivery_81_value'), l: tStats('delivery_81'), img: '/marka/trust-nakliye.png'  },
-    { v: tStats('europe_value'),      l: tStats('europe'),      img: '/marka/trust-avrupa.png'   },
-    { v: tStats('247_value'),         l: tStats('247'),         img: '/marka/trust-whatsapp.png' },
+    { v: tStats('warranty_value'),    l: tStats('warranty'),    img:   '/marka/trust-garanti.png'  },
+    { v: tStats('delivery_81_value'), l: tStats('delivery_81'), cover: '/marka/stat-nakliye.jpg'   },
+    { v: tStats('europe_value'),      l: tStats('europe'),      cover: '/marka/stat-avrupa.jpg'    },
+    { v: tStats('247_value'),         l: tStats('247'),         img:   '/marka/trust-whatsapp.png' },
   ];
 
   return (
@@ -38,17 +38,27 @@ export default function SeoTanitim() {
               key={s.l}
               className="group bg-white rounded-3xl border border-brand-teal/15 overflow-hidden shadow-card hover:shadow-card-h hover:-translate-y-1 transition-all duration-300"
             >
-              {/* İkon alanı — 4 kart da gold marka rozeti (şeffaf) */}
+              {/* İkon alanı — nakliye/avrupa kare afiş tam-kanama; garanti/whatsapp şeffaf rozet */}
               <div className="relative aspect-square bg-gradient-to-br from-brand-teallt/60 to-white flex items-center justify-center overflow-hidden">
-                <div className="group-hover:scale-110 transition-transform duration-500">
+                {s.cover ? (
                   <Image
-                    src={s.img}
+                    src={s.cover}
                     alt={s.l}
-                    width={96}
-                    height={96}
-                    className="w-20 h-20 md:w-24 md:h-24 object-contain"
+                    fill
+                    sizes="(max-width: 1024px) 50vw, 25vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                </div>
+                ) : (
+                  <div className="group-hover:scale-110 transition-transform duration-500">
+                    <Image
+                      src={s.img}
+                      alt={s.l}
+                      width={96}
+                      height={96}
+                      className="w-20 h-20 md:w-24 md:h-24 object-contain"
+                    />
+                  </div>
+                )}
               </div>
               {/* Değer + etiket */}
               <div className="px-3 py-4 md:py-5 text-center border-t border-brand-teal/10 bg-gradient-to-b from-white to-brand-teallt/30">
