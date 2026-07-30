@@ -46,7 +46,9 @@
 - **KategoriShowcase:** hero altı kategori kartları (`components/public/KategoriShowcase.jsx`).
 
 ## 6. AÇIK DÖNGÜLER (yapılacaklar)
-- ⏳ **Kategori kartı illüstrasyonları:** kullanıcı SVG çizimleri beğenmedi; **Canva'dan** üretilecek (Canva MCP bağlandı). Hedef: 8 kategori (koltuk, köşe, yatak, yemek, tv, genç odası, masa-sandalye, sehpa) için marka renginde temiz görsel → `KategoriShowcase` ILLO'ya yerleştir.
+- ⏳ **Kategori kartı illüstrasyonları — KARAR BEKLİYOR.** Mevcut: `KategoriShowcase.jsx` içinde premium SVG illüstrasyonlar (altın gradyan, canlıda). Kullanıcı SVG'yi beğenmedi, Canva istedi.
+  **Canva denendi ve İKİ engel çıktı:** (1) Canva `generate-design` temiz ikon değil, YAZILI poster üretiyor (ör. "Modern Comfort for Every Home"); (2) bu sandbox Canva export'unu İNDİREMİYOR — ağ politikası `export-download.canva.com`'u 403 ile engelliyor. Yani Canva'dan otomatik çekmek MÜMKÜN DEĞİL.
+  **Önerilen çözüm:** A) admin'den gerçek ÜRÜN FOTOĞRAFLARI kapak yap (site destekliyor, en pro) — **veya** B) kullanıcı beğendiği illüstrasyonları şeffaf PNG atsın, `KategoriShowcase` ILLO'ya yerleştir. (Kullanıcı henüz A/B seçmedi.)
 - ⏳ **Cloudflare R2:** API token + public URL (`R2_*` + `NEXT_PUBLIC_R2_PUBLIC_URL`) Vercel'e eklenecek.
 - ⏳ **Domain DNS:** `mobelinegol.com` Vercel'e bağlanacak (A/CNAME).
 - ⏳ **Harita pini:** `NEXT_PUBLIC_MAP_LAT/LNG` hâlâ eski konumda; Wobilimo AVM koordinatı güncellenecek.
@@ -61,5 +63,9 @@
 - Görsel işleme (logo/rozet) `scratchpad`'de Python/PIL ile; çıktı `public/marka/`.
 - Prod deploy 4-approval: #07 Security + #15 QA + #19 Legal + #20 SRE (bkz. MASTER).
 
+## 8. Bağlı Servisler (MCP — oturuma göre değişir)
+- GitHub (kod), Supabase (proje `dkxduxcndxpuefvvinua`), Vercel, Cloudflare, Canva bağlanabiliyor.
+- ⚠️ **Sandbox ağ kısıtı:** Supabase REST'e ve Canva export'una doğrudan `curl` ENGELLİ (403). Supabase için MCP araçlarını kullan (`apply_migration`, `execute_sql`, `get_logs`). Canva export'u indirilemiyor.
+
 ---
-_Son güncelleme: kategori illüstrasyonları Canva'dan üretilecek aşamasında. by ubivo._
+_Son güncelleme: Agent ekip + MEMORY kuruldu; kategori görseli A/B kararı bekliyor. Yeni oturum bu dosyadan devam etmeli. by ubivo._
