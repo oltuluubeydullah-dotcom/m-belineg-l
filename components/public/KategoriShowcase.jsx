@@ -6,8 +6,10 @@
 // krem highlight (#FFF3CC). Damla formunda kartlar, kategori sayfasına link.
 // ════════════════════════════════════════════════════════════
 
+import Image from 'next/image';
 import { Link } from '@/lib/i18n/navigation';
 import { getLocalizedName } from '@/lib/i18n/auto-translate';
+import { gorselSrc } from '@/lib/gorsel';
 
 // Ortak degrade tanımı (her illüstrasyonda benzersiz id ile çağrılır)
 function Golds({ id }) {
@@ -209,10 +211,24 @@ export default function KategoriShowcase({ kategoriler = [], locale, kicker, tit
               className="group flex flex-col items-center"
             >
               <div className="relative w-full aspect-square rounded-[2rem] bg-white border border-brand-gold/25 shadow-card overflow-hidden transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-card-h group-hover:border-brand-gold">
-                <div className="absolute inset-3 rounded-[1.6rem] bg-gradient-to-br from-brand-teallt via-white to-white" />
-                <div className="absolute inset-0 flex items-center justify-center p-6 md:p-7">
-                  {ILLO[k.slug] || Fallback}
-                </div>
+                {k.gorsel ? (
+                  // Gerçek ürün fotoğrafı — kapak (admin kapak ürünü > otomatik ilk ürün görseli)
+                  <Image
+                    src={gorselSrc(k.gorsel)}
+                    alt={ad}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  // Ürün/görsel yoksa marka çizimi (fallback)
+                  <>
+                    <div className="absolute inset-3 rounded-[1.6rem] bg-gradient-to-br from-brand-teallt via-white to-white" />
+                    <div className="absolute inset-0 flex items-center justify-center p-6 md:p-7">
+                      {ILLO[k.slug] || Fallback}
+                    </div>
+                  </>
+                )}
                 <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-brand-gold to-transparent opacity-70" />
               </div>
               <p className="mt-3 text-center text-sm md:text-base font-semibold uppercase tracking-wide text-brand-dark leading-snug group-hover:text-brand-teal2 transition-colors">

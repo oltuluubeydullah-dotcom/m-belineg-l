@@ -203,7 +203,7 @@ export default async function AnaSayfa({ params: { locale } }) {
 
       {/* Kategori kartları — hero'nun hemen altı (özel çizim illüstrasyonlar) */}
       <KategoriShowcase
-        kategoriler={sergilenecek}
+        kategoriler={kategoriGorselleri}
         locale={locale}
         kicker={t('categories_kicker')}
         title={t('categories_title')}
