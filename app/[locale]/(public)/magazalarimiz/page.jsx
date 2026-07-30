@@ -45,7 +45,7 @@ export default async function MagazalarimizSayfasi({ params: { locale } }) {
 
   return (
     <main className="container mx-auto px-4 py-12 md:py-20 max-w-4xl">
-      <h1 className="font-display text-3xl md:text-5xl font-light text-brand-dark mb-2 tracking-tight">
+      <h1 className="font-display text-3xl md:text-5xl font-semibold text-brand-dark mb-2 tracking-tight">
         Mağaza<span className="italic text-brand-gold"> Adresimiz</span>
       </h1>
       <p className="text-brand-ink/60 mb-10">Bizi ziyaret edin, ürünlerimizi yakından inceleyin.</p>

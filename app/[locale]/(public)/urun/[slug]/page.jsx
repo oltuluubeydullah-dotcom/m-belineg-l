@@ -206,7 +206,7 @@ export default async function UrunSayfasi({ params: { locale, slug } }) {
       {ilgili && ilgili.length > 0 && (
         <section className="bg-brand-cream py-16 md:py-20 border-t border-brand-dark/5">
           <div className="container mx-auto">
-            <h2 className="font-display text-2xl md:text-3xl font-light tracking-tight mb-8">
+            <h2 className="font-display text-2xl md:text-3xl font-semibold tracking-tight mb-8">
               {t('you_may_like')}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">

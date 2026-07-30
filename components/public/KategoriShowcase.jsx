@@ -193,7 +193,7 @@ export default function KategoriShowcase({ kategoriler = [], locale, kicker, tit
         <p className="text-brand-accent font-medium tracking-widest uppercase text-xs sm:text-sm mb-2">
           {kicker}
         </p>
-        <h2 className="font-display text-3xl md:text-5xl font-light tracking-tight">
+        <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight">
           {title} <span className="italic text-brand-gold">{titleEm}</span>
         </h2>
       </div>

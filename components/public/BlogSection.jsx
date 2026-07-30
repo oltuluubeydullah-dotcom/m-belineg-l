@@ -24,7 +24,7 @@ export default function BlogSection({ yazilar = [], locale = 'tr' }) {
         <p className="text-brand-accent font-medium tracking-widest uppercase text-xs sm:text-sm mb-2">
           {L.kicker}
         </p>
-        <h2 className="font-display text-3xl md:text-5xl font-light tracking-tight">
+        <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight">
           {L.title} <span className="italic text-brand-gold">{L.titleEm}</span>
         </h2>
         <p className="text-brand-ink/60 mt-3 max-w-2xl mx-auto text-sm md:text-base">

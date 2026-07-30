@@ -59,7 +59,7 @@ export default function IndirimliKategoriler({ kategoriler = [], locale }) {
         <p className="text-brand-accent font-medium tracking-widest uppercase text-xs sm:text-sm mb-2">
           Fırsatlar
         </p>
-        <h2 className="font-display text-2xl md:text-4xl font-light tracking-tight text-brand-dark">
+        <h2 className="font-display text-2xl md:text-4xl font-semibold tracking-tight text-brand-dark">
           İndirimli <span className="italic text-brand-gold">Kategoriler</span>
         </h2>
       </div>
