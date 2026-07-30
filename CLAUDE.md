@@ -3,6 +3,9 @@
 Bu dosya, bu repoda çalışan Claude Code (ve UbivoAgentTeam) için tek kaynak yönergedir.
 Her oturumun başında okunur.
 
+> 🧠 **OTURUM BAŞI (zorunlu):** Yeni oturumda ilk iş — **Ajan #49 (Bağlam Mühendisi)** `.claude/MEMORY.md`'yi okur
+> ("nerede kaldık" + açık döngüler brifingi) ve oturum sonunda günceller. Bağlam kopukluğu = sistem hatası.
+
 ---
 
 ## 1. Proje
