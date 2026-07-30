@@ -21,7 +21,7 @@ import { Link } from '@/lib/i18n/navigation';
 // ─── BANNER: YAŞAM ALANI ───────────────────────────────────
 // Sıcak aile/oturma odası görseli — koltuk koleksiyonuna yönlendirir.
 function BannerYasam({ banner, t }) {
-  const bgImage = gorselSrc(banner?.bg_image_url) || null; // v52: şimdilik yazı-odaklı hero
+  const bgImage = gorselSrc(banner?.bg_image_url) || '/marka/hero-koltuk.jpg'; // v55: koltuk takımı görseli (DB görseli varsa üstüne biner)
   const baslik = {
     tr: { title: 'Koltuk Takımı Modellerimiz', titleEm: 'Avantajlı Fiyatlarla', body: 'Modern, köşe ve klasik koltuk takımlarında geniş seçenek — konfor ve şıklık bir arada.', cta: 'Koleksiyonu Keşfet' },
     en: { title: 'Our Sofa Sets', titleEm: 'at Great Prices', body: 'A wide range of modern, corner and classic sofa sets — comfort and style together.', cta: 'Explore the Collection' },
@@ -90,7 +90,7 @@ function BannerYasam({ banner, t }) {
 // ─── BANNER: YATAK ODASI ───────────────────────────────────
 // Şık yatak odası görseli — yatak odası koleksiyonuna yönlendirir.
 function BannerYatak({ banner, t }) {
-  const bgImage = gorselSrc(banner?.bg_image_url) || null; // v52: şimdilik yazı-odaklı hero
+  const bgImage = gorselSrc(banner?.bg_image_url) || '/marka/hero-yatak.jpg'; // v55: yatak odası görseli (DB görseli varsa üstüne biner)
   const baslik = {
     tr: { title: 'Yatak Odası Takımlarımız', titleEm: 'Avantajlı Fiyatlarla', body: 'Şık tasarım ve üstün konforu buluşturan yatak odası takımlarımızı keşfedin.', cta: 'Koleksiyonu Keşfet' },
     en: { title: 'Our Bedroom Sets', titleEm: 'at Great Prices', body: 'Discover bedroom sets that unite elegant design with superior comfort.', cta: 'Explore the Collection' },
