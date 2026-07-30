@@ -34,8 +34,8 @@ export default function Footer() {
                 alt={ISLETME.ad}
                 width={361}
                 height={120}
-                className="h-14 w-auto object-contain"
-                sizes="220px"
+                className="h-20 w-auto object-contain"
+                sizes="320px"
               />
             </div>
             <p className="text-sm leading-relaxed text-brand-ink/70 mb-4">

@@ -70,8 +70,8 @@ export default function Header({ kategoriler }) {
       <header
         className={`sticky top-0 z-40 border-b transition-colors duration-200 ${
           scrolled
-            ? 'bg-brand-gold/90 backdrop-blur-md border-brand-dark/15 shadow-card'
-            : 'bg-brand-gold border-brand-dark/15'
+            ? 'bg-brand-cream/80 backdrop-blur-md border-brand-dark/10 shadow-card'
+            : 'bg-brand-cream border-brand-dark/10'
         }`}
       >
         <div className="container mx-auto">
@@ -81,7 +81,7 @@ export default function Header({ kategoriler }) {
             <button
               type="button"
               onClick={() => setMenuAcik(!menuAcik)}
-              className="md:hidden p-2 -ml-1 inline-flex items-center justify-center text-brand-ink hover:text-white transition-colors flex-shrink-0"
+              className="md:hidden p-2 -ml-1 inline-flex items-center justify-center text-brand-ink hover:text-brand-teal transition-colors flex-shrink-0"
               aria-label={t('menu_label')}
               aria-expanded={menuAcik}
             >
@@ -100,8 +100,8 @@ export default function Header({ kategoriler }) {
                 width={361}
                 height={120}
                 priority
-                className="h-16 w-auto md:h-24 object-contain"
-                sizes="(max-width: 768px) 300px, 420px"
+                className="h-20 w-auto md:h-28 object-contain"
+                sizes="(max-width: 768px) 360px, 520px"
               />
             </Link>
 
@@ -134,7 +134,7 @@ export default function Header({ kategoriler }) {
               <button
                 type="button"
                 onClick={() => setAramaAcik(!aramaAcik)}
-                className="md:hidden p-2.5 inline-flex items-center justify-center text-brand-ink hover:text-white transition-colors"
+                className="md:hidden p-2.5 inline-flex items-center justify-center text-brand-ink hover:text-brand-teal transition-colors"
                 aria-label={t('search_button')}
               >
                 {aramaAcik ? <IconX size={22} /> : <IconSearch size={22} />}
@@ -144,12 +144,12 @@ export default function Header({ kategoriler }) {
 
               <Link
                 href="/sepet"
-                className="p-2 text-brand-ink hover:text-white transition-colors relative inline-flex items-center justify-center"
+                className="p-2 text-brand-ink hover:text-brand-teal transition-colors relative inline-flex items-center justify-center"
                 aria-label={t('cart_label')}
               >
                 <IconShoppingCart size={24} stroke={1.8} />
                 {toplamAdet > 0 && (
-                  <span className="absolute top-0 right-0 bg-brand-dark text-white
+                  <span className="absolute top-0 right-0 bg-brand-gold text-brand-dark
                                    text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center
                                    animate-fade-in">
                     {toplamAdet > 99 ? '99+' : toplamAdet}
@@ -198,7 +198,7 @@ export default function Header({ kategoriler }) {
               onMouseEnter={() => hoverPrefetch(`/kategori/${kat.slug}`)}
               onFocus={() => hoverPrefetch(`/kategori/${kat.slug}`)}
               prefetch={true}
-              className="text-[13px] font-sans font-semibold tracking-[0.08em] uppercase text-brand-ink hover:text-white transition-colors whitespace-nowrap"
+              className="text-[13px] font-sans font-semibold tracking-[0.08em] uppercase text-brand-ink hover:text-brand-teal transition-colors whitespace-nowrap"
             >
               {katAd(kat)}
             </Link>
