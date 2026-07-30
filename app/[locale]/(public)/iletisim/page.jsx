@@ -141,7 +141,7 @@ export default function IletisimSayfasi() {
                 {TAM_ADRES}
               </p>
               <a
-                href="https://maps.app.goo.gl/NEF3Afbmk8NQApkk9"
+                href="https://maps.app.goo.gl/JrjRkJyCePG6CBvA6?g_st=ic"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-sm text-brand-gold hover:opacity-80 mt-3 pl-16"

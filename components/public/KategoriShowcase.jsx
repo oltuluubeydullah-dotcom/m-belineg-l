@@ -213,12 +213,13 @@ export default function KategoriShowcase({ kategoriler = [], locale, kicker, tit
               <div className="relative w-full aspect-square rounded-[2rem] bg-white border border-brand-gold/25 shadow-card overflow-hidden transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-card-h group-hover:border-brand-gold">
                 {k.gorsel ? (
                   // Gerçek ürün fotoğrafı — kapak (admin kapak ürünü > otomatik ilk ürün görseli)
+                  // object-contain + beyaz zemin → tam ürün görünür (referanstaki katalog stili)
                   <Image
                     src={gorselSrc(k.gorsel)}
                     alt={ad}
                     fill
                     sizes="(max-width: 768px) 50vw, 25vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-contain p-4 md:p-5 transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
                   // Ürün/görsel yoksa marka çizimi (fallback)

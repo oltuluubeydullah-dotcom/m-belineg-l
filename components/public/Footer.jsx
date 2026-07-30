@@ -105,7 +105,7 @@ export default function Footer() {
               {ISLETME.adresTam}
             </p>
             <a
-              href="https://maps.app.goo.gl/NEF3Afbmk8NQApkk9"
+              href="https://maps.app.goo.gl/JrjRkJyCePG6CBvA6?g_st=ic"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-gold hover:text-brand-accent transition-colors"
