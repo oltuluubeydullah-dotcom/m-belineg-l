@@ -129,11 +129,11 @@ export default function Footer() {
                 <span>+90 531 347 74 68</span>
               </a>
               <a
-                href="tel:+905360400118"
+                href="tel:+905360400108"
                 className="flex items-center gap-3 text-sm text-brand-ink/70 hover:text-brand-teal transition-colors"
               >
                 <IconPhone size={17} className="text-brand-gold shrink-0" />
-                <span>+90 536 040 01 18</span>
+                <span>+90 536 040 01 08</span>
               </a>
               <a
                 href={genelDestekLinki()}
@@ -142,7 +142,7 @@ export default function Footer() {
                 className="flex items-center gap-3 text-sm text-brand-ink/70 hover:text-green-600 transition-colors"
               >
                 <IconBrandWhatsapp size={17} className="text-green-500 shrink-0" />
-                <span>+90 536 040 01 18</span>
+                <span>+90 536 040 01 08</span>
               </a>
               <a
                 href="mailto:mobelinegol16@gmail.com"

@@ -49,7 +49,7 @@ export default function IletisimSayfasi() {
                     WhatsApp (önerilen)
                   </p>
                   <p className="font-display text-xl font-semibold text-brand-dark group-hover:text-green-600 transition-colors">
-                    +90 536 040 01 18
+                    +90 536 040 01 08
                   </p>
                   <p className="text-sm text-brand-ink/60 mt-1">
                     Tıkla, anında mesaj at
@@ -80,7 +80,7 @@ export default function IletisimSayfasi() {
 
             {/* Telefon 2 */}
             <a
-              href="tel:+905360400118"
+              href="tel:+905360400108"
               className="block bg-white rounded-2xl shadow-card border border-brand-dark/5 p-6 hover:border-brand-gold/30 transition-colors group"
             >
               <div className="flex items-center gap-4">
@@ -92,7 +92,7 @@ export default function IletisimSayfasi() {
                     Telefon 2
                   </p>
                   <p className="font-display text-xl font-semibold text-brand-dark group-hover:text-brand-teal transition-colors">
-                    +90 536 040 01 18
+                    +90 536 040 01 08
                   </p>
                 </div>
               </div>
