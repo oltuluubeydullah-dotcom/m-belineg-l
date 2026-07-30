@@ -160,23 +160,34 @@ function BannerYatak({ banner, t }) {
 // Kamyon görseli solda (yazısız), metin sağda RESPONSIVE HTML overlay.
 // Mobilde taşmaz, 3 dilde çalışır (eski gömülü-yazı sürümü kaldırıldı).
 function BannerNakliye() {
-  // v55: Avrupa'ya teslimat — GENİŞ banner (hero-avrupa-wide.jpg): portre afiş orijinal
-  // çözünürlükte ortada, yanlar krem→gold gradyanla dolu (afiş paletiyle uyumlu).
-  // Tek görsel, object-cover → PC'de tam genişlik/kırpısız görünüm, mobilde merkez (afiş)
-  // görünür. Kalite korunur (afiş büyütülmez/kırpılmaz). Tüm alan /teslimat-kurulum'a link.
+  // v55: Avrupa'ya teslimat — RESPONSIVE afiş.
+  // Mobil: portre afiş (hero-avrupa-teslimat.jpg) object-cover → tam dolar (mobil zaten iyiydi).
+  // PC: geniş afiş (hero-avrupa-wide.jpg) object-cover → tam genişlik, kenarlar kırpılmaz.
+  // Tüm alan /teslimat-kurulum'a link.
+  const ALT = "Tüm Avrupa'ya adresinize teslimat — Almanya, Hollanda, İsviçre, İtalya, İngiltere, Belçika, Fransa, Danimarka";
   return (
     <Link
       href="/teslimat-kurulum"
       className="relative block w-full h-full overflow-hidden bg-[#FAF2E4]"
       aria-label="Tüm Avrupa'ya adresinize teslimat"
     >
+      {/* Mobil: portre afiş — tam dolar */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/marka/hero-avrupa-teslimat.jpg"
+        alt={ALT}
+        className="md:hidden absolute inset-0 w-full h-full object-cover object-center"
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
+      />
+      {/* PC: geniş afiş — tam genişlik */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/marka/hero-avrupa-wide.jpg"
-        alt="Tüm Avrupa'ya adresinize teslimat — Almanya, Hollanda, İsviçre, İtalya, İngiltere, Belçika, Fransa, Danimarka"
-        className="absolute inset-0 w-full h-full object-cover object-center"
+        alt={ALT}
+        className="hidden md:block absolute inset-0 w-full h-full object-cover object-center"
         loading="eager"
-        fetchPriority="high"
         decoding="async"
       />
     </Link>
