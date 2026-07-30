@@ -45,10 +45,17 @@
 - **Almanca %100:** tr/en/de = 224 anahtar tam parite. `SeoTanitim.longform` DE/EN eklendi.
 - **KategoriShowcase:** hero altı kategori kartları (`components/public/KategoriShowcase.jsx`).
 
+### v55 oturumu (agent ekip — 5b89e90 main'e merge, canlıda)
+- **SeoTanitim 4 kart artık gerçek marka görseli:** garanti+whatsapp şeffaf rozet (`trust-*.png`, beyaz zemin PIL ile şeffaflaştırıldı); avrupa+nakliye tam-kanama afiş kapak (`hero-avrupa-teslimat.jpg` yeni tam-tasarım afişle, `hero-nakliye.jpg` = "Tüm Türkiye'ye Nakliye ve Kurulum"). Eski SVG ikonlar/IKONLAR kaldırıldı.
+- **Hero:** Avrupa afişi portre → PC/mobil kusursuz (arka bulanık kapak + ön object-contain, `BannerNakliye`). Koltuk slaytı `hero-koltuk.jpg`, yatak slaytı `hero-yatak.jpg` (yerel fallback; DB `bg_image_url` varsa üstüne biner).
+- **Telefon:** `+90 531 347 74 68` siteden tamamen kaldırıldı (Footer + iletişim). Kalan: `+90 536 040 01 08`.
+- **Header gold şerit:** arka plan `#FEC401`, logo büyütüldü (h-16/md:h-24), gold zeminde kontrast düzeltmeleri (hover'lar beyaz, sepet rozeti koyu).
+- **KategoriTanitim** (yeni bileşen): kategoriye özel tanıtım (oda görseli + üst-başlık + başlık + açıklama + "Ürünleri Keşfet"). Ana sayfada kategori kartlarından sonra **Yatak Odası** bölümü eklendi (TR/EN/DE). Yemek Odası şablonu hazır, görsel bekliyor.
+- **Site fontu tek fonta:** Cormorant+Inter → **Poppins** (self-hosted `@fontsource/poppins`, tailwind+globals). Bölüm başlıkları `font-light`→`font-semibold` (referans bold görünüm).
+
 ## 6. AÇIK DÖNGÜLER (yapılacaklar)
-- ⏳ **Kategori kartı illüstrasyonları — KARAR BEKLİYOR.** Mevcut: `KategoriShowcase.jsx` içinde premium SVG illüstrasyonlar (altın gradyan, canlıda). Kullanıcı SVG'yi beğenmedi, Canva istedi.
-  **Canva denendi ve İKİ engel çıktı:** (1) Canva `generate-design` temiz ikon değil, YAZILI poster üretiyor (ör. "Modern Comfort for Every Home"); (2) bu sandbox Canva export'unu İNDİREMİYOR — ağ politikası `export-download.canva.com`'u 403 ile engelliyor. Yani Canva'dan otomatik çekmek MÜMKÜN DEĞİL.
-  **Önerilen çözüm:** A) admin'den gerçek ÜRÜN FOTOĞRAFLARI kapak yap (site destekliyor, en pro) — **veya** B) kullanıcı beğendiği illüstrasyonları şeffaf PNG atsın, `KategoriShowcase` ILLO'ya yerleştir. (Kullanıcı henüz A/B seçmedi.)
+- ⏳ **Yemek Odası tanıtım görseli:** `KategoriTanitim` şablonu + TR/EN/DE metinler hazır (`KategoriTanitim.yemek_*`). Kullanıcı yemek odası fotoğrafı atınca ana sayfaya Yatak bölümünün altına eklenecek (`image=/marka/hero-yemek.jpg`, `href=/kategori/yemek-odasi`).
+- ⏳ **Kategori kartı illüstrasyonları — kullanıcı export edecek.** Mevcut: `KategoriShowcase.jsx` içinde premium SVG illüstrasyonlar (canlıda). Kullanıcı Canva istedi. **Sandbox ağ politikası Canva görsel/export host'larını (`design.canva.ai`, `export-download.canva.com`) 403 ile engelliyor → ben indiremiyorum/göremiyorum.** Bu yüzden 8 kategori tasarımı kullanıcının Canva hesabında üretildi (design_type=logo, marka kiti `kAGpJfJ6wKw`); kullanıcı "ben export edip eklerim" dedi. **Bekleyen:** kullanıcı 8 PNG'yi (slug adlarıyla: koltuk-takimi/kose-koltuk/yatak-odasi/yemek-odasi/tv-unitesi/bebek-genc-odasi/masa-sandalye-set/sehpa-aksesuar) atınca `public/marka/kategori/`'ye koy + `KategoriShowcase`'i `next/image`'a çevir.
 - ⏳ **Cloudflare R2:** API token + public URL (`R2_*` + `NEXT_PUBLIC_R2_PUBLIC_URL`) Vercel'e eklenecek.
 - ⏳ **Domain DNS:** `mobelinegol.com` Vercel'e bağlanacak (A/CNAME).
 - ⏳ **Harita pini:** `NEXT_PUBLIC_MAP_LAT/LNG` hâlâ eski konumda; Wobilimo AVM koordinatı güncellenecek.
