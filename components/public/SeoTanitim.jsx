@@ -1,5 +1,6 @@
 // K-06 FIX: t.raw() çıktısı sanitizeHtml() ile temizleniyor
-// v52: Möbel — görseller yerine sarı/siyah marka ikonları
+// v52: Möbel — nakliye/avrupa sarı-siyah marka ikonu; garanti + whatsapp gerçek marka rozet görselleri
+import Image from 'next/image';
 import { useTranslations, useLocale } from 'next-intl';
 import { sanitizeHtml } from '@/lib/sanitize';
 
@@ -9,47 +10,13 @@ export default function SeoTanitim() {
   const locale = useLocale();
   const yil = new Date().getFullYear();
 
-  // v52 Möbel: fotoğraflar yerine sarı/siyah marka ikonları (eski tema görselleri kaldırıldı)
+  // v55 Möbel: 4 kart da gerçek marka görseli — garanti + whatsapp şeffaf rozet; avrupa + nakliye afiş (tam-kanama)
   const stats = [
-    { v: tStats('warranty_value'),    l: tStats('warranty'),    icon: 'garanti'  },
-    { v: tStats('delivery_81_value'), l: tStats('delivery_81'), icon: 'nakliye'  },
-    { v: tStats('europe_value'),      l: tStats('europe'),      icon: 'avrupa'   },
-    { v: tStats('247_value'),         l: tStats('247'),         icon: 'whatsapp' },
+    { v: tStats('warranty_value'),    l: tStats('warranty'),    img: '/marka/trust-garanti.png'         },
+    { v: tStats('delivery_81_value'), l: tStats('delivery_81'), cover: '/marka/hero-nakliye.jpg'         },
+    { v: tStats('europe_value'),      l: tStats('europe'),      cover: '/marka/hero-avrupa-teslimat.jpg' },
+    { v: tStats('247_value'),         l: tStats('247'),         img: '/marka/trust-whatsapp.png'         },
   ];
-
-  // Sarı daire + siyah çizim — Möbel rozet dili
-  const IKONLAR = {
-    garanti: (
-      <svg viewBox="0 0 64 64" fill="none" className="w-20 h-20 md:w-24 md:h-24">
-        <circle cx="32" cy="32" r="30" fill="#FEC401" />
-        <path d="M32 14l13 5v11c0 9.5-5.5 15.5-13 19-7.5-3.5-13-9.5-13-19V19l13-5z" fill="#1A1A1A" />
-        <path d="M25.5 32.5l4.5 4.5 9-9" stroke="#FEC401" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    ),
-    nakliye: (
-      <svg viewBox="0 0 64 64" fill="none" className="w-20 h-20 md:w-24 md:h-24">
-        <circle cx="32" cy="32" r="30" fill="#1A1A1A" />
-        <rect x="12" y="24" width="26" height="16" rx="2" fill="#FEC401" />
-        <path d="M38 28h8l6 7v5h-14V28z" fill="#FEC401" />
-        <circle cx="21" cy="43" r="4" fill="#1A1A1A" stroke="#FAF8F3" strokeWidth="2.5" />
-        <circle cx="44" cy="43" r="4" fill="#1A1A1A" stroke="#FAF8F3" strokeWidth="2.5" />
-      </svg>
-    ),
-    avrupa: (
-      <svg viewBox="0 0 64 64" fill="none" className="w-20 h-20 md:w-24 md:h-24">
-        <circle cx="32" cy="32" r="30" fill="#FEC401" />
-        <circle cx="32" cy="32" r="17" fill="none" stroke="#1A1A1A" strokeWidth="3" />
-        <path d="M15 32h34M32 15c5 5.5 5 28.5 0 34M32 15c-5 5.5-5 28.5 0 34" stroke="#1A1A1A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      </svg>
-    ),
-    whatsapp: (
-      <svg viewBox="0 0 64 64" fill="none" className="w-20 h-20 md:w-24 md:h-24">
-        <circle cx="32" cy="32" r="30" fill="#1A1A1A" />
-        <path d="M32 17c-8.3 0-15 6.5-15 14.5 0 2.8.85 5.4 2.3 7.6L17 47l8.2-2.1a15.6 15.6 0 006.8 1.5c8.3 0 15-6.4 15-14.4S40.3 17 32 17z" fill="#FEC401" />
-        <path d="M27 26.5c.4-1 .9-1 1.3-1h1.1c.35 0 .8.1 1.1.9l1.2 3c.1.3.2.6 0 .95l-.7 1.1c-.2.3-.4.65-.15 1.1.95 1.6 2.4 2.9 4.1 3.7.45.2.8.1 1.05-.2l1-1.1c.3-.35.65-.4 1-.25l3 1.45c.5.25.65.6.6 1-.2 1.6-1.7 2.85-3.3 2.85-4.95 0-11.3-4.6-12.3-10.6-.2-1.2.3-2.3 1-2.9z" fill="#1A1A1A" />
-      </svg>
-    ),
-  };
 
   return (
     <section className="bg-gradient-to-b from-brand-teallt via-white to-brand-cream border-y border-brand-teal/15 py-14 md:py-20">
@@ -70,11 +37,27 @@ export default function SeoTanitim() {
               key={s.l}
               className="group bg-white rounded-3xl border border-brand-teal/15 overflow-hidden shadow-card hover:shadow-card-h hover:-translate-y-1 transition-all duration-300"
             >
-              {/* İkon alanı — sarı/siyah marka rozeti (v52) */}
+              {/* İkon alanı — avrupa/nakliye afiş tam-kanama; garanti/whatsapp şeffaf rozet (v55) */}
               <div className="relative aspect-square bg-gradient-to-br from-brand-teallt/60 to-white flex items-center justify-center overflow-hidden">
-                <div className="group-hover:scale-110 transition-transform duration-500">
-                  {IKONLAR[s.icon]}
-                </div>
+                {s.cover ? (
+                  <Image
+                    src={s.cover}
+                    alt={s.l}
+                    fill
+                    sizes="(max-width: 1024px) 50vw, 25vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                ) : (
+                  <div className="group-hover:scale-110 transition-transform duration-500">
+                    <Image
+                      src={s.img}
+                      alt={s.l}
+                      width={96}
+                      height={96}
+                      className="w-20 h-20 md:w-24 md:h-24 object-contain"
+                    />
+                  </div>
+                )}
               </div>
               {/* Değer + etiket */}
               <div className="px-3 py-4 md:py-5 text-center border-t border-brand-teal/10 bg-gradient-to-b from-white to-brand-teallt/30">

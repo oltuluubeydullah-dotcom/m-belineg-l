@@ -90,7 +90,7 @@ export default async function AramaSayfasi({ params: { locale }, searchParams })
             <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-brand-dark/5 flex items-center justify-center">
               <IconSearch size={36} className="text-brand-ink/40" />
             </div>
-            <p className="font-display text-2xl md:text-3xl font-light text-brand-dark mb-3">{t('empty_title')}</p>
+            <p className="font-display text-2xl md:text-3xl font-semibold text-brand-dark mb-3">{t('empty_title')}</p>
             <p className="text-brand-ink/60 max-w-xl mx-auto px-4 mb-7">{t('empty_text', { q })}</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link href="/" className="btn-primary">

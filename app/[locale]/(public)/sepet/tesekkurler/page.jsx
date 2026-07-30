@@ -21,7 +21,7 @@ export default async function TesekkurlerSayfasi({ params: { locale } }) {
           <IconCircleCheck size={56} className="text-green-600" />
         </div>
 
-        <h1 className="font-display text-3xl md:text-5xl font-light tracking-tight text-brand-dark mb-4">
+        <h1 className="font-display text-3xl md:text-5xl font-semibold tracking-tight text-brand-dark mb-4">
           {t('thanks_title')}
         </h1>
 

@@ -21,7 +21,7 @@ import { Link } from '@/lib/i18n/navigation';
 // ─── BANNER: YAŞAM ALANI ───────────────────────────────────
 // Sıcak aile/oturma odası görseli — koltuk koleksiyonuna yönlendirir.
 function BannerYasam({ banner, t }) {
-  const bgImage = gorselSrc(banner?.bg_image_url) || null; // v52: şimdilik yazı-odaklı hero
+  const bgImage = gorselSrc(banner?.bg_image_url) || '/marka/hero-koltuk.jpg'; // v55: koltuk takımı görseli (DB görseli varsa üstüne biner)
   const baslik = {
     tr: { title: 'Koltuk Takımı Modellerimiz', titleEm: 'Avantajlı Fiyatlarla', body: 'Modern, köşe ve klasik koltuk takımlarında geniş seçenek — konfor ve şıklık bir arada.', cta: 'Koleksiyonu Keşfet' },
     en: { title: 'Our Sofa Sets', titleEm: 'at Great Prices', body: 'A wide range of modern, corner and classic sofa sets — comfort and style together.', cta: 'Explore the Collection' },
@@ -90,7 +90,7 @@ function BannerYasam({ banner, t }) {
 // ─── BANNER: YATAK ODASI ───────────────────────────────────
 // Şık yatak odası görseli — yatak odası koleksiyonuna yönlendirir.
 function BannerYatak({ banner, t }) {
-  const bgImage = gorselSrc(banner?.bg_image_url) || null; // v52: şimdilik yazı-odaklı hero
+  const bgImage = gorselSrc(banner?.bg_image_url) || '/marka/hero-yatak.jpg'; // v55: yatak odası görseli (DB görseli varsa üstüne biner)
   const baslik = {
     tr: { title: 'Yatak Odası Takımlarımız', titleEm: 'Avantajlı Fiyatlarla', body: 'Şık tasarım ve üstün konforu buluşturan yatak odası takımlarımızı keşfedin.', cta: 'Koleksiyonu Keşfet' },
     en: { title: 'Our Bedroom Sets', titleEm: 'at Great Prices', body: 'Discover bedroom sets that unite elegant design with superior comfort.', cta: 'Explore the Collection' },
@@ -160,15 +160,27 @@ function BannerYatak({ banner, t }) {
 // Kamyon görseli solda (yazısız), metin sağda RESPONSIVE HTML overlay.
 // Mobilde taşmaz, 3 dilde çalışır (eski gömülü-yazı sürümü kaldırıldı).
 function BannerNakliye() {
-  // v52: Avrupa'ya teslimat — tek parça tasarım görseli (başlık + bayraklar + buton gömülü).
+  // v55: Avrupa'ya teslimat — portre (~0.93) tek parça afiş (logo + kamyon + bayraklar + özellikler + buton gömülü).
   // Görsel kendi metnini içerdiği için HTML overlay YOK. Tüm alan /teslimat-kurulum'a link.
-  // Görsel ~kare (1.09) → object-contain + krem zemin (görsel kenarıyla aynı ton) ile kaynaşır.
+  // PC (geniş kutu) + mobil (dar kutu) KUSURSUZ: arkada aynı görselin bulanık/büyütülmüş kapağı yan
+  // boşlukları krem-gold tonunda doldurur; ön planda tam afiş object-contain ile HİÇ kırpılmaz.
   return (
     <Link
       href="/teslimat-kurulum"
-      className="relative block w-full h-full overflow-hidden bg-[#FCF8F1]"
+      className="relative block w-full h-full overflow-hidden bg-[#FAF2E4]"
       aria-label="Tüm Avrupa'ya adresinize teslimat"
     >
+      {/* Arka dolgu — bulanık kapak (yalnızca dekoratif) */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/marka/hero-avrupa-teslimat.jpg"
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-60"
+        loading="eager"
+        decoding="async"
+      />
+      {/* Ön plan — tam afiş, kırpılmadan ortada */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/marka/hero-avrupa-teslimat.jpg"

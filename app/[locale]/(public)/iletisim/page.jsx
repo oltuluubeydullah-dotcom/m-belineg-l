@@ -58,27 +58,7 @@ export default function IletisimSayfasi() {
               </div>
             </a>
 
-            {/* Telefon 1 */}
-            <a
-              href="tel:+905313477468"
-              className="block bg-white rounded-2xl shadow-card border border-brand-dark/5 p-6 hover:border-brand-gold/30 transition-colors group"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-brand-gold/10 text-brand-gold flex items-center justify-center shrink-0">
-                  <IconPhone size={22} />
-                </div>
-                <div className="flex-1">
-                  <p className="text-xs text-brand-ink/50 uppercase tracking-wider font-medium">
-                    Telefon 1
-                  </p>
-                  <p className="font-display text-xl font-semibold text-brand-dark group-hover:text-brand-teal transition-colors">
-                    +90 531 347 74 68
-                  </p>
-                </div>
-              </div>
-            </a>
-
-            {/* Telefon 2 */}
+            {/* Telefon */}
             <a
               href="tel:+905360400108"
               className="block bg-white rounded-2xl shadow-card border border-brand-dark/5 p-6 hover:border-brand-gold/30 transition-colors group"
@@ -89,7 +69,7 @@ export default function IletisimSayfasi() {
                 </div>
                 <div className="flex-1">
                   <p className="text-xs text-brand-ink/50 uppercase tracking-wider font-medium">
-                    Telefon 2
+                    Telefon
                   </p>
                   <p className="font-display text-xl font-semibold text-brand-dark group-hover:text-brand-teal transition-colors">
                     +90 536 040 01 08

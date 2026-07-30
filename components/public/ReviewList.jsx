@@ -44,7 +44,7 @@ export default async function ReviewList({ reviews, locale }) {
 
   return (
     <section className="border-t border-brand-dark/10 pt-10 mt-10">
-      <h2 className="font-display text-2xl md:text-3xl font-light text-brand-dark mb-6">
+      <h2 className="font-display text-2xl md:text-3xl font-semibold text-brand-dark mb-6">
         {t('title')}
       </h2>
 

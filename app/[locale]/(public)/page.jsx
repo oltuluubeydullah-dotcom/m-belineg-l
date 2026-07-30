@@ -10,6 +10,7 @@ import SeoTanitim from '@/components/public/SeoTanitim';
 import TrustBadges from '@/components/public/TrustBadges';
 import IndirimliKategoriler from '@/components/public/IndirimliKategoriler';
 import KategoriShowcase from '@/components/public/KategoriShowcase';
+import KategoriTanitim from '@/components/public/KategoriTanitim';
 import InstagramYurtdisiSection from '@/components/public/InstagramYurtdisiSection';
 import BlogSection from '@/components/public/BlogSection';
 import FeaturedProductsInfiniteScroll from '@/components/public/FeaturedProductsInfiniteScroll';
@@ -71,6 +72,7 @@ async function kategoriGorselleriniTopluGetir(supabase, kategoriler) {
 export default async function AnaSayfa({ params: { locale } }) {
   setRequestLocale(locale);
   const t = await getTranslations('Home');
+  const tKat = await getTranslations('KategoriTanitim');
   const supabase = createPublicClient();
 
   // PERFORMANCE FIX: Sıralı await → paralel Promise.all (4 sorgu aynı anda)
@@ -209,13 +211,23 @@ export default async function AnaSayfa({ params: { locale } }) {
         inspect={t('category_inspect')}
       />
 
+      {/* Kategoriye özel tanıtım — Yatak Odası (yemek görseli gelince eklenecek) */}
+      <KategoriTanitim
+        image="/marka/hero-yatak.jpg"
+        kicker={tKat('yatak_kicker')}
+        title={tKat('yatak_title')}
+        body={tKat('yatak_body')}
+        cta={tKat('yatak_cta')}
+        href="/kategori/yatak-odasi"
+      />
+
       {/* Ürün seçkisi */}
       <section className="container mx-auto py-6 md:py-10">
         <div className="text-center mb-8 md:mb-12">
           <p className="text-brand-accent font-medium tracking-widest uppercase text-xs sm:text-sm mb-2">
             {t('selected_kicker')}
           </p>
-          <h2 className="font-display text-3xl md:text-5xl font-light tracking-tight">
+          <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight">
             {t('selected_title')} <span className="italic text-brand-gold">{t('selected_title_em')}</span>
           </h2>
           <p className="text-brand-ink/60 mt-3 max-w-2xl mx-auto text-sm md:text-base">
@@ -227,7 +239,7 @@ export default async function AnaSayfa({ params: { locale } }) {
           <FeaturedProductsInfiniteScroll initialProducts={urunler} locale={locale} />
         ) : (
           <div className="text-center py-16 md:py-24 bg-gradient-to-br from-brand-cream to-white rounded-3xl border border-brand-dark/5">
-            <p className="font-display text-2xl md:text-3xl font-light text-brand-dark mb-3">
+            <p className="font-display text-2xl md:text-3xl font-semibold text-brand-dark mb-3">
               {t('empty_title')} <span className="italic text-brand-gold">{t('empty_title_em')}</span>
             </p>
             <p className="text-brand-ink/60 max-w-xl mx-auto px-4 mb-7">{t('empty_text')}</p>

@@ -122,13 +122,6 @@ export default function Footer() {
             </h4>
             <div className="space-y-3">
               <a
-                href="tel:+905313477468"
-                className="flex items-center gap-3 text-sm text-brand-ink/70 hover:text-brand-teal transition-colors"
-              >
-                <IconPhone size={17} className="text-brand-gold shrink-0" />
-                <span>+90 531 347 74 68</span>
-              </a>
-              <a
                 href="tel:+905360400108"
                 className="flex items-center gap-3 text-sm text-brand-ink/70 hover:text-brand-teal transition-colors"
               >
