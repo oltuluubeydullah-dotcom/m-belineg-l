@@ -28,7 +28,7 @@ export default function InstagramYurtdisiSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram sayfamız"
-                className="group block w-[48vw] max-w-[200px] shrink-0 transition-transform hover:-translate-y-2 duration-300"
+                className="group block w-[52vw] max-w-[230px] md:max-w-[290px] shrink-0 transition-transform hover:-translate-y-2 duration-300"
               >
                 {/* Telefon çerçevesi — gerçek Instagram profil ekranı */}
                 <div className="relative rounded-[2rem] border-[6px] border-brand-dark bg-brand-dark shadow-2xl overflow-hidden">
