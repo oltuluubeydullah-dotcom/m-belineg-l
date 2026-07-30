@@ -29,7 +29,9 @@
     "menu_label": "Toggle menu",
     "cart_label": "Cart",
     "account_label": "Account",
-    "switch_language": "Language"
+    "switch_language": "Language",
+    "call_label": "Call us",
+    "menu_close": "Close menu"
   },
   "Nav": {
     "home": "Home",
@@ -138,7 +140,30 @@
     "unfavorite": "Remove from Favourites",
     "add_full_set": "Add Full Set",
     "add_modules": "Add Modules",
-    "variants": "Options"
+    "variants": "Options",
+    "full_set_added": "Full set added to cart",
+    "modules_added": "{count} modules ({qty} items) added to cart",
+    "part": "Piece",
+    "width": "Width",
+    "height": "Height",
+    "no_price": "No price defined for this product",
+    "select_module": "Please select at least one module",
+    "items_unit": "pcs",
+    "depth": "Depth",
+    "dimensions_title": "Product Dimensions",
+    "desc_accordion_title": "Product Details",
+    "delivery_install_title": "Delivery & Installation",
+    "delivery_1": "Delivery is available across Türkiye and to European countries.",
+    "delivery_2": "A shipping-related price difference may apply in remote districts and villages.",
+    "delivery_3": "Average delivery time is 30 days.",
+    "delivery_4": "Installation is carried out on site by our expert team.",
+    "delivery_5": "Our product comes with a 2-year manufacturing warranty.",
+    "payment_contact_title": "Payment & Contact",
+    "payment_text": "You can contact us directly on WhatsApp for payment and order details. We offer bank transfer and credit card installment options.",
+    "whatsapp_contact": "Contact via WhatsApp",
+    "parts_total": "{count} parts total",
+    "starting_price_note": "Starting price · the total updates as you customize modules",
+    "set_contents_note": "Set contents — choose quantity, price is calculated automatically"
   },
   "Cart": {
     "title": "My Cart",
@@ -162,7 +187,8 @@
     "error_service_paused": "Service is temporarily unavailable.",
     "error_empty": "Your cart is empty.",
     "delivery_note": "Delivery included, free of charge",
-    "whatsapp_button": "Send via WhatsApp"
+    "whatsapp_button": "Send via WhatsApp",
+    "subtitle": "Review your cart and confirm via WhatsApp"
   },
   "Checkout": {
     "title": "Order Confirmation",
@@ -283,5 +309,12 @@
     "whatsapp": "24/7 WhatsApp Support",
     "nakit": "Cash Payment Discount",
     "taksit": "Credit Card Installments"
+  },
+  "Category": {
+    "empty_title": "No products in this category yet",
+    "empty_text": "We'll add products to this category soon.",
+    "error_title": "Products could not be loaded",
+    "error_text": "A temporary issue occurred. Please try again shortly.",
+    "back_home": "Back to Home"
   }
 }

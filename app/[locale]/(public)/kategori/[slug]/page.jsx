@@ -8,6 +8,7 @@
 export const revalidate = 300; // ISR: 300s
 
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 import { Link } from '@/lib/i18n/navigation';
 import { IconArrowLeft } from '@tabler/icons-react';
 import ProductCard from '@/components/public/ProductCard';
@@ -81,6 +82,8 @@ export async function generateStaticParams() {
 // ─── SAYFA ────────────────────────────────────────────────────
 export default async function KategoriSayfasi({ params, searchParams }) {
   const supabase = createPublicClient();
+  const t = await getTranslations({ locale: params.locale || 'tr', namespace: 'Category' });
+  const tNav = await getTranslations({ locale: params.locale || 'tr', namespace: 'Nav' });
   const sirala = searchParams?.sirala || 'varsayilan';
   const sayfa  = Math.max(1, parseInt(searchParams?.sayfa || '1', 10));
 
@@ -159,7 +162,7 @@ export default async function KategoriSayfasi({ params, searchParams }) {
           {/* Breadcrumb */}
           <div className="text-xs text-white/70 font-sans font-medium tracking-widest uppercase mb-3 flex items-center justify-center gap-2">
             <Link href={ROTALAR.anasayfa} className="hover:text-white transition-colors">
-              Anasayfa
+              {tNav('home')}
             </Link>
             <span>/</span>
             <span>{kategoriAdiniAl(kategori, params.locale || 'tr')}</span>
@@ -191,14 +194,14 @@ export default async function KategoriSayfasi({ params, searchParams }) {
         {urunler.length === 0 ? (
           <div className="text-center py-20 border-2 border-dashed border-brand-dark/10 rounded-2xl">
             <p className="font-display text-2xl text-brand-dark/60 mb-2">
-              {sorguHatasi ? 'Ürünler şu an yüklenemedi' : 'Bu kategoride henüz ürün yok'}
+              {sorguHatasi ? t('error_title') : t('empty_title')}
             </p>
             <p className="text-sm text-brand-ink/50 mb-6">
-              {sorguHatasi ? 'Geçici bir sorun oluştu, lütfen birazdan tekrar deneyin.' : 'Yakında bu kategoriyi ürünlerle dolduracağız.'}
+              {sorguHatasi ? t('error_text') : t('empty_text')}
             </p>
             <Link href={ROTALAR.anasayfa} className="btn-ghost inline-flex">
               <IconArrowLeft size={18} />
-              Anasayfaya Dön
+              {t('back_home')}
             </Link>
           </div>
         ) : (

@@ -29,7 +29,9 @@
     "menu_label": "Menü öffnen/schließen",
     "cart_label": "Warenkorb",
     "account_label": "Konto",
-    "switch_language": "Sprache"
+    "switch_language": "Sprache",
+    "call_label": "Anrufen",
+    "menu_close": "Menü schließen"
   },
   "Nav": {
     "home": "Startseite",
@@ -138,7 +140,30 @@
     "unfavorite": "Aus Favoriten entfernen",
     "add_full_set": "Komplettes Set hinzufügen",
     "add_modules": "Module hinzufügen",
-    "variants": "Optionen"
+    "variants": "Optionen",
+    "full_set_added": "Komplettes Set in den Warenkorb gelegt",
+    "modules_added": "{count} Module ({qty} Stück) in den Warenkorb gelegt",
+    "part": "Teil",
+    "width": "Breite",
+    "height": "Höhe",
+    "no_price": "Für dieses Produkt ist kein Preis hinterlegt",
+    "select_module": "Bitte wählen Sie mindestens ein Modul",
+    "items_unit": "Stk.",
+    "depth": "Tiefe",
+    "dimensions_title": "Produktmaße",
+    "desc_accordion_title": "Produktdetails",
+    "delivery_install_title": "Lieferung & Montage",
+    "delivery_1": "Die Lieferung erfolgt in die gesamte Türkei und in europäische Länder.",
+    "delivery_2": "In abgelegenen Bezirken und Dörfern kann ein transportbedingter Preisunterschied entstehen.",
+    "delivery_3": "Die durchschnittliche Lieferzeit beträgt 30 Tage.",
+    "delivery_4": "Die Montage erfolgt vor Ort durch unser Fachteam.",
+    "delivery_5": "Unser Produkt hat 2 Jahre Herstellergarantie.",
+    "payment_contact_title": "Zahlung & Kontakt",
+    "payment_text": "Für Zahlungs- und Bestelldetails können Sie uns direkt über WhatsApp kontaktieren. Wir bieten Banküberweisung und Ratenzahlung per Kreditkarte an.",
+    "whatsapp_contact": "Über WhatsApp kontaktieren",
+    "parts_total": "{count} Teile insgesamt",
+    "starting_price_note": "Startpreis · die Summe aktualisiert sich beim Anpassen der Module",
+    "set_contents_note": "Set-Inhalt — Menge wählen, der Preis wird automatisch berechnet"
   },
   "Cart": {
     "title": "Mein Warenkorb",
@@ -162,7 +187,8 @@
     "error_service_paused": "Der Service ist vorübergehend nicht verfügbar.",
     "error_empty": "Ihr Warenkorb ist leer.",
     "delivery_note": "Lieferung inklusive, kostenlos",
-    "whatsapp_button": "Über WhatsApp senden"
+    "whatsapp_button": "Über WhatsApp senden",
+    "subtitle": "Prüfen Sie Ihren Warenkorb und bestätigen Sie per WhatsApp"
   },
   "Checkout": {
     "title": "Bestellbestätigung",
@@ -283,5 +309,12 @@
     "whatsapp": "24/7 WhatsApp-Support",
     "nakit": "Rabatt bei Barzahlung",
     "taksit": "Ratenzahlung mit Kreditkarte"
+  },
+  "Category": {
+    "empty_title": "Noch keine Produkte in dieser Kategorie",
+    "empty_text": "Wir fügen dieser Kategorie bald Produkte hinzu.",
+    "error_title": "Produkte konnten nicht geladen werden",
+    "error_text": "Ein vorübergehendes Problem ist aufgetreten. Bitte versuchen Sie es später erneut.",
+    "back_home": "Zur Startseite"
   }
 }

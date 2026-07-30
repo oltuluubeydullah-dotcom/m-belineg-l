@@ -127,7 +127,7 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
   // id = gerçek ürün id'si → checkout sunucusu fiyatı DB'den doğrular (güvenli).
   function tumTakimiEkle() {
     if (!takimFiyati) {
-      goster('Bu ürün için fiyat tanımlı değil', 'uyari');
+      goster(t('no_price'), 'uyari');
       return;
     }
     ekle({
@@ -139,13 +139,13 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
       price: takimFiyati,
       image: urun.images?.[0] || null,
     }, 1);
-    goster('Tüm takım sepete eklendi', 'basari');
+    goster(t('full_set_added'), 'basari');
   }
 
   // Seçili modülleri (tekil parçaları) sepete ekle.
   function modulleriEkle() {
     if (toplamAdet === 0) {
-      goster('Lütfen en az bir modül seçin', 'uyari');
+      goster(t('select_module'), 'uyari');
       return;
     }
     // Her parçayı ayrı satır olarak sepete ekle (kendi adetiyle)
@@ -163,7 +163,7 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
         }, adet);
       }
     });
-    goster(`${seciliParcaSayisi} modül (${toplamAdet} adet) sepete eklendi`, 'basari');
+    goster(t('modules_added', { count: seciliParcaSayisi, qty: toplamAdet }), 'basari');
     // v51 PAZARLAMA
     olayGonder('sepete_ekleme', {
       productId: urun.id, locale,
@@ -265,17 +265,17 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
                       </>
                     )}
                     {parcaMod && toplamAdet > 0 && (
-                      <span className="text-xs text-brand-ink/55 ml-1">({toplamAdet} parça toplam)</span>
+                      <span className="text-xs text-brand-ink/55 ml-1">({t('parts_total', { count: toplamAdet })})</span>
                     )}
                   </div>
                   {!parcaMod && adet > 1 && birimFiyat && (
                     <p className="text-xs text-brand-ink/55 mt-1.5">
-                      {formatFiyat(birimFiyat)} × {adet} adet
+                      {formatFiyat(birimFiyat)} × {adet} {t('items_unit')}
                     </p>
                   )}
                   {baslangicFiyatiGosteriliyor && (
                     <p className="text-xs text-brand-ink/55 mt-2">
-                      Başlangıç fiyatı · modülleri özelleştirdikçe toplam güncellenir
+                      {t('starting_price_note')}
                     </p>
                   )}
                 </>
@@ -288,7 +288,7 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
             {parcaMod && (
               <div className="mb-6">
                 <p className="text-xs uppercase tracking-widest text-brand-ink/60 mb-3 font-medium">
-                  Takım İçeriği — Adet seç, fiyat otomatik hesaplanır
+                  {t('set_contents_note')}
                 </p>
                 <div className="space-y-2">
                   {parts.map((p, i) => {
@@ -306,7 +306,7 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
                           <p className="text-sm font-medium text-brand-dark truncate">{p.ad}</p>
                           {p.fiyat != null && (
                             <p className="text-xs text-brand-ink/60 mt-0.5">
-                              {formatFiyat(p.fiyat)} / adet
+                              {formatFiyat(p.fiyat)} / {t('items_unit')}
                             </p>
                           )}
                         </div>
@@ -316,7 +316,7 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
                             onClick={() => adetDegistir(i, -1)}
                             disabled={adet === 0}
                             className="w-9 h-9 flex items-center justify-center text-brand-ink/70 hover:text-brand-teal disabled:opacity-30 disabled:hover:text-brand-ink/70"
-                            aria-label="Azalt"
+                            aria-label={t('qty_decrease')}
                           >
                             <IconMinus size={16} />
                           </button>
@@ -325,7 +325,7 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
                             type="button"
                             onClick={() => adetDegistir(i, 1)}
                             className="w-9 h-9 flex items-center justify-center text-brand-ink/70 hover:text-brand-teal"
-                            aria-label="Arttır"
+                            aria-label={t('qty_increase')}
                           >
                             <IconPlus size={16} />
                           </button>
@@ -350,6 +350,7 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
                     type="button"
                     onClick={() => setAdet(Math.max(1, adet - 1))}
                     className="w-11 h-11 flex items-center justify-center text-brand-ink/70 hover:text-brand-teal"
+                    aria-label={t('qty_decrease')}
                   >
                     <IconMinus size={18} />
                   </button>
@@ -358,6 +359,7 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
                     type="button"
                     onClick={() => setAdet(adet + 1)}
                     className="w-11 h-11 flex items-center justify-center text-brand-ink/70 hover:text-brand-teal"
+                    aria-label={t('qty_increase')}
                   >
                     <IconPlus size={18} />
                   </button>
@@ -372,7 +374,7 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
                   {takimFiyati > 0 && (
                     <Button variant="primary" onClick={tumTakimiEkle} className="w-full justify-center">
                       <IconShoppingBag size={18} />
-                      Tüm Takımı Sepete Ekle
+                      {t('add_full_set')}
                     </Button>
                   )}
 
@@ -380,7 +382,7 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
                   {toplamAdet > 0 && (
                     <Button variant="outline" onClick={modulleriEkle} className="w-full justify-center">
                       <IconShoppingBag size={18} />
-                      Seçili Modülleri Ekle · {toplamAdet} adet · {formatFiyat(toplamFiyat)}
+                      {t('add_modules')} · {toplamAdet} {t('items_unit')} · {formatFiyat(toplamFiyat)}
                     </Button>
                   )}
 
@@ -450,7 +452,7 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
 
             {/* ÜRÜN AÇIKLAMALARI */}
             {(bullets.length > 0 || dimensions.length > 0) && (
-              <Accordion baslik="Ürün Açıklamaları" icon={IconCircleCheck} acikVarsayilan>
+              <Accordion baslik={t('desc_accordion_title')} icon={IconCircleCheck} acikVarsayilan>
                 {bullets.length > 0 && (
                   <ul className="space-y-2 mb-6">
                     {bullets.map((b, i) => (
@@ -466,16 +468,16 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
                   <div>
                     <p className="text-xs uppercase tracking-widest text-brand-ink/55 font-medium mb-3 flex items-center gap-2">
                       <IconRulerMeasure size={16} className="text-brand-gold" />
-                      Ürün Ölçüleri
+                      {t('dimensions_title')}
                     </p>
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm border-collapse">
                         <thead>
                           <tr className="border-b-2 border-brand-dark/10">
-                            <th className="text-left py-2 px-3 font-semibold text-brand-dark">Parça</th>
-                            <th className="text-left py-2 px-3 font-semibold text-brand-dark">Genişlik</th>
-                            <th className="text-left py-2 px-3 font-semibold text-brand-dark">Yükseklik</th>
-                            <th className="text-left py-2 px-3 font-semibold text-brand-dark">Derinlik</th>
+                            <th className="text-left py-2 px-3 font-semibold text-brand-dark">{t('part')}</th>
+                            <th className="text-left py-2 px-3 font-semibold text-brand-dark">{t('width')}</th>
+                            <th className="text-left py-2 px-3 font-semibold text-brand-dark">{t('height')}</th>
+                            <th className="text-left py-2 px-3 font-semibold text-brand-dark">{t('depth')}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -496,20 +498,20 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
             )}
 
             {/* TESLIMAT VE KURULUM */}
-            <Accordion baslik="Teslimat ve Kurulum" icon={IconBuildingStore}>
+            <Accordion baslik={t('delivery_install_title')} icon={IconBuildingStore}>
               <ul className="space-y-2 text-brand-ink/85">
-                <li className="flex gap-3"><span className="text-brand-gold mt-1.5 shrink-0">•</span>Teslimat tüm Türkiye'ye ve Avrupa ülkelerine yapılır.</li>
-                <li className="flex gap-3"><span className="text-brand-gold mt-1.5 shrink-0">•</span>Uzak ilçe ve köylerde nakliye kaynaklı fiyat farkı çıkabilir.</li>
-                <li className="flex gap-3"><span className="text-brand-gold mt-1.5 shrink-0">•</span>Teslimat süresi ortalama 30 gündür.</li>
-                <li className="flex gap-3"><span className="text-brand-gold mt-1.5 shrink-0">•</span>Kurulum alanında uzman ekibimiz tarafından yapılır.</li>
-                <li className="flex gap-3"><span className="text-brand-gold mt-1.5 shrink-0">•</span>Ürünümüz 2 yıl fabrikasyon garantilidir.</li>
+                <li className="flex gap-3"><span className="text-brand-gold mt-1.5 shrink-0">•</span>{t('delivery_1')}</li>
+                <li className="flex gap-3"><span className="text-brand-gold mt-1.5 shrink-0">•</span>{t('delivery_2')}</li>
+                <li className="flex gap-3"><span className="text-brand-gold mt-1.5 shrink-0">•</span>{t('delivery_3')}</li>
+                <li className="flex gap-3"><span className="text-brand-gold mt-1.5 shrink-0">•</span>{t('delivery_4')}</li>
+                <li className="flex gap-3"><span className="text-brand-gold mt-1.5 shrink-0">•</span>{t('delivery_5')}</li>
               </ul>
             </Accordion>
 
             {/* ÖDEME YÖNTEMLERİ */}
-            <Accordion baslik="Ödeme ve İletişim" icon={IconCreditCard}>
+            <Accordion baslik={t('payment_contact_title')} icon={IconCreditCard}>
               <p className="text-brand-ink/85 mb-3">
-                Ödeme ve sipariş detayları için WhatsApp üzerinden direkt iletişime geçebilirsiniz. Anlaşmalı banka havalesi ve kredi kartına taksit imkanı sunuyoruz.
+                {t('payment_text')}
               </p>
               <a
                 href={whatsappMesaj}
@@ -518,7 +520,7 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-green-500 hover:bg-green-600 text-white text-sm font-semibold transition-colors"
               >
                 <IconBrandWhatsapp size={18} />
-                WhatsApp ile İletişime Geç
+                {t('whatsapp_contact')}
               </a>
             </Accordion>
           </div>

@@ -29,7 +29,9 @@
     "menu_label": "Menüyü aç/kapat",
     "cart_label": "Sepet",
     "account_label": "Hesap",
-    "switch_language": "Dil seçimi"
+    "switch_language": "Dil seçimi",
+    "call_label": "Telefonla ara",
+    "menu_close": "Menüyü kapat"
   },
   "Nav": {
     "home": "Anasayfa",
@@ -138,7 +140,30 @@
     "unfavorite": "Favorilerden Çıkar",
     "add_full_set": "Tam Takım Ekle",
     "add_modules": "Modülleri Ekle",
-    "variants": "Seçenekler"
+    "variants": "Seçenekler",
+    "full_set_added": "Tüm takım sepete eklendi",
+    "modules_added": "{count} modül ({qty} adet) sepete eklendi",
+    "part": "Parça",
+    "width": "Genişlik",
+    "height": "Yükseklik",
+    "no_price": "Bu ürün için fiyat tanımlı değil",
+    "select_module": "Lütfen en az bir modül seçin",
+    "items_unit": "adet",
+    "depth": "Derinlik",
+    "dimensions_title": "Ürün Ölçüleri",
+    "desc_accordion_title": "Ürün Açıklamaları",
+    "delivery_install_title": "Teslimat ve Kurulum",
+    "delivery_1": "Teslimat tüm Türkiye'ye ve Avrupa ülkelerine yapılır.",
+    "delivery_2": "Uzak ilçe ve köylerde nakliye kaynaklı fiyat farkı çıkabilir.",
+    "delivery_3": "Teslimat süresi ortalama 30 gündür.",
+    "delivery_4": "Kurulum alanında uzman ekibimiz tarafından yapılır.",
+    "delivery_5": "Ürünümüz 2 yıl fabrikasyon garantilidir.",
+    "payment_contact_title": "Ödeme ve İletişim",
+    "payment_text": "Ödeme ve sipariş detayları için WhatsApp üzerinden direkt iletişime geçebilirsiniz. Anlaşmalı banka havalesi ve kredi kartına taksit imkanı sunuyoruz.",
+    "whatsapp_contact": "WhatsApp ile İletişime Geç",
+    "parts_total": "{count} parça toplam",
+    "starting_price_note": "Başlangıç fiyatı · modülleri özelleştirdikçe toplam güncellenir",
+    "set_contents_note": "Takım İçeriği — Adet seç, fiyat otomatik hesaplanır"
   },
   "Cart": {
     "title": "Sepetim",
@@ -162,7 +187,8 @@
     "error_service_paused": "Hizmet geçici olarak kullanılamıyor.",
     "error_empty": "Sepetiniz boş.",
     "delivery_note": "Teslimat dahil, ücretsiz",
-    "whatsapp_button": "WhatsApp'tan Gönder"
+    "whatsapp_button": "WhatsApp'tan Gönder",
+    "subtitle": "Sepetinizi gözden geçirin, WhatsApp'tan onaylayın"
   },
   "Checkout": {
     "title": "Sipariş Onayı",
@@ -283,5 +309,12 @@
     "whatsapp": "7/24 WhatsApp Destek",
     "nakit": "Nakit Ödemede İndirim",
     "taksit": "Kredi Kartına Taksit"
+  },
+  "Category": {
+    "empty_title": "Bu kategoride henüz ürün yok",
+    "empty_text": "Yakında bu kategoriyi ürünlerle dolduracağız.",
+    "error_title": "Ürünler şu an yüklenemedi",
+    "error_text": "Geçici bir sorun oluştu, lütfen birazdan tekrar deneyin.",
+    "back_home": "Anasayfaya Dön"
   }
 }

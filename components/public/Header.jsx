@@ -90,7 +90,7 @@ export default function Header({ kategoriler }) {
               <a
                 href="tel:+905360400108"
                 className="p-2 inline-flex items-center justify-center text-brand-ink hover:text-brand-teal transition-colors"
-                aria-label="Telefonla ara"
+                aria-label={t('call_label')}
               >
                 <IconPhone size={22} />
               </a>
@@ -242,7 +242,7 @@ export default function Header({ kategoriler }) {
           {/* Backdrop */}
           <button
             type="button"
-            aria-label="Menüyü kapat"
+            aria-label={t('menu_close')}
             onClick={() => setMenuAcik(false)}
             className="md:hidden fixed inset-0 z-50 bg-brand-navy/40 backdrop-blur-sm animate-fade-in"
           />
@@ -271,7 +271,7 @@ export default function Header({ kategoriler }) {
               <button
                 type="button"
                 onClick={() => setMenuAcik(false)}
-                aria-label="Kapat"
+                aria-label={t('menu_close')}
                 className="p-2 -mr-1 text-brand-ink hover:text-brand-teal transition-colors"
               >
                 <IconX size={24} />
