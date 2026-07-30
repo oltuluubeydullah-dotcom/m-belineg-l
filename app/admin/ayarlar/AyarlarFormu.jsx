@@ -23,7 +23,7 @@ export default function AyarlarFormu({ ilkAyarlar }) {
     business_tagline:          ilkAyarlar?.business_tagline || 'Hayalindeki Eve Bir Adım',
     business_address:          ilkAyarlar?.business_address || 'İnegöl / Bursa',
     business_phone:            ilkAyarlar?.business_phone || '',
-    business_email:            ilkAyarlar?.business_email || 'info@mobelinegol.com',
+    business_email:            ilkAyarlar?.business_email || 'mobelinegol16@gmail.com',
     social_links: {
       instagram: ilkAyarlar?.social_links?.instagram || 'https://instagram.com/mobelinegol',
       facebook:  ilkAyarlar?.social_links?.facebook || '',
@@ -116,7 +116,7 @@ export default function AyarlarFormu({ ilkAyarlar }) {
               type="email"
               value={veri.business_email}
               onChange={(e) => guncelle('business_email', e.target.value)}
-              placeholder="info@mobelinegol.com"
+              placeholder="mobelinegol16@gmail.com"
             />
             <Input
               label={<><IconBrandWhatsapp size={14} className="inline mr-1 text-green-600" />WhatsApp Numarası</>}

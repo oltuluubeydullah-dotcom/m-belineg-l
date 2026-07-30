@@ -145,11 +145,11 @@ export default function Footer() {
                 <span>+90 536 040 01 18</span>
               </a>
               <a
-                href="mailto:info@mobelinegol.com"
+                href="mailto:mobelinegol16@gmail.com"
                 className="flex items-center gap-3 text-sm text-brand-ink/70 hover:text-brand-teal transition-colors"
               >
                 <IconMail size={17} className="text-brand-gold shrink-0" />
-                <span>info@mobelinegol.com</span>
+                <span>mobelinegol16@gmail.com</span>
               </a>
             </div>
 

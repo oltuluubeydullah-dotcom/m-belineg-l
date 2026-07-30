@@ -39,7 +39,7 @@ export default function MaintenancePage({ message }) {
               WhatsApp ile iletişime geç
             </a>
             <a
-              href="mailto:info@mobelinegol.com"
+              href="mailto:mobelinegol16@gmail.com"
               className="flex items-center justify-center gap-2 w-full py-3 px-5 bg-brand-dark hover:bg-brand-ink text-brand-cream rounded-lg font-medium transition-colors"
             >
               <IconMail size={20} />
