@@ -11,32 +11,13 @@ export default function SeoTanitim() {
   const locale = useLocale();
   const yil = new Date().getFullYear();
 
+  // 4 kart da aynı stilde gold marka rozeti (şeffaf) — küçük kartta net + tutarlı
   const stats = [
     { v: tStats('warranty_value'),    l: tStats('warranty'),    img: '/marka/trust-garanti.png'  },
-    { v: tStats('delivery_81_value'), l: tStats('delivery_81'), icon: 'nakliye'                   },
-    { v: tStats('europe_value'),      l: tStats('europe'),      icon: 'avrupa'                    },
+    { v: tStats('delivery_81_value'), l: tStats('delivery_81'), img: '/marka/trust-nakliye.png'  },
+    { v: tStats('europe_value'),      l: tStats('europe'),      img: '/marka/trust-avrupa.png'   },
     { v: tStats('247_value'),         l: tStats('247'),         img: '/marka/trust-whatsapp.png' },
   ];
-
-  // Temiz marka ikonu (sarı/siyah daire) — küçük kartta net görünür
-  const IKONLAR = {
-    nakliye: (
-      <svg viewBox="0 0 64 64" fill="none" className="w-20 h-20 md:w-24 md:h-24">
-        <circle cx="32" cy="32" r="30" fill="#1A1A1A" />
-        <rect x="12" y="24" width="26" height="16" rx="2" fill="#FEC401" />
-        <path d="M38 28h8l6 7v5h-14V28z" fill="#FEC401" />
-        <circle cx="21" cy="43" r="4" fill="#1A1A1A" stroke="#FAF8F3" strokeWidth="2.5" />
-        <circle cx="44" cy="43" r="4" fill="#1A1A1A" stroke="#FAF8F3" strokeWidth="2.5" />
-      </svg>
-    ),
-    avrupa: (
-      <svg viewBox="0 0 64 64" fill="none" className="w-20 h-20 md:w-24 md:h-24">
-        <circle cx="32" cy="32" r="30" fill="#FEC401" />
-        <circle cx="32" cy="32" r="17" fill="none" stroke="#1A1A1A" strokeWidth="3" />
-        <path d="M15 32h34M32 15c5 5.5 5 28.5 0 34M32 15c-5 5.5-5 28.5 0 34" stroke="#1A1A1A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      </svg>
-    ),
-  };
 
   return (
     <section className="bg-gradient-to-b from-brand-teallt via-white to-brand-cream border-y border-brand-teal/15 py-14 md:py-20">
@@ -57,20 +38,16 @@ export default function SeoTanitim() {
               key={s.l}
               className="group bg-white rounded-3xl border border-brand-teal/15 overflow-hidden shadow-card hover:shadow-card-h hover:-translate-y-1 transition-all duration-300"
             >
-              {/* İkon alanı — garanti/whatsapp şeffaf rozet; nakliye/avrupa temiz marka ikonu (v55) */}
+              {/* İkon alanı — 4 kart da gold marka rozeti (şeffaf) */}
               <div className="relative aspect-square bg-gradient-to-br from-brand-teallt/60 to-white flex items-center justify-center overflow-hidden">
                 <div className="group-hover:scale-110 transition-transform duration-500">
-                  {s.img ? (
-                    <Image
-                      src={s.img}
-                      alt={s.l}
-                      width={96}
-                      height={96}
-                      className="w-20 h-20 md:w-24 md:h-24 object-contain"
-                    />
-                  ) : (
-                    IKONLAR[s.icon]
-                  )}
+                  <Image
+                    src={s.img}
+                    alt={s.l}
+                    width={96}
+                    height={96}
+                    className="w-20 h-20 md:w-24 md:h-24 object-contain"
+                  />
                 </div>
               </div>
               {/* Değer + etiket */}
