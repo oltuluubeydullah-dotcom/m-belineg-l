@@ -30,6 +30,8 @@ const nextConfig = {
       // v41: Cloudflare R2 public bucket (r2.dev) + özel CDN domaini
       { protocol: 'https', hostname: '*.r2.dev' },
       { protocol: 'https', hostname: '*.r2.cloudflarestorage.com' },
+      // v56: R2 custom domain (production görsel CDN'i)
+      { protocol: 'https', hostname: 'cdn.mobelinegol.com' },
     ],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000,
