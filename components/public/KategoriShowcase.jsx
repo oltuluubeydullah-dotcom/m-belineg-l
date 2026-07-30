@@ -1,12 +1,12 @@
 // ════════════════════════════════════════════════════════════
-// KategoriShowcase — Hero'nun hemen altı
+// KategoriShowcase — Hero'nun hemen altı (v56 · premium kategori tile)
 // ════════════════════════════════════════════════════════════
-// Her kart: kategori kapak görseli (admin kapak ürünü > otomatik ilk ürün
-// görseli). Görsel yoksa nötr placeholder gösterilir — SVG çizim YOK.
+// Her kart: görsel (kapak > otomatik ilk ürün) + isim + gold ok footer.
+// Görsel yoksa nötr placeholder gösterilir — SVG çizim YOK.
 // ════════════════════════════════════════════════════════════
 
 import Image from 'next/image';
-import { IconPhoto } from '@tabler/icons-react';
+import { IconPhoto, IconArrowRight } from '@tabler/icons-react';
 import { Link } from '@/lib/i18n/navigation';
 import { getLocalizedName } from '@/lib/i18n/auto-translate';
 import { gorselSrc } from '@/lib/gorsel';
@@ -34,32 +34,44 @@ export default function KategoriShowcase({ kategoriler = [], locale, kicker, tit
               key={k.slug}
               href={`/kategori/${k.slug}`}
               aria-label={ad}
-              className="group flex flex-col items-center"
+              className="group block"
             >
-              <div className="relative w-full aspect-square rounded-[2rem] bg-white border border-brand-gold/25 shadow-card overflow-hidden transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-card-h group-hover:border-brand-gold">
-                {k.gorsel ? (
-                  // Ürün fotoğrafı — kapak (admin kapak ürünü > otomatik ilk ürün); tam ürün (contain, beyaz zemin)
-                  <Image
-                    src={gorselSrc(k.gorsel)}
-                    alt={ad}
-                    fill
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                    className="object-contain p-4 md:p-5 transition-transform duration-500 group-hover:scale-105"
-                  />
-                ) : (
-                  // Görsel yoksa nötr placeholder (çizim yok) — ürün/kapak eklenince otomatik dolar
-                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-brand-cream to-white text-brand-gold/30">
-                    <IconPhoto size={44} strokeWidth={1.4} />
+              <div className="relative rounded-3xl bg-white border border-brand-gold/20 shadow-card overflow-hidden transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-card-h group-hover:border-brand-gold/60">
+                {/* Görsel alanı */}
+                <div className="relative aspect-[4/3] bg-gradient-to-br from-brand-cream/50 via-white to-white overflow-hidden">
+                  {k.gorsel ? (
+                    <Image
+                      src={gorselSrc(k.gorsel)}
+                      alt={ad}
+                      fill
+                      sizes="(max-width: 768px) 50vw, 33vw"
+                      className="object-contain p-4 md:p-6 transition-transform duration-500 ease-out group-hover:scale-[1.07]"
+                    />
+                  ) : (
+                    // Görsel yoksa nötr placeholder (çizim yok) — ürün/kapak eklenince otomatik dolar
+                    <div className="absolute inset-0 flex items-center justify-center text-brand-gold/30">
+                      <IconPhoto size={44} strokeWidth={1.4} />
+                    </div>
+                  )}
+                  {/* Üstte hafif gold ışıma — premium his */}
+                  <div className="pointer-events-none absolute -top-8 -right-8 w-28 h-28 rounded-full bg-brand-gold/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </div>
+
+                {/* Footer — isim + ok */}
+                <div className="flex items-center justify-between gap-2 px-4 py-3.5 border-t border-brand-gold/15 bg-gradient-to-b from-white to-brand-cream/30">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-sm md:text-base uppercase tracking-wide text-brand-dark leading-tight truncate group-hover:text-brand-teal2 transition-colors">
+                      {ad}
+                    </p>
+                    <p className="text-[11px] md:text-xs text-brand-muted group-hover:text-brand-gold transition-colors">
+                      {inspect}
+                    </p>
                   </div>
-                )}
-                <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-brand-gold to-transparent opacity-70" />
+                  <span className="shrink-0 w-9 h-9 rounded-full bg-brand-gold/15 text-brand-gold flex items-center justify-center transition-all duration-300 group-hover:bg-brand-gold group-hover:text-white group-hover:translate-x-0.5">
+                    <IconArrowRight size={17} />
+                  </span>
+                </div>
               </div>
-              <p className="mt-3 text-center text-sm md:text-base font-semibold uppercase tracking-wide text-brand-dark leading-snug group-hover:text-brand-teal2 transition-colors">
-                {ad}
-              </p>
-              <span className="mt-0.5 text-[11px] md:text-xs text-brand-muted group-hover:text-brand-gold transition-colors">
-                {inspect} →
-              </span>
             </Link>
           );
         })}
