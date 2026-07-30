@@ -159,59 +159,26 @@ function BannerYatak({ banner, t }) {
 // ─── BANNER: NAKLİYE + KURULUM ─────────────────────────────
 // Kamyon görseli solda (yazısız), metin sağda RESPONSIVE HTML overlay.
 // Mobilde taşmaz, 3 dilde çalışır (eski gömülü-yazı sürümü kaldırıldı).
-function BannerNakliye({ t }) {
-  // v52 fix: Avrupa'ya teslimat slide'ı — metin + ülke listesi (L/ulkeler tanımlı).
-  const baslik = {
-    tr: { title: 'İnegöl’den Avrupa’ya', titleEm: 'Kapınıza Teslim', cta: 'Teslimat Detayları' },
-    en: { title: 'From İnegöl to Europe', titleEm: 'Delivered to Your Door', cta: 'Delivery Details' },
-    de: { title: 'Von İnegöl nach Europa', titleEm: 'Bis vor Ihre Tür', cta: 'Lieferdetails' },
-  };
-  const L = baslik[t?.locale] || baslik.tr;
-  const ulkeler = ['Almanya', 'Fransa', 'Hollanda', 'Belçika', 'Avusturya', 'İsviçre', 'İngiltere', 'İsveç'];
-  const bgImage = null; // v52: yazı-odaklı hero
+function BannerNakliye() {
+  // v52: Avrupa'ya teslimat — tek parça tasarım görseli (başlık + bayraklar + buton gömülü).
+  // Görsel kendi metnini içerdiği için HTML overlay YOK. Tüm alan /teslimat-kurulum'a link.
+  // Görsel ~kare (1.09) → object-contain + krem zemin (görsel kenarıyla aynı ton) ile kaynaşır.
   return (
-    <div className="relative block w-full h-full overflow-hidden">
-      {/* v52 Möbel: yazı-odaklı hero — siyah zemin + sarı ışıma. DB görseli varsa üstüne biner. */}
-      <div className="absolute inset-0 bg-brand-navy" aria-hidden="true">
-        <div className="absolute -right-24 -top-24 w-80 h-80 md:w-[28rem] md:h-[28rem] rounded-full bg-brand-gold/20 blur-3xl" />
-        <div className="absolute -left-20 -bottom-24 w-64 h-64 md:w-80 md:h-80 rounded-full bg-brand-gold/10 blur-3xl" />
-        <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-brand-gold to-transparent opacity-70" />
-      </div>
-      {bgImage && (
-        <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={bgImage} alt="" className="absolute inset-0 w-full h-full object-cover object-center" loading="eager" fetchPriority="high" decoding="async" />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(20,18,15,0.82) 0%, rgba(20,18,15,0.55) 50%, rgba(20,18,15,0.35) 100%)' }} aria-hidden="true" />
-        </>
-      )}
-
-      {/* Yazı bloğu — sağda, beyaz öne çıkan */}
-      <div className="relative z-10 h-full flex items-center justify-end">
-        <div className="container mx-auto px-6 md:px-10 flex justify-center md:justify-end">
-          <div className="max-w-xl text-center md:text-right">
-            <h1 className="font-display text-3xl sm:text-4xl md:text-6xl font-light text-white mb-2 md:mb-3 leading-tight drop-shadow-lg">
-              {L.title}<br />
-              <span className="italic text-brand-gold font-medium">{L.titleEm}</span>
-            </h1>
-            {/* Avrupa ülkeleri */}
-            <div className="flex flex-wrap gap-x-2 gap-y-1 justify-center md:justify-end max-w-md md:ml-auto mb-5 md:mb-6">
-              {ulkeler.map((u, i) => (
-                <span key={u} className="text-xs sm:text-sm md:text-base text-white/85 font-sans font-medium drop-shadow">
-                  {u}{i < ulkeler.length - 1 && <span className="text-brand-gold/70 ml-2">·</span>}
-                </span>
-              ))}
-            </div>
-            <Link
-              href="/teslimat-kurulum"
-              className="inline-flex items-center gap-2 px-6 md:px-8 py-3 md:py-4 bg-brand-teal hover:bg-brand-teal2 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:scale-105 transition-all duration-300"
-            >
-              {L.cta}
-              <IconArrowRight size={18} />
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Link
+      href="/teslimat-kurulum"
+      className="relative block w-full h-full overflow-hidden bg-[#FCF8F1]"
+      aria-label="Tüm Avrupa'ya adresinize teslimat"
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/marka/hero-avrupa-teslimat.jpg"
+        alt="Tüm Avrupa'ya adresinize teslimat — Almanya, Hollanda, İsviçre, İtalya, İngiltere, Belçika, Fransa, Danimarka"
+        className="absolute inset-0 w-full h-full object-contain"
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
+      />
+    </Link>
   );
 }
 
