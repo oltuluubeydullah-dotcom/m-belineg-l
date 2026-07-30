@@ -86,12 +86,16 @@ Logo repoya **PNG olarak** entegre edildi ve her alanda kullanılıyor.
 
 ## 5. Kurulum & Deploy Durumu
 
-> ⚠️ **Supabase, Vercel ve Cloudflare hesapları henüz açılmadı.** Aşağıdakiler yapılacaklar listesidir.
+> ✅ **Supabase + Vercel CANLI** (site `m-belineg-l.vercel.app`, ürün/kategori eklendi, RLS aktif).
+> 🔄 **Cloudflare R2 (görsel) + domain (`mobelinegol.com`) kurulumu DEVAM EDİYOR.**
 
-1. **Supabase:** proje oluştur → `sql/` altındaki migration'ları `sql/KURULUM-SIRASI.md` sırasına göre çalıştır → RLS her tabloda aktif olmalı.
-2. **Cloudflare R2:** `mobel-medya` bucket'ı oluştur → public URL ayarla → `R2_*` env değişkenlerini doldur (görsel depolama). Boş bırakılırsa görseller Supabase Storage'a düşer.
-3. **Vercel:** repoyu bağla → env değişkenlerini gir → deploy.
-4. **Domain (`mobelinegol.com`):** Vercel'e domain ekle → DNS kayıtlarını (A/CNAME) yapılandır → SSL doğrula.
+1. **Supabase:** ✅ Canlı, migration'lar uygulandı, RLS her tabloda aktif.
+   ⚠️ **GÜVENLİK (v57 · Agent #07 H-1):** `sql/06-security-rls.sql` güncellendi — `inquiries_insert_public` anon INSERT açığını kapatan DROP eklendi. **Bu satır canlı Supabase'de de MUTLAKA çalıştırılmalı** (SQL Editor):
+   `DROP POLICY IF EXISTS "inquiries_insert_public" ON public.inquiries;` → doğrula: `SELECT policyname,cmd FROM pg_policies WHERE tablename='inquiries';` (INSERT policy KALMAMALI).
+2. **Vercel:** ✅ Bağlı, `main → production` otomatik deploy. `ADMIN_EMAILS` env set.
+3. **Cloudflare R2:** 🔄 Kuruluyor — bucket `mobel-medya`, production görsel CDN'i `cdn.mobelinegol.com` (custom domain). Vercel env: `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET=mobel-medya`, `NEXT_PUBLIC_R2_PUBLIC_URL=https://cdn.mobelinegol.com` → girilip Redeploy. Beşi eksikse görseller Supabase Storage'a düşer.
+4. **Domain (`mobelinegol.com`):** 🔄 DNS Cloudflare'a taşınıyor (nameserver: `kayleigh.ns.cloudflare.com` + `nitin.ns.cloudflare.com`; registrar Hostinger/Güzelnet'te NS değişecek). Cloudflare DNS: `@`+`www` → Vercel (A `76.76.21.21` / CNAME `cname.vercel-dns.com`, **proxy KAPALI**), `cdn` → R2 (proxy açık). Vercel → Domains'e `mobelinegol.com` eklenecek (SSL otomatik).
+   ⚠️ **Bilinen sorun:** `*.vercel.app` ortak domaininde **mobil admin girişi** (Safari ITP cookie kısıtı) çalışmıyor — kendi domain canlıya geçince düzelmesi bekleniyor.
 
 Env değişkenleri: `.env.example` → `.env.local` kopyala ve doldur. `.env*` **asla commit edilmez**.
 
