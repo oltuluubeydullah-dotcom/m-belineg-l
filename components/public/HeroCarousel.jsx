@@ -159,13 +159,16 @@ function BannerYatak({ banner, t }) {
 // ─── BANNER: NAKLİYE + KURULUM ─────────────────────────────
 // Kamyon görseli solda (yazısız), metin sağda RESPONSIVE HTML overlay.
 // Mobilde taşmaz, 3 dilde çalışır (eski gömülü-yazı sürümü kaldırıldı).
-function BannerNakliye() {
-  // v31.3: Slide artık TEK PARÇA tasarım görseli — tır + yazı + ikonlar + KEŞFET
-  // hepsi görsele gömülü (Ubeyt'in onayladığı tasarım). Üst üste yazı binmesin
-  // diye HTML overlay YOK. Tüm alan /teslimat-kurulum'a link.
-  // Mobilde object-contain (tüm tasarım görünür), masaüstünde object-cover (dolu durur).
-  // Zemin gradyanı görselin açık zeminiyle aynı tonda → contain bantları kaynaşır.
-  const bgImage = null; // v52: şimdilik yazı-odaklı hero
+function BannerNakliye({ t }) {
+  // v52 fix: Avrupa'ya teslimat slide'ı — metin + ülke listesi (L/ulkeler tanımlı).
+  const baslik = {
+    tr: { title: 'İnegöl’den Avrupa’ya', titleEm: 'Kapınıza Teslim', cta: 'Teslimat Detayları' },
+    en: { title: 'From İnegöl to Europe', titleEm: 'Delivered to Your Door', cta: 'Delivery Details' },
+    de: { title: 'Von İnegöl nach Europa', titleEm: 'Bis vor Ihre Tür', cta: 'Lieferdetails' },
+  };
+  const L = baslik[t?.locale] || baslik.tr;
+  const ulkeler = ['Almanya', 'Fransa', 'Hollanda', 'Belçika', 'Avusturya', 'İsviçre', 'İngiltere', 'İsveç'];
+  const bgImage = null; // v52: yazı-odaklı hero
   return (
     <div className="relative block w-full h-full overflow-hidden">
       {/* v52 Möbel: yazı-odaklı hero — siyah zemin + sarı ışıma. DB görseli varsa üstüne biner. */}
@@ -212,7 +215,7 @@ function BannerNakliye() {
   );
 }
 
-const BANNER_TIPLERI = { yasam: BannerYasam, yatak: BannerYatak, nakliye: BannerNakliye, kargo: BannerKargo };
+const BANNER_TIPLERI = { yasam: BannerYasam, yatak: BannerYatak, nakliye: BannerNakliye };
 
 export default function HeroCarousel({ banners = [] }) {
   const tHero = useTranslations('Hero');
@@ -228,11 +231,11 @@ export default function HeroCarousel({ banners = [] }) {
   // DB'de geçerli banner yoksa fallback: TAM 4 banner.
   const _kaynak = gecerliBanners.length > 0
     ? gecerliBanners
-    : [{ kind: 'yasam' }, { kind: 'yatak' }, { kind: 'nakliye' }, { kind: 'kargo' }];
+    : [{ kind: 'nakliye' }, { kind: 'yasam' }, { kind: 'yatak' }];
 
   // SIRA: Nakliye → Koltuk(yasam) → Yatak → Avrupa(kargo).
   // DB'den farklı sırada gelse bile bu öncelik korunur (stabil sıralama).
-  const SIRA = { nakliye: 0, yasam: 1, yatak: 2, kargo: 3 };
+  const SIRA = { nakliye: 0, yasam: 1, yatak: 2 };
   const aktifBanners = _kaynak
     .slice()
     .sort((a, b) => (SIRA[a.kind] ?? 99) - (SIRA[b.kind] ?? 99));
