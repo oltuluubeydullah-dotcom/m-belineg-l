@@ -9,26 +9,25 @@ import Link from 'next/link';
 import {
   IconMessageCircle, IconPhone, IconMapPin,
   IconBrandWhatsapp, IconNote, IconPackage, IconSearch,
-  IconExternalLink,
+  IconExternalLink, IconX,
 } from '@tabler/icons-react';
 import Modal from '@/components/ui/Modal';
+import Sayfalama from '@/components/admin/Sayfalama';
 import { formatFiyat, formatTarih } from '@/lib/utils';
 import { ROTALAR } from '@/lib/constants';
 
-export default function TaleplerListe({ ilkTalepler }) {
-  const [talepler] = useState(ilkTalepler);
-  const [arama, setArama] = useState('');
+export default function TaleplerListe({ ilkTalepler, toplam, sayfa, sayfaBoyutu, arama }) {
   const [detay, setDetay] = useState(null);
+  const talepler = ilkTalepler;
 
-  const filtrelenmis = talepler.filter((t) => {
-    if (!arama) return true;
-    const q = arama.toLowerCase();
-    return (
-      t.customer_name?.toLowerCase().includes(q) ||
-      t.customer_phone?.includes(q) ||
-      t.customer_address?.toLowerCase().includes(q)
-    );
-  });
+  // Sayfa linki üret — aramayı korur, sayfayı değiştirir.
+  const hrefYap = (n) => {
+    const p = new URLSearchParams();
+    if (arama) p.set('q', arama);
+    if (n > 1) p.set('sayfa', String(n));
+    const qs = p.toString();
+    return qs ? `?${qs}` : '?';
+  };
 
   return (
     <>
@@ -37,36 +36,55 @@ export default function TaleplerListe({ ilkTalepler }) {
           Müşteri Talepleri
         </h1>
         <p className="text-brand-ink/60 mt-2">
-          {talepler.length} talep — WhatsApp'a gönderilen tüm siparişler
+          {arama
+            ? `"${arama}" için ${toplam} sonuç`
+            : `${toplam} talep — WhatsApp'a gönderilen tüm siparişler`}
         </p>
       </div>
 
-      {/* Arama */}
-      <div className="bg-white rounded-2xl p-4 shadow-card border border-brand-dark/5 mb-6">
-        <div className="relative">
-          <IconSearch size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-ink/40" />
-          <input
-            type="text"
-            placeholder="Ad, telefon veya adrese göre ara…"
-            value={arama}
-            onChange={(e) => setArama(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-brand-dark/15 rounded-lg
-                       focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30"
-          />
+      {/* Arama — sunucu tarafı (form GET; tüm veritabanında arar) */}
+      <form method="get" className="bg-white rounded-2xl p-4 shadow-card border border-brand-dark/5 mb-6">
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <IconSearch size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-ink/40" />
+            <input
+              type="text"
+              name="q"
+              defaultValue={arama}
+              placeholder="Ad, telefon veya adrese göre ara…"
+              className="w-full pl-10 pr-4 py-2.5 border border-brand-dark/15 rounded-lg
+                         focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30"
+            />
+          </div>
+          <button
+            type="submit"
+            className="px-5 py-2.5 bg-brand-dark text-brand-cream rounded-lg text-sm font-medium hover:bg-brand-dark/90 transition-colors"
+          >
+            Ara
+          </button>
+          {arama && (
+            <a
+              href="?"
+              className="inline-flex items-center gap-1 px-4 py-2.5 border border-brand-dark/15 text-brand-ink/70 rounded-lg text-sm hover:bg-brand-dark/5 transition-colors"
+              title="Aramayı temizle"
+            >
+              <IconX size={16} />
+            </a>
+          )}
         </div>
-      </div>
+      </form>
 
       {/* Liste */}
-      {filtrelenmis.length === 0 ? (
+      {talepler.length === 0 ? (
         <div className="bg-white rounded-2xl p-12 shadow-card border border-brand-dark/5 text-center">
           <IconMessageCircle size={48} className="mx-auto text-brand-ink/20 mb-3" />
           <p className="font-display text-xl text-brand-dark/60 mb-2">
-            {talepler.length === 0 ? 'Henüz talep yok' : 'Sonuç bulunamadı'}
+            {arama ? 'Sonuç bulunamadı' : 'Henüz talep yok'}
           </p>
           <p className="text-sm text-brand-ink/50">
-            {talepler.length === 0
-              ? 'Müşteriler sipariş formu doldurduğunda burada görünecek.'
-              : 'Farklı bir arama deneyin.'}
+            {arama
+              ? 'Farklı bir arama deneyin.'
+              : 'Müşteriler sipariş formu doldurduğunda burada görünecek.'}
           </p>
         </div>
       ) : (
@@ -84,7 +102,7 @@ export default function TaleplerListe({ ilkTalepler }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-brand-dark/5">
-                {filtrelenmis.map((t) => {
+                {talepler.map((t) => {
                   const urunSayisi = (t.cart_items || []).reduce(
                     (a, x) => a + (x.qty || 1), 0
                   );
@@ -149,6 +167,8 @@ export default function TaleplerListe({ ilkTalepler }) {
           </div>
         </div>
       )}
+
+      <Sayfalama sayfa={sayfa} toplam={toplam} sayfaBoyutu={sayfaBoyutu} hrefYap={hrefYap} />
 
       {/* Detay modal */}
       <Modal
