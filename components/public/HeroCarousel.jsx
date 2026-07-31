@@ -156,36 +156,35 @@ function BannerYatak({ banner, t }) {
   );
 }
 
-// ─── BANNER: NAKLİYE + KURULUM ─────────────────────────────
-// Kamyon görseli solda (yazısız), metin sağda RESPONSIVE HTML overlay.
-// Mobilde taşmaz, 3 dilde çalışır (eski gömülü-yazı sürümü kaldırıldı).
-function BannerNakliye() {
-  // v55: Avrupa'ya teslimat — RESPONSIVE afiş.
-  // Mobil: portre afiş (hero-avrupa-teslimat.jpg) object-cover → tam dolar (mobil zaten iyiydi).
-  // PC: geniş afiş (hero-avrupa-wide.jpg) object-cover → tam genişlik, kenarlar kırpılmaz.
-  // Tüm alan /teslimat-kurulum'a link.
-  const ALT = "Tüm Avrupa'ya adresinize teslimat — Almanya, Hollanda, İsviçre, İtalya, İngiltere, Belçika, Fransa, Danimarka";
+// ─── TAM-TASARIM TESLİMAT AFİŞİ (Avrupa / Türkiye) ─────────
+// Yazı + kamyon + bayraklar görsele gömülü tek-parça afiş. HİÇBİR YERİ KIRPILMAZ,
+// BULANIK DOLGU YOK: hero kutusunun oranı afişe eşitlendiği için (mobil kare,
+// PC 16:9) object-cover afişi tam kenardan kenara doldurur.
+//   • PC (md+):  16:9 afiş (srcPc)
+//   • Mobil (<md): kare afiş (srcMobil)
+// Tüm alan verilen bağlantıya (href) gider.
+function AfisTeslimat({ srcPc, srcMobil, alt, href }) {
   return (
     <Link
-      href="/teslimat-kurulum"
-      className="relative block w-full h-full overflow-hidden bg-[#FAF2E4]"
-      aria-label="Tüm Avrupa'ya adresinize teslimat"
+      href={href}
+      className="relative block w-full h-full overflow-hidden bg-[#F8EFD8]"
+      aria-label={alt}
     >
-      {/* Mobil: portre afiş — tam dolar */}
+      {/* Mobil: kare afiş — tam dolar */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/marka/hero-avrupa-teslimat.jpg"
-        alt={ALT}
+        src={srcMobil}
+        alt={alt}
         className="md:hidden absolute inset-0 w-full h-full object-cover object-center"
         loading="eager"
         fetchPriority="high"
         decoding="async"
       />
-      {/* PC: geniş afiş — tam genişlik */}
+      {/* PC: 16:9 afiş — tam dolar */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/marka/hero-avrupa-wide.jpg"
-        alt={ALT}
+        src={srcPc}
+        alt={alt}
         className="hidden md:block absolute inset-0 w-full h-full object-cover object-center"
         loading="eager"
         decoding="async"
@@ -194,7 +193,31 @@ function BannerNakliye() {
   );
 }
 
-const BANNER_TIPLERI = { yasam: BannerYasam, yatak: BannerYatak, nakliye: BannerNakliye };
+// Avrupa'ya teslimat afişi (1. slide)
+function BannerNakliye() {
+  return (
+    <AfisTeslimat
+      srcPc="/marka/hero-avrupa-teslimat.jpg"
+      srcMobil="/marka/hero-avrupa-mobil.jpg"
+      alt="Tüm Avrupa'ya adresinize teslimat — Almanya, Hollanda, İsviçre, İtalya, İngiltere, Belçika, Fransa, Danimarka"
+      href="/teslimat-kurulum"
+    />
+  );
+}
+
+// Türkiye'ye nakliye ve kurulum afişi (4. slide)
+function BannerKargo() {
+  return (
+    <AfisTeslimat
+      srcPc="/marka/hero-turkiye-nakliye.jpg"
+      srcMobil="/marka/hero-turkiye-mobil.jpg"
+      alt="Tüm Türkiye'ye nakliye ve kurulum imkanı — güvenli paketleme, zamanında teslimat, profesyonel taşıma, montaj desteği"
+      href="/teslimat-kurulum"
+    />
+  );
+}
+
+const BANNER_TIPLERI = { yasam: BannerYasam, yatak: BannerYatak, nakliye: BannerNakliye, kargo: BannerKargo };
 
 export default function HeroCarousel({ banners = [] }) {
   const tHero = useTranslations('Hero');
@@ -210,11 +233,11 @@ export default function HeroCarousel({ banners = [] }) {
   // DB'de geçerli banner yoksa fallback: TAM 4 banner.
   const _kaynak = gecerliBanners.length > 0
     ? gecerliBanners
-    : [{ kind: 'nakliye' }, { kind: 'yasam' }, { kind: 'yatak' }];
+    : [{ kind: 'nakliye' }, { kind: 'yasam' }, { kind: 'yatak' }, { kind: 'kargo' }];
 
-  // SIRA: Nakliye → Koltuk(yasam) → Yatak → Avrupa(kargo).
+  // SIRA: Avrupa(nakliye) → Koltuk(yasam) → Yatak → Türkiye(kargo).
   // DB'den farklı sırada gelse bile bu öncelik korunur (stabil sıralama).
-  const SIRA = { nakliye: 0, yasam: 1, yatak: 2 };
+  const SIRA = { nakliye: 0, yasam: 1, yatak: 2, kargo: 3 };
   const aktifBanners = _kaynak
     .slice()
     .sort((a, b) => (SIRA[a.kind] ?? 99) - (SIRA[b.kind] ?? 99));
@@ -247,7 +270,7 @@ export default function HeroCarousel({ banners = [] }) {
 
   return (
     <section
-      className="relative w-full h-[360px] sm:h-[400px] md:h-[460px] lg:h-[520px] overflow-hidden rounded-2xl md:rounded-3xl shadow-card"
+      className="relative w-full mx-auto max-w-[1280px] aspect-square md:aspect-video overflow-hidden rounded-2xl md:rounded-3xl shadow-card"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       aria-label="Hero"
