@@ -47,14 +47,14 @@ export default function WhatsAppSablonlariYonetim({ baslangic }) {
         </p>
       </div>
 
-      {/* Dürüstlük notu (Ajan #54): şablonlar DB'ye kaydediliyor ancak site
-          şu an yerleşik varsayılan metinleri kullanıyor. Yanıltıcı olmasın. */}
-      <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+      {/* Şablonlar artık canlıya bağlı: kaydedilen metinler sitedeki tüm
+          WhatsApp mesajlarında kullanılır (en fazla 5 dk içinde yansır). */}
+      <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
         <IconInfoCircle size={18} className="shrink-0 mt-0.5" />
         <p>
-          <strong>Bilgi:</strong> Buradaki değişiklikler kaydediliyor, ancak sitedeki WhatsApp mesajları
-          şu an <strong>yerleşik varsayılan metinleri</strong> kullanıyor. Özel şablonların canlıya
-          bağlanması bir sonraki güncellemede yapılacak. (Mevcut mesajlar zaten profesyonel ve üç dilde hazır.)
+          <strong>Aktif:</strong> Buradaki değişiklikler <strong>sitedeki WhatsApp mesajlarında canlı olarak</strong>
+          kullanılıyor (en fazla 5 dakika içinde yansır). Bir alanı boş bırakırsan o dil için
+          profesyonel varsayılan metin devreye girer.
         </p>
       </div>
 
