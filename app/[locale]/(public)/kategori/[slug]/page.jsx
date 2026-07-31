@@ -187,6 +187,7 @@ export default async function KategoriSayfasi({ params, searchParams }) {
         toplamUrun={toplam}
         sayfa={sayfa}
         sonSayfa={sonSayfa}
+        locale={params.locale || 'tr'}
       />
 
       {/* ─── ÜRÜN GRID ──────────────────────────────────── */}
@@ -220,7 +221,7 @@ export default async function KategoriSayfasi({ params, searchParams }) {
                     href={`${ROTALAR.kategori(params.slug)}?sirala=${sirala}&sayfa=${sayfa - 1}`}
                     className="px-4 py-2 text-sm border border-brand-dark/15 rounded-lg hover:bg-brand-dark/5 transition-colors"
                   >
-                    ← Önceki
+                    ← {params.locale === 'en' ? 'Previous' : params.locale === 'de' ? 'Zurück' : 'Önceki'}
                   </Link>
                 )}
                 {Array.from({ length: sonSayfa }, (_, i) => i + 1).map((s) => (
@@ -242,7 +243,7 @@ export default async function KategoriSayfasi({ params, searchParams }) {
                     href={`${ROTALAR.kategori(params.slug)}?sirala=${sirala}&sayfa=${sayfa + 1}`}
                     className="px-4 py-2 text-sm border border-brand-dark/15 rounded-lg hover:bg-brand-dark/5 transition-colors"
                   >
-                    Sonraki →
+                    {params.locale === 'en' ? 'Next' : params.locale === 'de' ? 'Weiter' : 'Sonraki'} →
                   </Link>
                 )}
               </div>

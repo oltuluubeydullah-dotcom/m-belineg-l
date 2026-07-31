@@ -1,5 +1,5 @@
 // ════════════════════════════════════════════════════════════
-// Möbel İnegöl — Mağazalarımız Sayfası
+// Möbel İnegöl — Mağazalarımız Sayfası (TR/EN/DE)
 // Haritaya tıklandığında Google Maps'te konuma gider
 // ════════════════════════════════════════════════════════════
 
@@ -11,12 +11,46 @@ import { whatsappSablonlariniGetir } from '@/lib/whatsapp-server';
 
 export const revalidate = 3600; // ISR: 3600s
 
+const CEVIRI = {
+  tr: {
+    metaTitle: 'Mağazamız | Möbel İnegöl',
+    metaDesc: 'Möbel İnegöl mağaza adresi, çalışma saatleri ve iletişim bilgileri.',
+    title1: 'Mağaza', titleEm: ' Adresimiz',
+    altBaslik: 'Bizi ziyaret edin, ürünlerimizi yakından inceleyin.',
+    mapsAria: "Google Maps'te aç", haritaGoster: 'Haritada Görüntüle',
+    haritaAlt: "Google Maps'te açmak için tıklayın", yolTarifi: 'Yol tarifi almak için tıklayın →',
+    saatler: 'Çalışma Saatleri', haftaici: 'Pazartesi — Cuma', cumartesi: 'Cumartesi', pazar: 'Pazar',
+    iletisim: 'İletişim', waCta: "WhatsApp'tan Ulaşın", appleMaps: "Apple Maps'te Aç",
+  },
+  en: {
+    metaTitle: 'Our Store | Möbel İnegöl',
+    metaDesc: 'Möbel İnegöl store address, opening hours and contact details.',
+    title1: 'Our', titleEm: ' Store',
+    altBaslik: 'Visit us and see our products up close.',
+    mapsAria: 'Open in Google Maps', haritaGoster: 'View on Map',
+    haritaAlt: 'Tap to open in Google Maps', yolTarifi: 'Tap for directions →',
+    saatler: 'Opening Hours', haftaici: 'Monday — Friday', cumartesi: 'Saturday', pazar: 'Sunday',
+    iletisim: 'Contact', waCta: 'Contact us on WhatsApp', appleMaps: 'Open in Apple Maps',
+  },
+  de: {
+    metaTitle: 'Unser Geschäft | Möbel İnegöl',
+    metaDesc: 'Möbel İnegöl Geschäftsadresse, Öffnungszeiten und Kontaktdaten.',
+    title1: 'Unser', titleEm: ' Geschäft',
+    altBaslik: 'Besuchen Sie uns und sehen Sie unsere Produkte aus der Nähe.',
+    mapsAria: 'In Google Maps öffnen', haritaGoster: 'Auf der Karte ansehen',
+    haritaAlt: 'Zum Öffnen in Google Maps tippen', yolTarifi: 'Für die Route tippen →',
+    saatler: 'Öffnungszeiten', haftaici: 'Montag — Freitag', cumartesi: 'Samstag', pazar: 'Sonntag',
+    iletisim: 'Kontakt', waCta: 'Über WhatsApp kontaktieren', appleMaps: 'In Apple Maps öffnen',
+  },
+};
+
 export async function generateMetadata({ params: { locale } }) {
+  const L = CEVIRI[locale] || CEVIRI.tr;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobelinegol.com';
   const canonicalPath = locale === 'tr' ? '/magazalarimiz' : `/${locale}/magazalarimiz`;
   return {
-    title: `Mağazamız | Möbel İnegöl`,
-    description: `Möbel İnegöl mağaza adresi, çalışma saatleri ve iletişim bilgileri.`,
+    title: L.metaTitle,
+    description: L.metaDesc,
     alternates: {
       canonical: `${siteUrl}${canonicalPath}`,
       languages: {
@@ -28,9 +62,8 @@ export async function generateMetadata({ params: { locale } }) {
   };
 }
 
-// Google Maps deep link — place ID varsa daha güvenilir
+// Google Maps kısa link — en doğru yönlendirme
 function googleMapsUrl() {
-  // Direkt kısa link — en doğru yönlendirme
   return 'https://maps.app.goo.gl/a58ock1E2WvdHkTL7?g_st=ic';
 }
 
@@ -41,6 +74,7 @@ function appleMapsUrl() {
 
 export default async function MagazalarimizSayfasi({ params: { locale } }) {
   setRequestLocale(locale);
+  const L = CEVIRI[locale] || CEVIRI.tr;
   const whatsappSablonlari = await whatsappSablonlariniGetir();
   const mapsUrl  = googleMapsUrl();
   const appleUrl = appleMapsUrl();
@@ -48,9 +82,9 @@ export default async function MagazalarimizSayfasi({ params: { locale } }) {
   return (
     <main className="container mx-auto px-4 py-12 md:py-20 max-w-4xl">
       <h1 className="font-display text-3xl md:text-5xl font-semibold text-brand-dark mb-2 tracking-tight">
-        Mağaza<span className="italic text-brand-gold"> Adresimiz</span>
+        {L.title1}<span className="italic text-brand-gold">{L.titleEm}</span>
       </h1>
-      <p className="text-brand-ink/60 mb-10">Bizi ziyaret edin, ürünlerimizi yakından inceleyin.</p>
+      <p className="text-brand-ink/60 mb-10">{L.altBaslik}</p>
 
       <div className="grid md:grid-cols-2 gap-6">
 
@@ -60,9 +94,8 @@ export default async function MagazalarimizSayfasi({ params: { locale } }) {
           target="_blank"
           rel="noopener noreferrer"
           className="group block bg-white rounded-3xl border border-brand-dark/8 shadow-card hover:shadow-card-h overflow-hidden transition-all"
-          aria-label="Google Maps'te aç"
+          aria-label={L.mapsAria}
         >
-          {/* Harita placeholder — Google Maps embed veya statik görsel */}
           <div className="h-56 bg-gradient-to-br from-brand-cream to-[#e8e0d4] flex items-center justify-center relative overflow-hidden">
             <div className="absolute inset-0 opacity-10"
               style={{
@@ -73,8 +106,8 @@ export default async function MagazalarimizSayfasi({ params: { locale } }) {
               <div className="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-110 transition-transform">
                 <IconMapPin size={32} className="text-white" />
               </div>
-              <p className="font-semibold text-brand-dark text-sm">Haritada Görüntüle</p>
-              <p className="text-xs text-brand-ink/50 mt-1">Google Maps'te açmak için tıklayın</p>
+              <p className="font-semibold text-brand-dark text-sm">{L.haritaGoster}</p>
+              <p className="text-xs text-brand-ink/50 mt-1">{L.haritaAlt}</p>
             </div>
           </div>
 
@@ -83,7 +116,7 @@ export default async function MagazalarimizSayfasi({ params: { locale } }) {
               <IconMapPin size={18} className="text-brand-gold mt-0.5 shrink-0" />
               <div>
                 <p className="font-medium text-brand-dark text-sm">{ISLETME.adresTam}</p>
-                <p className="text-xs text-brand-ink/50 mt-1">Yol tarifi almak için tıklayın →</p>
+                <p className="text-xs text-brand-ink/50 mt-1">{L.yolTarifi}</p>
               </div>
             </div>
           </div>
@@ -95,19 +128,19 @@ export default async function MagazalarimizSayfasi({ params: { locale } }) {
           <div className="bg-white rounded-2xl p-5 border border-brand-dark/8 shadow-card">
             <div className="flex items-center gap-2 mb-3">
               <IconClock size={18} className="text-brand-gold" />
-              <h2 className="font-semibold text-brand-dark">Çalışma Saatleri</h2>
+              <h2 className="font-semibold text-brand-dark">{L.saatler}</h2>
             </div>
             <div className="space-y-1.5 text-sm text-brand-ink/70">
               <div className="flex justify-between">
-                <span>Pazartesi — Cuma</span>
+                <span>{L.haftaici}</span>
                 <span className="font-medium">09:00 – 19:00</span>
               </div>
               <div className="flex justify-between">
-                <span>Cumartesi</span>
+                <span>{L.cumartesi}</span>
                 <span className="font-medium">09:00 – 19:00</span>
               </div>
               <div className="flex justify-between">
-                <span>Pazar</span>
+                <span>{L.pazar}</span>
                 <span className="font-medium">10:00 – 18:00</span>
               </div>
             </div>
@@ -115,7 +148,7 @@ export default async function MagazalarimizSayfasi({ params: { locale } }) {
 
           {/* İletişim */}
           <div className="bg-white rounded-2xl p-5 border border-brand-dark/8 shadow-card">
-            <h2 className="font-semibold text-brand-dark mb-3">İletişim</h2>
+            <h2 className="font-semibold text-brand-dark mb-3">{L.iletisim}</h2>
             <div className="space-y-3">
               <a href={SOSYAL_MEDYA.whatsapp} target="_blank" rel="noopener noreferrer"
                  className="flex items-center gap-3 text-sm text-brand-ink/70 hover:text-green-600 transition-colors">
@@ -138,7 +171,7 @@ export default async function MagazalarimizSayfasi({ params: { locale } }) {
             className="flex items-center justify-center gap-2 w-full py-3.5 bg-green-500 hover:bg-green-600 text-white rounded-2xl font-semibold transition-colors"
           >
             <IconBrandWhatsapp size={20} />
-            WhatsApp'tan Ulaşın
+            {L.waCta}
           </a>
 
           {/* Apple Maps butonu (mobil iOS için) */}
@@ -149,7 +182,7 @@ export default async function MagazalarimizSayfasi({ params: { locale } }) {
             className="flex items-center justify-center gap-2 w-full py-3 border border-brand-dark/20 text-brand-dark rounded-2xl text-sm hover:bg-brand-cream transition-colors"
           >
             <IconMapPin size={16} />
-            Apple Maps'te Aç
+            {L.appleMaps}
           </a>
         </div>
       </div>
