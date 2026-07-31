@@ -7,6 +7,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { IconMapPin, IconMail, IconClock, IconBrandWhatsapp } from '@tabler/icons-react';
 import { ISLETME, SOSYAL_MEDYA } from '@/lib/constants';
 import { genelDestekLinki } from '@/lib/whatsapp';
+import { whatsappSablonlariniGetir } from '@/lib/whatsapp-server';
 
 export const revalidate = 3600; // ISR: 3600s
 
@@ -40,6 +41,7 @@ function appleMapsUrl() {
 
 export default async function MagazalarimizSayfasi({ params: { locale } }) {
   setRequestLocale(locale);
+  const whatsappSablonlari = await whatsappSablonlariniGetir();
   const mapsUrl  = googleMapsUrl();
   const appleUrl = appleMapsUrl();
 
@@ -130,7 +132,7 @@ export default async function MagazalarimizSayfasi({ params: { locale } }) {
 
           {/* WhatsApp CTA */}
           <a
-            href={genelDestekLinki()}
+            href={genelDestekLinki(locale, whatsappSablonlari)}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full py-3.5 bg-green-500 hover:bg-green-600 text-white rounded-2xl font-semibold transition-colors"

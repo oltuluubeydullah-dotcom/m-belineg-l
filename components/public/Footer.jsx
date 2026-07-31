@@ -13,11 +13,12 @@ import {
 import { ISLETME, SOSYAL_MEDYA } from '@/lib/constants';
 import { genelDestekLinki } from '@/lib/whatsapp';
 
-export default function Footer() {
+export default function Footer({ sablonlar }) {
   const t = useTranslations('Footer');
   const tNav = useTranslations('Nav');
   const locale = useLocale();
   const yil = new Date().getFullYear();
+  const destekLinki = genelDestekLinki(locale, sablonlar);
 
   return (
     <footer className="bg-white text-brand-ink mt-16 border-t border-brand-dark/10">
@@ -68,7 +69,7 @@ export default function Footer() {
                 </a>
               )}
               <a
-                href={genelDestekLinki()}
+                href={destekLinki}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
@@ -129,7 +130,7 @@ export default function Footer() {
                 <span>+90 536 040 01 08</span>
               </a>
               <a
-                href={genelDestekLinki()}
+                href={destekLinki}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 text-sm text-brand-ink/70 hover:text-green-600 transition-colors"
@@ -147,7 +148,7 @@ export default function Footer() {
             </div>
 
             <a
-              href={genelDestekLinki()}
+              href={destekLinki}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-full text-sm font-semibold transition-colors"

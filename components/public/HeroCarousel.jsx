@@ -13,7 +13,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import {
   IconChevronLeft, IconChevronRight, IconPhone, IconArrowRight,
 } from '@tabler/icons-react';
-import { genelDestekLinki } from '@/lib/whatsapp';
+import { useWhatsapp } from '@/context/WhatsAppContext';
 import { Link } from '@/lib/i18n/navigation';
 
 // (BannerTeklif ve BannerAvrupa kaldırıldı — Hero artık 4 slide: yasam, yatak, nakliye, kargo)
@@ -21,6 +21,7 @@ import { Link } from '@/lib/i18n/navigation';
 // ─── BANNER: YAŞAM ALANI ───────────────────────────────────
 // Sıcak aile/oturma odası görseli — koltuk koleksiyonuna yönlendirir.
 function BannerYasam({ banner, t }) {
+  const { genelDestekLinki } = useWhatsapp();
   const bgImage = gorselSrc(banner?.bg_image_url) || '/marka/hero-koltuk.jpg'; // v55: koltuk takımı görseli (DB görseli varsa üstüne biner)
   const baslik = {
     tr: { title: 'Koltuk Takımı Modellerimiz', titleEm: 'Avantajlı Fiyatlarla', body: 'Modern, köşe ve klasik koltuk takımlarında geniş seçenek — konfor ve şıklık bir arada.', cta: 'Koleksiyonu Keşfet' },
@@ -90,6 +91,7 @@ function BannerYasam({ banner, t }) {
 // ─── BANNER: YATAK ODASI ───────────────────────────────────
 // Şık yatak odası görseli — yatak odası koleksiyonuna yönlendirir.
 function BannerYatak({ banner, t }) {
+  const { genelDestekLinki } = useWhatsapp();
   const bgImage = gorselSrc(banner?.bg_image_url) || '/marka/hero-yatak.jpg'; // v55: yatak odası görseli (DB görseli varsa üstüne biner)
   const baslik = {
     tr: { title: 'Yatak Odası Takımlarımız', titleEm: 'Avantajlı Fiyatlarla', body: 'Şık tasarım ve üstün konforu buluşturan yatak odası takımlarımızı keşfedin.', cta: 'Koleksiyonu Keşfet' },

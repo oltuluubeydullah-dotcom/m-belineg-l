@@ -8,6 +8,7 @@ import { setRequestLocale } from 'next-intl/server';
 import PageHero from '@/components/public/PageHero';
 import { getContentPage, markdownToHtml } from '@/lib/cms';
 import { genelDestekLinki } from '@/lib/whatsapp';
+import { whatsappSablonlariniGetir } from '@/lib/whatsapp-server';
 import {
   IconTruckDelivery, IconWorld, IconShieldCheck, IconTools, IconPhone, IconArrowRight,
 } from '@tabler/icons-react';
@@ -34,6 +35,7 @@ export default async function Sayfa({ params: { locale } }) {
   setRequestLocale(locale);
   const sayfa = await getContentPage('teslimat-kurulum', locale);
   if (!sayfa) return notFound();
+  const whatsappSablonlari = await whatsappSablonlariniGetir();
 
   const html = markdownToHtml(sayfa.content);
   // CMS içeriği anlamlı uzunluktaysa göster (kısa placeholder'ları gizle)
@@ -135,7 +137,7 @@ export default async function Sayfa({ params: { locale } }) {
             {M.ctaBaslik}
           </h3>
           <a
-            href={genelDestekLinki(locale)}
+            href={genelDestekLinki(locale, whatsappSablonlari)}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-7 py-4 bg-[#25D366] hover:bg-[#1fb855] text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:scale-105 transition-all duration-300"

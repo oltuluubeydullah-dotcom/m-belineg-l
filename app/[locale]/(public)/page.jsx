@@ -20,6 +20,7 @@ import { KATEGORILER } from '@/lib/constants';
 import { kategoriSirala } from '@/lib/kategoriGorsel';
 import { gorselSrc } from '@/lib/gorsel';
 import { genelDestekLinki } from '@/lib/whatsapp';
+import { whatsappSablonlariniGetir } from '@/lib/whatsapp-server';
 
 /**
  * Kategori kapak görseli — admin seçimi öncelikli.
@@ -74,6 +75,7 @@ export default async function AnaSayfa({ params: { locale } }) {
   setRequestLocale(locale);
   const t = await getTranslations('Home');
   const tKat = await getTranslations('KategoriTanitim');
+  const whatsappSablonlari = await whatsappSablonlariniGetir();
   const supabase = createPublicClient();
 
   // PERFORMANCE FIX: Sıralı await → paralel Promise.all (4 sorgu aynı anda)
@@ -277,7 +279,7 @@ export default async function AnaSayfa({ params: { locale } }) {
               {t('empty_title')} <span className="italic text-brand-gold">{t('empty_title_em')}</span>
             </p>
             <p className="text-brand-ink/60 max-w-xl mx-auto px-4 mb-7">{t('empty_text')}</p>
-            <a href={genelDestekLinki()} target="_blank" rel="noopener noreferrer"
+            <a href={genelDestekLinki(locale, whatsappSablonlari)} target="_blank" rel="noopener noreferrer"
                className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-full font-semibold transition-colors">
               <IconBrandWhatsapp size={20} />
               {t('whatsapp_write')}

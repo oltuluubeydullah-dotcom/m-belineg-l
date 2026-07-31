@@ -23,7 +23,7 @@ import Button from '@/components/ui/Button';
 import { Input, Textarea } from '@/components/ui/Input';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
-import { siparisMesajiOlustur } from '@/lib/whatsapp';
+import { useWhatsapp } from '@/context/WhatsAppContext';
 import { olayGonder } from '@/lib/pazarlama';
 import { checkoutDogrula } from '@/lib/validators';
 import { formatFiyat } from '@/lib/utils';
@@ -35,6 +35,7 @@ export default function CheckoutFormu() {
   const t = useTranslations('Checkout');
   const tCart = useTranslations('Cart');
   const locale = useLocale();
+  const { siparisMesajiOlustur } = useWhatsapp();
   const formRef = useRef(null); // BUG fix: doğru formu submit etmek için
 
   const [veri, setVeri] = useState({

@@ -11,6 +11,7 @@ import {
 import PageHero from '@/components/public/PageHero';
 import { ISLETME, SOSYAL_MEDYA } from '@/lib/constants';
 import { genelDestekLinki } from '@/lib/whatsapp';
+import { whatsappSablonlariniGetir } from '@/lib/whatsapp-server';
 
 export const metadata = {
   title: 'İletişim',
@@ -20,7 +21,8 @@ export const metadata = {
 const TAM_ADRES = "İnegöl / Bursa";
 const MAPS_SORGU = encodeURIComponent("Möbel İnegöl İnegöl Bursa");
 
-export default function IletisimSayfasi() {
+export default async function IletisimSayfasi({ params: { locale } }) {
+  const whatsappSablonlari = await whatsappSablonlariniGetir();
   return (
     <>
       <PageHero
@@ -35,7 +37,7 @@ export default function IletisimSayfasi() {
           <div className="space-y-4">
             {/* WhatsApp */}
             <a
-              href={genelDestekLinki()}
+              href={genelDestekLinki(locale, whatsappSablonlari)}
               target="_blank"
               rel="noopener noreferrer"
               className="block bg-white rounded-2xl shadow-card border border-brand-dark/5 p-6 hover:border-green-500/30 transition-colors group"

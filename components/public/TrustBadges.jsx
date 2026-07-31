@@ -1,7 +1,7 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
-import { genelDestekLinki } from '@/lib/whatsapp';
+import { useTranslations, useLocale } from 'next-intl';
+import { useWhatsapp } from '@/context/WhatsAppContext';
 
 // Nakit indirim (%) ve Taksit (kart) rozetleri SVG; Garanti + WhatsApp rozetleri görsel.
 const NakitIcon = (
@@ -24,10 +24,12 @@ const TaksitIcon = (
 
 export default function TrustBadges() {
   const t = useTranslations('Trust');
+  const locale = useLocale();
+  const { genelDestekLinki } = useWhatsapp();
 
   const BADGES = [
     { key: 'garanti',  type: 'img', src: '/marka/trust-garanti.png' },
-    { key: 'whatsapp', type: 'img', src: '/marka/trust-whatsapp.png', href: genelDestekLinki() },
+    { key: 'whatsapp', type: 'img', src: '/marka/trust-whatsapp.png', href: genelDestekLinki(locale) },
     { key: 'nakit',    type: 'svg', icon: NakitIcon },
     { key: 'taksit',   type: 'svg', icon: TaksitIcon },
   ];

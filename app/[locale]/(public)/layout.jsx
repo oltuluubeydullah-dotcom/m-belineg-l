@@ -11,6 +11,8 @@ import Footer from '@/components/public/Footer';
 import WhatsAppButton from '@/components/public/WhatsAppButton';
 import CookieConsent from '@/components/public/CookieConsent';
 import LicenseGate from '@/components/ubivo/LicenseGate';
+import { WhatsAppProvider } from '@/context/WhatsAppContext';
+import { whatsappSablonlariniGetir } from '@/lib/whatsapp-server';
 import { createPublicClient } from '@/lib/supabase/public';
 import { KATEGORILER as KAT_FALLBACK } from '@/lib/constants';
 
@@ -40,13 +42,18 @@ export default async function PublicLayout({ children }) {
     kategoriler = KAT_FALLBACK;
   }
 
+  // WhatsApp şablonları (admin'de düzenlenebilir) — request başına tek sorgu (cache'li).
+  const whatsappSablonlari = await whatsappSablonlariniGetir();
+
   return (
     <LicenseGate>
-      <Header kategoriler={kategoriler} />
-      <main className="min-h-[60vh]">{children}</main>
-      <Footer />
-      <WhatsAppButton />
-      <CookieConsent />
+      <WhatsAppProvider sablonlar={whatsappSablonlari}>
+        <Header kategoriler={kategoriler} />
+        <main className="min-h-[60vh]">{children}</main>
+        <Footer sablonlar={whatsappSablonlari} />
+        <WhatsAppButton />
+        <CookieConsent />
+      </WhatsAppProvider>
     </LicenseGate>
   );
 }

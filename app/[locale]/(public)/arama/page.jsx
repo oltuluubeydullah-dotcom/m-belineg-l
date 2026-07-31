@@ -5,6 +5,7 @@ import ProductCard from '@/components/public/ProductCard';
 import PageHero from '@/components/public/PageHero';
 import { createPublicClient } from '@/lib/supabase/public';
 import { genelDestekLinki } from '@/lib/whatsapp';
+import { whatsappSablonlariniGetir } from '@/lib/whatsapp-server';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,7 @@ export async function generateMetadata({ params: { locale } }) {
 export default async function AramaSayfasi({ params: { locale }, searchParams }) {
   setRequestLocale(locale);
   const t = await getTranslations('Search');
+  const whatsappSablonlari = await whatsappSablonlariniGetir();
   const q = (searchParams?.q || '').trim();
   const supabase = createPublicClient();
 
@@ -99,7 +101,7 @@ export default async function AramaSayfasi({ params: { locale }, searchParams })
                 <IconHome size={18} />
                 {t('go_home')}
               </Link>
-              <a href={genelDestekLinki(locale)} target="_blank" rel="noopener noreferrer"
+              <a href={genelDestekLinki(locale, whatsappSablonlari)} target="_blank" rel="noopener noreferrer"
                  className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-full font-semibold transition-colors">
                 <IconBrandWhatsapp size={18} />
                 {t('ask_whatsapp')}

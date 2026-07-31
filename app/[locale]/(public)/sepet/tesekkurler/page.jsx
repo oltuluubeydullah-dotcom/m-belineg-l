@@ -4,6 +4,7 @@ import { setRequestLocale, getTranslations } from 'next-intl/server';
 import { Link } from '@/lib/i18n/navigation';
 import { IconCircleCheck, IconBrandWhatsapp, IconHome } from '@tabler/icons-react';
 import { genelDestekLinki } from '@/lib/whatsapp';
+import { whatsappSablonlariniGetir } from '@/lib/whatsapp-server';
 
 export async function generateMetadata({ params: { locale } }) {
   const t = await getTranslations({ locale, namespace: 'Checkout' });
@@ -13,6 +14,7 @@ export async function generateMetadata({ params: { locale } }) {
 export default async function TesekkurlerSayfasi({ params: { locale } }) {
   setRequestLocale(locale);
   const t = await getTranslations('Checkout');
+  const whatsappSablonlari = await whatsappSablonlariniGetir();
 
   return (
     <section className="container mx-auto py-16 md:py-24">
@@ -49,7 +51,7 @@ export default async function TesekkurlerSayfasi({ params: { locale } }) {
             <IconHome size={18} />
             {locale === 'tr' ? 'Anasayfa' : locale === 'en' ? 'Home' : 'Startseite'}
           </Link>
-          <a href={genelDestekLinki(locale)} target="_blank" rel="noopener noreferrer"
+          <a href={genelDestekLinki(locale, whatsappSablonlari)} target="_blank" rel="noopener noreferrer"
              className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-full font-semibold transition-colors">
             <IconBrandWhatsapp size={18} />
             WhatsApp

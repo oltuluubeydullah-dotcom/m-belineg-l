@@ -7,13 +7,16 @@
 
 'use client';
 
+import { useLocale } from 'next-intl';
 import { IconBrandWhatsapp, IconLock } from '@tabler/icons-react';
-import { genelDestekLinki } from '@/lib/whatsapp';
+import { useWhatsapp } from '@/context/WhatsAppContext';
 import { olayGonder } from '@/lib/pazarlama';
 import { useKisitlama } from '@/components/ubivo/LicenseContext';
 
 export default function WhatsAppButton() {
   const { kisitli } = useKisitlama();
+  const locale = useLocale();
+  const { genelDestekLinki } = useWhatsapp();
 
   if (kisitli) {
     return (
@@ -38,7 +41,7 @@ export default function WhatsAppButton() {
   return (
     <a
       onClick={() => olayGonder('whatsapp_tiklama', { pixel: 'Lead', pixelVeri: { content_name: 'genel_destek' } })}
-      href={genelDestekLinki()}
+      href={genelDestekLinki(locale)}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="WhatsApp'tan iletişime geç"

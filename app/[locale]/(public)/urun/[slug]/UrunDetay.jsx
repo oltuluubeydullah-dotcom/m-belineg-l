@@ -23,10 +23,11 @@ import Button from '@/components/ui/Button';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
 import { formatFiyat, cn } from '@/lib/utils';
-import { urunIcinSorMesaji } from '@/lib/whatsapp';
+import { useWhatsapp } from '@/context/WhatsAppContext';
 import { olayGonder } from '@/lib/pazarlama';
 
 export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, reviewSayi }) {
+  const { urunIcinSorMesaji } = useWhatsapp();
   // v51 PAZARLAMA: ürün görüntüleme → reklam platformlarına ViewContent
   useEffect(() => {
     if (!urun?.id) return;
@@ -206,7 +207,7 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
       return urunIcinSorMesaji({ name: ad + ekstra, slug: urun.slug, translations: urun.translations }, locale);
     }
     return urunIcinSorMesaji({ name: ad, slug: urun.slug, translations: urun.translations }, locale);
-  }, [parcaMod, parts, adetler, ad, urun, locale]);
+  }, [parcaMod, parts, adetler, ad, urun, locale, urunIcinSorMesaji]);
 
   return (
     <>
