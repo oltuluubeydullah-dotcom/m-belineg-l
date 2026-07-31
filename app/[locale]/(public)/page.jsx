@@ -207,6 +207,15 @@ export default async function AnaSayfa({ params: { locale } }) {
 
   return (
     <>
+      {/* SSR h1 — hero afiş slaytı görsel olduğu için sayfa başında görünür başlık
+          yoktu (SEO + ekran okuyucu · Agent #03). sr-only: görünmez ama okunur. */}
+      <h1 className="sr-only">
+        {locale === 'en'
+          ? 'Möbel İnegöl — İnegöl Furniture · Sofas, Bedroom Sets, Corner Sofas · Delivery across Türkiye and Europe'
+          : locale === 'de'
+            ? 'Möbel İnegöl — İnegöl Möbel · Sofas, Schlafzimmer, Ecksofas · Lieferung in die Türkei und nach Europa'
+            : 'Möbel İnegöl — İnegöl Mobilyası · Koltuk Takımı, Yatak Odası, Köşe Koltuk · Tüm Türkiye ve Avrupa\'ya Teslimat'}
+      </h1>
       <div className="container mx-auto pt-4 md:pt-6">
         <HeroCarousel banners={banners} />
       </div>

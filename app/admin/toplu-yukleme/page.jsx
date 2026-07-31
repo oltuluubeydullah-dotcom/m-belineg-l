@@ -279,17 +279,27 @@ Resimler 1.jpg, 2.jpg... olarak sırayla yüklenir.`}
       )}
 
       {/* ─── RAPOR ────────────────────────────────────────────── */}
-      {rapor && (
+      {rapor && (() => {
+        const hataSayisi = rapor.hatalar?.length || 0;
+        const taslakSayisi = rapor.urunler?.taslak || 0;
+        const uyariVar = hataSayisi > 0 || taslakSayisi > 0;
+        return (
         <div className="bg-white rounded-2xl shadow-card border border-brand-dark/5 p-6 md:p-8">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-full bg-green-100 text-green-700 flex items-center justify-center">
-              <IconCheck size={28} strokeWidth={2.5} />
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${uyariVar ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
+              {uyariVar ? <IconAlertTriangle size={26} /> : <IconCheck size={28} strokeWidth={2.5} />}
             </div>
             <div>
               <h2 className="font-display text-xl font-semibold text-brand-dark">
-                Yükleme Tamamlandı
+                {uyariVar
+                  ? `Tamamlandı — ${hataSayisi > 0 ? `${hataSayisi} uyarı` : ''}${hataSayisi > 0 && taslakSayisi > 0 ? ', ' : ''}${taslakSayisi > 0 ? `${taslakSayisi} taslak ürün` : ''}`
+                  : 'Yükleme Tamamlandı'}
               </h2>
-              <p className="text-sm text-brand-ink/60">İşte rapor:</p>
+              <p className="text-sm text-brand-ink/60">
+                {taslakSayisi > 0
+                  ? 'Görseli yüklenemeyen ürünler TASLAK (pasif) kaydedildi — Ürünler sayfasından görsel ekleyip yayına alın.'
+                  : 'İşte rapor:'}
+              </p>
             </div>
           </div>
 
@@ -345,7 +355,8 @@ Resimler 1.jpg, 2.jpg... olarak sırayla yüklenir.`}
             Yeni Yükleme
           </Button>
         </div>
-      )}
+        );
+      })()}
     </>
   );
 }

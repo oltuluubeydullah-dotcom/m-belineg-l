@@ -1,9 +1,11 @@
 // ════════════════════════════════════════════════════════════
-// HeroCarousel v4 — i18n + DB-backed banners
+// HeroCarousel — i18n + DB-backed banners
 // ════════════════════════════════════════════════════════════
-// 3 banner tipi: simdi (gece + havai fişek), teklif (üçgen),
-// avrupa (mavi + harita). Metinler DB'den + i18n fallback'le gelir.
-// Server'dan banners prop'u alır.
+// 6 slide (sırayla): nakliye (Avrupa afişi), ozelolcu (Özel Ölçü köşe koltuk),
+// yasam (koltuk), yatak (yatak odası), degerkat (Yaşam Alanınıza Değer Katın),
+// kargo (Türkiye afişi). Fotoğraf-odaklı slaytlar TR/EN/DE inline lokalize;
+// afiş slaytları (nakliye/kargo) tam-tasarım görsel + lokalize alt.
+// Server'dan banners prop'u alır; geçerli DB banner yoksa 6 slide fallback.
 // ════════════════════════════════════════════════════════════
 'use client';
 
@@ -16,7 +18,7 @@ import {
 import { useWhatsapp } from '@/context/WhatsAppContext';
 import { Link } from '@/lib/i18n/navigation';
 
-// (BannerTeklif ve BannerAvrupa kaldırıldı — Hero artık 4 slide: yasam, yatak, nakliye, kargo)
+// (Hero 6 slide: nakliye · ozelolcu · yasam · yatak · degerkat · kargo)
 
 // ─── BANNER: YAŞAM ALANI ───────────────────────────────────
 // Sıcak aile/oturma odası görseli — koltuk koleksiyonuna yönlendirir.
@@ -259,50 +261,55 @@ function AfisTeslimat({ srcPc, srcMobil, alt, href }) {
     <Link
       href={href}
       className="relative block w-full h-full overflow-hidden bg-[#F8EFD8]"
-      aria-label={alt}
     >
-      {/* Mobil: kare afiş — tam dolar */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={srcMobil}
-        alt={alt}
-        className="md:hidden absolute inset-0 w-full h-full object-cover object-center"
-        loading="eager"
-        fetchPriority="high"
-        decoding="async"
-      />
-      {/* PC: 16:9 afiş — tam dolar */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={srcPc}
-        alt={alt}
-        className="hidden md:block absolute inset-0 w-full h-full object-cover object-center"
-        loading="eager"
-        decoding="async"
-      />
+      {/* Tek <picture>: tarayıcı viewport'a göre TEK görsel indirir (çift indirme
+          yok — Agent #24/#03). Mobil (<md) kare afiş, PC (md+) 16:9 afiş.
+          alt link'in erişilebilir adını verir (ayrı aria-label yok → çift duyuru yok). */}
+      <picture>
+        <source media="(min-width: 768px)" srcSet={srcPc} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={srcMobil}
+          alt={alt}
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
+      </picture>
     </Link>
   );
 }
 
 // Avrupa'ya teslimat afişi (1. slide)
-function BannerNakliye() {
+function BannerNakliye({ t }) {
+  const alt = {
+    tr: "Tüm Avrupa'ya adresinize teslimat — Almanya, Hollanda, İsviçre, İtalya, İngiltere, Belçika, Fransa, Danimarka",
+    en: 'Delivery to your address across Europe — Germany, Netherlands, Switzerland, Italy, UK, Belgium, France, Denmark',
+    de: 'Lieferung an Ihre Adresse in ganz Europa — Deutschland, Niederlande, Schweiz, Italien, Großbritannien, Belgien, Frankreich, Dänemark',
+  };
   return (
     <AfisTeslimat
       srcPc="/marka/hero-avrupa-teslimat.jpg"
       srcMobil="/marka/hero-avrupa-mobil.jpg"
-      alt="Tüm Avrupa'ya adresinize teslimat — Almanya, Hollanda, İsviçre, İtalya, İngiltere, Belçika, Fransa, Danimarka"
+      alt={alt[t?.locale] || alt.tr}
       href="/teslimat-kurulum"
     />
   );
 }
 
-// Türkiye'ye nakliye ve kurulum afişi (4. slide)
-function BannerKargo() {
+// Türkiye'ye nakliye ve kurulum afişi
+function BannerKargo({ t }) {
+  const alt = {
+    tr: "Tüm Türkiye'ye nakliye ve kurulum imkanı — güvenli paketleme, zamanında teslimat, profesyonel taşıma, montaj desteği",
+    en: 'Delivery and assembly across Türkiye — safe packaging, on-time delivery, professional transport, assembly support',
+    de: 'Lieferung und Montage in der ganzen Türkei — sichere Verpackung, pünktliche Lieferung, professioneller Transport, Montage-Support',
+  };
   return (
     <AfisTeslimat
       srcPc="/marka/hero-turkiye-nakliye.jpg"
       srcMobil="/marka/hero-turkiye-mobil.jpg"
-      alt="Tüm Türkiye'ye nakliye ve kurulum imkanı — güvenli paketleme, zamanında teslimat, profesyonel taşıma, montaj desteği"
+      alt={alt[t?.locale] || alt.tr}
       href="/teslimat-kurulum"
     />
   );

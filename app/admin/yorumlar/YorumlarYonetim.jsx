@@ -10,6 +10,7 @@ import { revalidatePaths, tumSiteRevalidatePaths } from '@/lib/revalidate';
 export default function YorumlarYonetim({ baslangic, sayimlar, filtre, sayfa, sayfaBoyutu, toplam }) {
   const [yorumlar, setYorumlar] = useState(baslangic);
   const [sayim, setSayim] = useState(sayimlar); // sekme sayıları — aksiyonlarda güncellenir
+  const [toplamState, setToplamState] = useState(toplam); // aktif filtre toplamı (sayfalama) — aksiyonlarda güncellenir
   const { goster } = useToast();
   const supabase = createClient();
 
@@ -39,6 +40,7 @@ export default function YorumlarYonetim({ baslangic, sayimlar, filtre, sayfa, sa
         setYorumlar((p) => p.map((y) => (y.id === id ? { ...y, is_hidden: !mevcut } : y)));
       } else {
         setYorumlar((p) => p.filter((y) => y.id !== id));
+        setToplamState((n) => Math.max(0, n - 1)); // filtreden çıktı → sayfalama toplamı düşsün
       }
       goster(mevcut ? 'Yorum yayınlandı' : 'Yorum gizlendi', 'basari');
       revalidatePaths(tumSiteRevalidatePaths()).catch(() => {});
@@ -66,6 +68,7 @@ export default function YorumlarYonetim({ baslangic, sayimlar, filtre, sayfa, sa
       const { error } = await supabase.from('reviews').delete().eq('id', id);
       if (error) throw error;
       setYorumlar((p) => p.filter((y) => y.id !== id));
+      setToplamState((n) => Math.max(0, n - 1)); // silinen satır görünen filtredeydi → toplam düşsün
       setSayim((s) => ({
         all: Math.max(0, s.all - 1),
         hidden: Math.max(0, s.hidden - (silinen?.is_hidden ? 1 : 0)),
@@ -172,7 +175,7 @@ export default function YorumlarYonetim({ baslangic, sayimlar, filtre, sayfa, sa
         </ul>
       )}
 
-      <Sayfalama sayfa={sayfa} toplam={toplam} sayfaBoyutu={sayfaBoyutu} hrefYap={hrefYap} />
+      <Sayfalama sayfa={sayfa} toplam={toplamState} sayfaBoyutu={sayfaBoyutu} hrefYap={hrefYap} />
     </>
   );
 }

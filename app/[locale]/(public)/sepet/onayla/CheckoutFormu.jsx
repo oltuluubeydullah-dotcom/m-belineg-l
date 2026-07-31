@@ -37,6 +37,7 @@ export default function CheckoutFormu() {
   const locale = useLocale();
   const { siparisMesajiOlustur } = useWhatsapp();
   const formRef = useRef(null); // BUG fix: doğru formu submit etmek için
+  const gonderildiRef = useRef(false); // başarı sonrası boş-sepet redirect'i engelle (Agent #15 P2-5)
 
   const [veri, setVeri] = useState({
     ad: '',
@@ -48,9 +49,10 @@ export default function CheckoutFormu() {
   const [hatalar, setHatalar] = useState({});
   const [yukleniyor, setYukleniyor] = useState(false);
 
-  // Sepet boşsa otomatik anasayfaya
+  // Sepet boşsa otomatik sepete. Başarılı sipariş sonrası temizle() sepeti
+  // boşaltınca bu guard teşekkür yönlendirmesinin üstüne binmesin (gonderildiRef).
   useEffect(() => {
-    if (sepet.length === 0 && !yukleniyor) {
+    if (sepet.length === 0 && !yukleniyor && !gonderildiRef.current) {
       router.replace(locale === 'tr' ? '/sepet' : `/${locale}/sepet`);
     }
   }, [sepet.length, yukleniyor, router, locale]);
@@ -186,6 +188,7 @@ export default function CheckoutFormu() {
       olayGonder('whatsapp_tiklama', { locale, pixel: 'Lead', pixelVeri: { content_name: 'siparis_whatsapp' } });
               window.open(waLink, '_blank', 'noopener,noreferrer');
 
+      gonderildiRef.current = true;
       temizle();
       router.push(`${locale === 'tr' ? '' : '/' + locale}/sepet/tesekkurler?id=${json.inquiry_id || ''}`);
     } catch (err) {
@@ -197,6 +200,7 @@ export default function CheckoutFormu() {
       });
       olayGonder('whatsapp_tiklama', { locale, pixel: 'Lead', pixelVeri: { content_name: 'siparis_whatsapp' } });
               window.open(waLink, '_blank', 'noopener,noreferrer');
+      gonderildiRef.current = true;
       temizle();
       router.push(`${locale === 'tr' ? '' : '/' + locale}/sepet/tesekkurler`);
     } finally {

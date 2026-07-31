@@ -29,6 +29,9 @@ export default async function YorumlarSayfa({ searchParams }) {
     supabase.from('reviews').select('id', { count: 'exact', head: true }),
     supabase.from('reviews').select('id', { count: 'exact', head: true }).eq('is_hidden', true),
   ]);
+  // DB hatasını "0 yorum" gibi gösterme — hata ekranına düş (Agent #54).
+  if (tumuRes.error) throw tumuRes.error;
+  if (gizliRes.error) throw gizliRes.error;
   const toplamAll = tumuRes.count || 0;
   const toplamHidden = gizliRes.count || 0;
   const toplamShown = Math.max(0, toplamAll - toplamHidden);
@@ -40,7 +43,8 @@ export default async function YorumlarSayfa({ searchParams }) {
     .order('created_at', { ascending: false });
   if (filtre === 'shown') q = q.eq('is_hidden', false);
   else if (filtre === 'hidden') q = q.eq('is_hidden', true);
-  const { data } = await q.range(from, to);
+  const { data, error } = await q.range(from, to);
+  if (error) throw error;
 
   const toplamFiltre = filtre === 'hidden' ? toplamHidden : filtre === 'shown' ? toplamShown : toplamAll;
 

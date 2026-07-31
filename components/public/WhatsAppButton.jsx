@@ -17,11 +17,16 @@ export default function WhatsAppButton() {
   const { kisitli } = useKisitlama();
   const locale = useLocale();
   const { genelDestekLinki } = useWhatsapp();
+  const M = {
+    tr: { ac: "WhatsApp'tan iletişime geç", kapali: 'WhatsApp geçici olarak kullanılamıyor', durak: 'Servis duraklatıldı', ipucu: 'Yardıma ihtiyacınız var mı?' },
+    en: { ac: 'Contact us on WhatsApp', kapali: 'WhatsApp is temporarily unavailable', durak: 'Service paused', ipucu: 'Need help?' },
+    de: { ac: 'Kontaktieren Sie uns über WhatsApp', kapali: 'WhatsApp ist vorübergehend nicht verfügbar', durak: 'Dienst pausiert', ipucu: 'Brauchen Sie Hilfe?' },
+  }[locale] || {};
 
   if (kisitli) {
     return (
       <div
-        aria-label="WhatsApp geçici olarak kullanılamıyor"
+        aria-label={M.kapali}
         className="
           fixed bottom-6 right-6 z-50
           flex items-center justify-center
@@ -31,7 +36,7 @@ export default function WhatsAppButton() {
           opacity-70
           group
         "
-        title="Servis duraklatıldı"
+        title={M.durak}
       >
         <IconLock size={24} stroke={1.8} />
       </div>
@@ -44,7 +49,7 @@ export default function WhatsAppButton() {
       href={genelDestekLinki(locale)}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="WhatsApp'tan iletişime geç"
+      aria-label={M.ac}
       className="
         fixed bottom-6 right-6 z-50
         flex items-center justify-center
@@ -70,7 +75,7 @@ export default function WhatsAppButton() {
         pointer-events-none
         hidden md:block
       ">
-        Yardıma ihtiyacınız var mı?
+        {M.ipucu}
       </span>
 
       {/* Pulse efekti (dikkat çekmek için) */}

@@ -29,13 +29,15 @@ ON CONFLICT (id) DO UPDATE SET
     'application/octet-stream'
   ];
 
--- Sadece admin (authenticated) yükler/okur/siler. İşleme service-role ile
--- yapıldığı için RLS'i bypass eder; bu policy client'ın yüklemesi içindir.
+-- Sadece ALLOWLIST admin (is_admin_email) yükler/okur/siler. İşleme service-role
+-- ile yapıldığı için RLS'i bypass eder; bu policy client'ın yüklemesi içindir.
+-- NOT: 'authenticated' değil is_admin_email() — allowlist dışı bir kayıtlı
+-- kullanıcı (signup açıksa) bu bucket'a erişemesin (Agent #07 P2).
 DROP POLICY IF EXISTS "mobel_arsiv_admin_all" ON storage.objects;
 CREATE POLICY "mobel_arsiv_admin_all" ON storage.objects
   FOR ALL
-  USING (bucket_id = 'mobel-arsiv' AND auth.role() = 'authenticated')
-  WITH CHECK (bucket_id = 'mobel-arsiv' AND auth.role() = 'authenticated');
+  USING (bucket_id = 'mobel-arsiv' AND public.is_admin_email())
+  WITH CHECK (bucket_id = 'mobel-arsiv' AND public.is_admin_email());
 
 -- Doğrula:
 -- SELECT id, public, file_size_limit FROM storage.buckets WHERE id = 'mobel-arsiv';

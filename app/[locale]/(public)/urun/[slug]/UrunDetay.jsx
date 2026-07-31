@@ -199,8 +199,9 @@ export default function UrunDetay({ urun, urunAd, urunDesc, locale, reviewOrt, r
       const seciliParcalar = parts
         .map((p, i) => ({ ...p, adet: adetler[i] || 0 }))
         .filter(p => p.adet > 0);
+      const parcaBaslik = { tr: 'Seçtiğim parçalar:', en: 'Selected parts:', de: 'Ausgewählte Teile:' }[locale] || 'Seçtiğim parçalar:';
       const ekstra = seciliParcalar.length > 0
-        ? '\n\nSeçtiğim parçalar:\n' + seciliParcalar.map(p =>
+        ? `\n\n${parcaBaslik}\n` + seciliParcalar.map(p =>
             `• ${p.ad} × ${p.adet}${p.fiyat ? ` — ${formatFiyat(Number(p.fiyat) * p.adet)}` : ''}`
           ).join('\n')
         : '';

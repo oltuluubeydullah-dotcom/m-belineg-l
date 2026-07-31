@@ -30,6 +30,11 @@ const ARSIV_BUCKET = 'mobel-arsiv';
 const MEDYA_BUCKET = 'mobel-medya';
 const CHUNK = 5; // her çağrıda işlenecek ürün sayısı (görsel yüklemesi yavaş)
 const RESIM_UZANTI = /\.(jpe?g|png|webp)$/i;
+// Güvenlik sınırları (Agent #07 zip-bomb + kaynak tüketimi):
+const MAX_URUN = 1000;                        // arşiv başına toplam ürün tavanı
+const MAX_URUN_GORSEL = 15;                   // ürün başına işlenecek görsel tavanı
+const MAX_TEK_GORSEL = 12 * 1024 * 1024;      // tek görsel decompressed tavanı (12 MB)
+const MAX_CHUNK_BYTE = 120 * 1024 * 1024;     // bir chunk'ta açılacak toplam byte tavanı
 
 function uzantiCoz(ad) {
   const m = ad.match(/\.([a-z0-9]+)$/i);
@@ -139,6 +144,12 @@ export async function POST(request) {
       { status: 400 },
     );
   }
+  if (toplam > MAX_URUN) {
+    return NextResponse.json(
+      { ok: false, error: `Arşivde çok fazla ürün (${toplam}). Tavan ${MAX_URUN}. Arşivi bölün.` },
+      { status: 413 },
+    );
+  }
 
   // ── 3) Bu chunk'ı işle ──
   const dilim = urunListesi.slice(offset, offset + CHUNK);
@@ -173,6 +184,7 @@ export async function POST(request) {
     return yeni.id;
   }
 
+  let chunkByte = 0; // bu chunk'ta açılan toplam decompressed byte (zip-bomb koruması)
   for (const u of dilim) {
     try {
       const urunSlug = slugify(u.urunAd);
@@ -185,10 +197,21 @@ export async function POST(request) {
 
       const kategori_id = await kategoriId(u.kategoriAd);
 
+      // Ürün başına en fazla MAX_URUN_GORSEL görsel işle.
+      const secilenResimler = u.resimler.slice(0, MAX_URUN_GORSEL);
       const urls = [];
-      for (const r of u.resimler) {
+      for (const r of secilenResimler) {
+        if (chunkByte >= MAX_CHUNK_BYTE) {
+          rapor.hatalar.push(`${u.urunAd}: bu turda boyut tavanı aşıldı, kalan görseller sonraki denemede`);
+          break;
+        }
         try {
           const buf = await r.entry.async('nodebuffer');
+          if (buf.length > MAX_TEK_GORSEL) {
+            rapor.hatalar.push(`${u.urunAd} / ${r.name}: görsel çok büyük (${Math.round(buf.length / 1048576)}MB), atlandı`);
+            continue;
+          }
+          chunkByte += buf.length;
           const uz = uzantiCoz(r.name);
           const url = await gorselYukle(service, buf, uz, contentTypeCoz(uz));
           urls.push(url);
@@ -198,16 +221,22 @@ export async function POST(request) {
         }
       }
 
+      // Görselsiz ürünü CANLIYA çıkarma → TASLAK (is_active:false). Admin görsel
+      // ekleyip yayına alır; böylece görsel yükleme hatası sessizce yayına sızmaz.
+      const aktif = urls.length > 0;
       const { error: urunErr } = await service.from('products').insert([{
         name: u.urunAd,
         slug: urunSlug,
         category_id: kategori_id,
         images: urls,
-        is_active: true,
+        is_active: aktif,
       }]);
       if (urunErr) throw urunErr;
       rapor.urunler.eklenen++;
-      rapor.detay.push(`+ Ürün: ${u.urunAd} (${urls.length} görsel)`);
+      if (!aktif) rapor.urunler.taslak = (rapor.urunler.taslak || 0) + 1;
+      rapor.detay.push(aktif
+        ? `+ Ürün: ${u.urunAd} (${urls.length} görsel)`
+        : `+ Ürün (TASLAK — görsel yüklenemedi): ${u.urunAd}`);
     } catch (e) {
       rapor.hatalar.push(`${u.urunAd}: ${e?.message || 'işlenemedi'}`);
     }
