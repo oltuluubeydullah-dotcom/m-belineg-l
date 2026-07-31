@@ -158,6 +158,95 @@ function BannerYatak({ banner, t }) {
   );
 }
 
+// ─── BANNER: ÖZEL ÖLÇÜ KÖŞE KOLTUK ─────────────────────────
+// Köşe koltuk fotoğrafı + marka metni (Poppins, altın/siyah). Verilen mint
+// tasarım firma renk/fontuna uyarlandı. Köşe koltuk kategorisine yönlendirir.
+function BannerOzelOlcu({ banner, t }) {
+  const bgImage = gorselSrc(banner?.bg_image_url) || '/marka/hero-ozel-olcu.jpg';
+  const baslik = {
+    tr: { kicker: 'Odanızın ölçüleri ürünlerimizden farklıysa', title: 'Özel Ölçü', titleEm: 'Köşe Koltuklar', body: 'Köşe koltuğunuzu odanıza tam oturan ölçülerde, size özel ürettiriyoruz.', cta: 'Şimdi İncele' },
+    en: { kicker: 'If your room’s size differs from our products', title: 'Custom Size', titleEm: 'Corner Sofas', body: 'We craft your corner sofa in the exact dimensions that fit your room.', cta: 'Explore Now' },
+    de: { kicker: 'Wenn die Maße Ihres Raums abweichen', title: 'Sondermaß', titleEm: 'Ecksofas', body: 'Wir fertigen Ihr Ecksofa in den exakten Maßen, die zu Ihrem Raum passen.', cta: 'Jetzt entdecken' },
+  };
+  const L = baslik[t.locale] || baslik.tr;
+
+  return (
+    <div className="relative w-full h-full overflow-hidden">
+      <div className="absolute inset-0 bg-brand-navy" aria-hidden="true" />
+      {bgImage && (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={bgImage} alt="" className="absolute inset-0 w-full h-full object-cover object-center" loading="eager" fetchPriority="high" decoding="async" />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(20,18,15,0.80) 0%, rgba(20,18,15,0.48) 45%, rgba(20,18,15,0.10) 80%)' }} aria-hidden="true" />
+        </>
+      )}
+      <div className="relative z-10 h-full flex items-center">
+        <div className="container mx-auto px-6 md:px-10">
+          <div className="max-w-lg text-center md:text-left">
+            <p className="text-xs sm:text-sm md:text-base font-sans font-bold text-brand-gold mb-2 md:mb-3 tracking-wide drop-shadow-md uppercase">
+              {L.kicker}
+            </p>
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-semibold text-white mb-3 md:mb-5 leading-tight drop-shadow-lg">
+              {L.title} <span className="italic text-brand-gold font-bold">{L.titleEm}</span>
+            </h1>
+            <p className="hidden sm:block text-sm md:text-lg text-white/90 mb-5 md:mb-6 max-w-md mx-auto md:mx-0 leading-relaxed drop-shadow">
+              {L.body}
+            </p>
+            <Link
+              href="/kategori/kose-koltuk"
+              className="inline-flex items-center gap-2 px-6 md:px-8 py-3 md:py-4 bg-brand-teal hover:bg-brand-teal2 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:scale-105 transition-all duration-300"
+            >
+              {L.cta}
+              <IconArrowRight size={18} />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── BANNER: YAŞAM ALANINIZA DEĞER KATIN ───────────────────
+// Koyu yaşam alanı fotoğrafı + marka slogan + 4 değer rozeti (Poppins/altın).
+// Verilen tasarım firma renk/fontuna uyarlandı.
+function BannerDegerKat({ t }) {
+  const icerik = {
+    tr: { title: 'Yaşam Alanınıza', titleEm: 'Değer Katın', ozellikler: ['Ödeme Kolaylığı', 'Yurt Dışı Gönderim', 'Mağazayı Ziyaret Edin', 'Kişiye Özel Paketler'] },
+    en: { title: 'Add Value to', titleEm: 'Your Living Space', ozellikler: ['Easy Payment', 'International Shipping', 'Visit Our Store', 'Tailored Packages'] },
+    de: { title: 'Werten Sie Ihren', titleEm: 'Wohnraum auf', ozellikler: ['Einfache Zahlung', 'Auslandsversand', 'Besuchen Sie uns', 'Individuelle Pakete'] },
+  };
+  const L = icerik[t.locale] || icerik.tr;
+
+  return (
+    <div className="relative w-full h-full overflow-hidden">
+      <div className="absolute inset-0 bg-brand-navy" aria-hidden="true" />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/marka/hero-deger-kat.jpg" alt="" className="absolute inset-0 w-full h-full object-cover object-center opacity-70" loading="eager" fetchPriority="high" decoding="async" />
+      <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/70 via-brand-navy/55 to-brand-navy/85" aria-hidden="true" />
+      <div className="absolute -right-24 -top-24 w-72 h-72 md:w-[26rem] md:h-[26rem] rounded-full bg-brand-gold/15 blur-3xl" aria-hidden="true" />
+
+      <div className="relative z-10 h-full flex flex-col items-center justify-center px-5 text-center">
+        <h1 className="font-display text-2xl sm:text-4xl md:text-5xl font-semibold text-white leading-tight drop-shadow-lg">
+          {L.title}
+        </h1>
+        <p className="font-display italic text-2xl sm:text-4xl md:text-5xl font-bold text-brand-gold mb-5 md:mb-8 drop-shadow-lg">
+          {L.titleEm}
+        </p>
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 w-full max-w-xl">
+          {L.ozellikler.map((o) => (
+            <div
+              key={o}
+              className="rounded-full border border-brand-gold/40 bg-white/10 backdrop-blur-sm px-3 py-2 sm:px-5 sm:py-3 text-xs sm:text-sm md:text-base font-semibold text-white shadow-sm"
+            >
+              {o}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── TAM-TASARIM TESLİMAT AFİŞİ (Avrupa / Türkiye) ─────────
 // Yazı + kamyon + bayraklar görsele gömülü tek-parça afiş. HİÇBİR YERİ KIRPILMAZ,
 // BULANIK DOLGU YOK: hero kutusunun oranı afişe eşitlendiği için (mobil kare,
@@ -219,7 +308,7 @@ function BannerKargo() {
   );
 }
 
-const BANNER_TIPLERI = { yasam: BannerYasam, yatak: BannerYatak, nakliye: BannerNakliye, kargo: BannerKargo };
+const BANNER_TIPLERI = { yasam: BannerYasam, yatak: BannerYatak, nakliye: BannerNakliye, kargo: BannerKargo, ozelolcu: BannerOzelOlcu, degerkat: BannerDegerKat };
 
 export default function HeroCarousel({ banners = [] }) {
   const tHero = useTranslations('Hero');
@@ -232,14 +321,14 @@ export default function HeroCarousel({ banners = [] }) {
   // yol açmasın diye filtrelenir. Geçerli banner yoksa kod fallback'i devreye girer.
   const gecerliBanners = (banners || []).filter((b) => BANNER_TIPLERI[b.kind]);
 
-  // DB'de geçerli banner yoksa fallback: TAM 4 banner.
+  // DB'de geçerli banner yoksa fallback: TAM 6 banner.
   const _kaynak = gecerliBanners.length > 0
     ? gecerliBanners
-    : [{ kind: 'nakliye' }, { kind: 'yasam' }, { kind: 'yatak' }, { kind: 'kargo' }];
+    : [{ kind: 'nakliye' }, { kind: 'ozelolcu' }, { kind: 'yasam' }, { kind: 'yatak' }, { kind: 'degerkat' }, { kind: 'kargo' }];
 
-  // SIRA: Avrupa(nakliye) → Koltuk(yasam) → Yatak → Türkiye(kargo).
+  // SIRA: Avrupa → Özel Ölçü → Koltuk → Yatak → Değer Kat → Türkiye.
   // DB'den farklı sırada gelse bile bu öncelik korunur (stabil sıralama).
-  const SIRA = { nakliye: 0, yasam: 1, yatak: 2, kargo: 3 };
+  const SIRA = { nakliye: 0, ozelolcu: 1, yasam: 2, yatak: 3, degerkat: 4, kargo: 5 };
   const aktifBanners = _kaynak
     .slice()
     .sort((a, b) => (SIRA[a.kind] ?? 99) - (SIRA[b.kind] ?? 99));
