@@ -30,8 +30,8 @@ export default function TopluYuklemePage() {
   const dosyaSec = (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
-    if (!/\.(zip|rar)$/i.test(f.name)) {
-      setHata('Sadece .zip veya .rar dosyası kabul edilir');
+    if (!/\.zip$/i.test(f.name)) {
+      setHata('Sadece .zip dosyası kabul edilir (.rar desteklenmiyor).');
       return;
     }
     if (f.size > MAX_BOYUT) {
@@ -67,7 +67,7 @@ export default function TopluYuklemePage() {
       if (upErr) {
         // Bucket yoksa veya yetkisizse
         if (upErr.message?.includes('Bucket') || upErr.message?.includes('not found')) {
-          throw new Error('Arşiv bucket kurulu değil — sql/06-arsiv-bucket.sql\'i Supabase SQL Editor\'da çalıştırın.');
+          throw new Error('Arşiv bucket kurulu değil — sql/21-mobel-arsiv-bucket.sql\'i Supabase SQL Editor\'da çalıştırın.');
         }
         // Supabase Free plan boyut limit hatası
         if (upErr.message?.includes('exceeded') || upErr.message?.includes('maximum')) {
@@ -78,30 +78,67 @@ export default function TopluYuklemePage() {
 
       setYuklemeYuzde(100);
 
-      // ─── 2) API'yi tetikle — sadece path gönder ────────────────────
+      // ─── 2) API'yi CHUNK'lı tetikle — büyük arşivde 504 olmasın ────
+      // offset ile bitene (done) kadar döngüyle çağır, raporu biriktir.
       setAsama('Arşiv işleniyor, ürünler ekleniyor…');
-      const res = await fetch('/api/admin/toplu-yukleme', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path, filename: dosya.name }),
-      });
+      const toplu = {
+        kategoriler: { eklenen: 0 },
+        urunler: { eklenen: 0, atlanan: 0 },
+        resimler: { yuklenen: 0 },
+        detay: [],
+        hatalar: [],
+      };
+      let offset = 0;
+      let toplam = 0;
+      let hataOldu = false;
 
-      // Yanıt JSON değilse (örn. 413, 504, plain text)
-      let data;
-      const ct = res.headers.get('content-type') || '';
-      if (ct.includes('application/json')) {
-        data = await res.json();
-      } else {
-        const txt = await res.text();
-        throw new Error(`Sunucu yanıtı (${res.status}): ${txt.slice(0, 200)}`);
+      // Güvenlik tavanı: sonsuz döngü olmasın (ürün başına 1 tur yeterli).
+      for (let tur = 0; tur < 5000; tur++) {
+        const res = await fetch('/api/admin/toplu-yukleme', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path, filename: dosya.name, offset }),
+        });
+
+        // Yanıt JSON değilse (örn. 413, 504, plain text)
+        let data;
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          data = await res.json();
+        } else {
+          const txt = await res.text();
+          throw new Error(`Sunucu yanıtı (${res.status}): ${txt.slice(0, 200)}`);
+        }
+
+        if (!res.ok || !data.ok) {
+          setHata(data.error || 'İşleme başarısız');
+          hataOldu = true;
+          break;
+        }
+
+        toplam = data.toplam || toplam;
+        toplu.kategoriler.eklenen += data.kategoriler?.eklenen || 0;
+        toplu.urunler.eklenen += data.urunler?.eklenen || 0;
+        toplu.urunler.atlanan += data.urunler?.atlanan || 0;
+        toplu.resimler.yuklenen += data.resimler?.yuklenen || 0;
+        if (Array.isArray(data.detay)) toplu.detay.push(...data.detay);
+        if (Array.isArray(data.hatalar)) toplu.hatalar.push(...data.hatalar);
+
+        const yeniOffset = data.sonrakiOffset ?? offset;
+        setAsama(`Ürünler işleniyor… ${Math.min(yeniOffset, toplam)}/${toplam}`);
+        if (toplam) setYuklemeYuzde(Math.round((Math.min(yeniOffset, toplam) / toplam) * 100));
+
+        // İlerleme yoksa (takılma) sonsuz döngüyü kes.
+        if (yeniOffset <= offset && !data.done) {
+          toplu.hatalar.push('İşleme ilerlemedi — durduruldu.');
+          break;
+        }
+        offset = yeniOffset;
+        if (data.done) break;
       }
 
-      if (!res.ok || !data.ok) {
-        setHata(data.error || 'İşleme başarısız');
-        if (data.detay || data.hatalar) setRapor(data);
-      } else {
-        setRapor(data);
-      }
+      if (!hataOldu) setRapor(toplu);
+      else if (toplu.detay.length || toplu.hatalar.length) setRapor(toplu);
     } catch (e) {
       setHata('Hata: ' + (e?.message || 'bilinmeyen'));
     } finally {
@@ -171,7 +208,7 @@ Resimler 1.jpg, 2.jpg... olarak sırayla yüklenir.`}
                 Arşiv dosyasını seçin
               </h2>
               <p className="text-sm text-brand-ink/60 mb-2">
-                Yukarıdaki yapıda hazırlanmış <strong>.zip</strong> veya <strong>.rar</strong> dosyasını yükleyin
+                Yukarıdaki yapıda hazırlanmış <strong>.zip</strong> dosyasını yükleyin
               </p>
               <p className="text-xs text-brand-ink/40 mb-6">
                 Maksimum dosya boyutu: <strong>{MAX_BOYUT_LABEL}</strong> (Supabase Free plan). Daha büyük için parçalara böl.
@@ -179,7 +216,7 @@ Resimler 1.jpg, 2.jpg... olarak sırayla yüklenir.`}
               <input
                 ref={fileRef}
                 type="file"
-                accept=".zip,.rar,application/zip,application/x-rar-compressed,application/vnd.rar"
+                accept=".zip,application/zip"
                 onChange={dosyaSec}
                 className="hidden"
                 id="zip-upload"
