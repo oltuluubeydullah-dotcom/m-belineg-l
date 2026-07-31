@@ -9,8 +9,10 @@ import { IconLock, IconEye, IconEyeOff, IconCheck } from '@tabler/icons-react';
 
 export default function SifreDegistir() {
   const supabase = getSupabaseClient();
+  const [mevcutSifre, setMevcutSifre] = useState('');
   const [yeniSifre, setYeniSifre]     = useState('');
   const [tekrar, setTekrar]           = useState('');
+  const [goster0, setGoster0]         = useState(false);
   const [goster1, setGoster1]         = useState(false);
   const [goster2, setGoster2]         = useState(false);
   const [yukleniyor, setYukleniyor]   = useState(false);
@@ -20,20 +22,40 @@ export default function SifreDegistir() {
     e.preventDefault();
     setMesaj(null);
 
-    if (yeniSifre.length < 8) {
-      setMesaj({ tip: 'hata', text: 'Şifre en az 8 karakter olmalı.' });
+    if (yeniSifre.length < 12) {
+      setMesaj({ tip: 'hata', text: 'Şifre en az 12 karakter olmalı.' });
       return;
     }
     if (yeniSifre !== tekrar) {
       setMesaj({ tip: 'hata', text: 'Şifreler eşleşmiyor.' });
       return;
     }
+    if (!mevcutSifre) {
+      setMesaj({ tip: 'hata', text: 'Mevcut şifrenizi girin.' });
+      return;
+    }
 
     setYukleniyor(true);
     try {
+      // GÜVENLİK (v58 · Ajan #07): şifre değiştirmeden ÖNCE mevcut şifreyle
+      // yeniden doğrula. Aksi halde ele geçirilen/açık kalan bir oturum
+      // sahibin şifresini sessizce değiştirebilir (CLAUDE.md'deki mobil
+      // cookie sorunu bu riski artırıyor).
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user?.email) throw new Error('Oturum bulunamadı, tekrar giriş yapın.');
+      const { error: reauthErr } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: mevcutSifre,
+      });
+      if (reauthErr) {
+        setMesaj({ tip: 'hata', text: 'Mevcut şifre yanlış.' });
+        setYukleniyor(false);
+        return;
+      }
       const { error } = await supabase.auth.updateUser({ password: yeniSifre });
       if (error) throw error;
       setMesaj({ tip: 'ok', text: 'Şifre başarıyla güncellendi.' });
+      setMevcutSifre('');
       setYeniSifre('');
       setTekrar('');
     } catch (err) {
@@ -51,6 +73,26 @@ export default function SifreDegistir() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 max-w-sm">
+        {/* Mevcut şifre — reauth için zorunlu */}
+        <div>
+          <label className="block text-sm font-medium text-brand-dark mb-1.5">Mevcut Şifre</label>
+          <div className="relative">
+            <input
+              type={goster0 ? 'text' : 'password'}
+              value={mevcutSifre}
+              onChange={e => setMevcutSifre(e.target.value)}
+              placeholder="Şu anki şifreniz"
+              autoComplete="current-password"
+              required
+              className="w-full border border-brand-subtle rounded-xl px-4 py-2.5 pr-11 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal/40"
+            />
+            <button type="button" onClick={() => setGoster0(g => !g)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-muted hover:text-brand-dark">
+              {goster0 ? <IconEyeOff size={18}/> : <IconEye size={18}/>}
+            </button>
+          </div>
+        </div>
+
         {/* Yeni şifre */}
         <div>
           <label className="block text-sm font-medium text-brand-dark mb-1.5">Yeni Şifre</label>
@@ -59,7 +101,7 @@ export default function SifreDegistir() {
               type={goster1 ? 'text' : 'password'}
               value={yeniSifre}
               onChange={e => setYeniSifre(e.target.value)}
-              placeholder="En az 8 karakter"
+              placeholder="En az 12 karakter"
               autoComplete="new-password"
               required
               className="w-full border border-brand-subtle rounded-xl px-4 py-2.5 pr-11 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal/40"

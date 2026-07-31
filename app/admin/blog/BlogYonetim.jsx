@@ -34,8 +34,19 @@ export default function BlogYonetim({ ilkYazilar }) {
     setFormAcik(true);
   }
 
-  function duzenleAc(yazi) {
-    setDuzenlenen(yazi);
+  async function duzenleAc(yazi) {
+    // Liste hafif kolonlarla geliyor (content/translations yok) — düzenleme
+    // için tam satırı id ile çek, sonra formu aç.
+    try {
+      const { data } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .eq('id', yazi.id)
+        .maybeSingle();
+      setDuzenlenen(data || yazi);
+    } catch {
+      setDuzenlenen(yazi);
+    }
     setFormAcik(true);
   }
 

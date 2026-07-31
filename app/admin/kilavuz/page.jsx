@@ -1,8 +1,8 @@
 // ════════════════════════════════════════════════════════════
 // Admin Kullanım Kılavuzu — Detaylı Türkçe rehber
 // ════════════════════════════════════════════════════════════
-
-export const dynamic = 'force-dynamic';
+// PERF (Ajan #24): Bu sayfa %100 statik (veri çekmez). force-dynamic
+// gereksizdi — kaldırıldı; admin layout auth'u zaten üstte koruyor.
 
 import {
   IconBook, IconPackage, IconCategory, IconCloudUpload,

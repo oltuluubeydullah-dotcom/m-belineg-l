@@ -20,16 +20,20 @@ export default async function KategorilerSayfasi() {
     .select('*')
     .order('sort_order', { ascending: true });
 
-  // Her kategorideki ürün sayısı
-  const { data: urunSayilari } = await supabase
-    .from('products')
-    .select('category_id', { count: 'exact' });
-
-  // Map oluştur: { kategori_id: count }
+  // Her kategorideki ürün sayısı.
+  // PERF (Ajan #05): eskiden TÜM ürünlerin category_id'si çekilip JS'te
+  // sayılıyordu (katalog büyüdükçe yavaşlar). Artık kategori başına
+  // head:true count — satır taşınmaz, hepsi paralel.
   const sayim = {};
-  (urunSayilari || []).forEach((u) => {
-    sayim[u.category_id] = (sayim[u.category_id] || 0) + 1;
-  });
+  const kats = kategoriler || [];
+  const sayimlar = await Promise.all(
+    kats.map((k) =>
+      supabase.from('products').select('id', { count: 'exact', head: true }).eq('category_id', k.id)
+        .then((r) => ({ id: k.id, count: r.count || 0 }))
+        .catch(() => ({ id: k.id, count: 0 }))
+    )
+  );
+  sayimlar.forEach(({ id, count }) => { sayim[id] = count; });
 
   return (
     <KategorilerYonetim

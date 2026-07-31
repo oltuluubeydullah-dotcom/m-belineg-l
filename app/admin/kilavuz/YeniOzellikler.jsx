@@ -1,8 +1,8 @@
 // ════════════════════════════════════════════════════════════
 // Möbel İnegöl — Yeni Özellikler Kullanım Kılavuzu
 // ════════════════════════════════════════════════════════════
-
-'use client';
+// PERF (Ajan #24): Salt sunum, hook/etkileşim yok — 'use client'
+// kaldırıldı; artık client bundle'a gönderilmiyor (server component).
 
 import {
   IconChartBar, IconHeart,

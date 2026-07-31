@@ -92,12 +92,32 @@ Logo repoya **PNG olarak** entegre edildi ve her alanda kullanılıyor.
 1. **Supabase:** ✅ Canlı, migration'lar uygulandı, RLS her tabloda aktif.
    ⚠️ **GÜVENLİK (v57 · Agent #07 H-1):** `sql/06-security-rls.sql` güncellendi — `inquiries_insert_public` anon INSERT açığını kapatan DROP eklendi. **Bu satır canlı Supabase'de de MUTLAKA çalıştırılmalı** (SQL Editor):
    `DROP POLICY IF EXISTS "inquiries_insert_public" ON public.inquiries;` → doğrula: `SELECT policyname,cmd FROM pg_policies WHERE tablename='inquiries';` (INSERT policy KALMAMALI).
+   ⚠️ **PERF (v58 · Agent #24 admin denetimi):** `sql/20-mobel-admin-dashboard-perf.sql` eklendi — dashboard için `admin_top_paths`/`admin_daily_views` RPC'leri (JS'te satır toplama → SQL agregasyon) + `admin_stats` view'ına `ortalama_yorum` kolonu + `idx_reviews_visible_recent`. **Canlı Supabase'de MUTLAKA çalıştırılmalı** (SQL Editor, idempotent). Çalıştırılana kadar dashboard'un "günlük ziyaret grafiği" ve "en çok ziyaret edilen sayfalar" bölümleri BOŞ görünür (kod graceful degrade eder, hata vermez), yorum ortalaması 0 gösterir.
 2. **Vercel:** ✅ Bağlı, `main → production` otomatik deploy. `ADMIN_EMAILS` env set.
 3. **Cloudflare R2:** 🔄 Kuruluyor — bucket `mobel-medya`, production görsel CDN'i `cdn.mobelinegol.com` (custom domain). Vercel env: `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET=mobel-medya`, `NEXT_PUBLIC_R2_PUBLIC_URL=https://cdn.mobelinegol.com` → girilip Redeploy. Beşi eksikse görseller Supabase Storage'a düşer.
 4. **Domain (`mobelinegol.com`):** 🔄 DNS Cloudflare'a taşınıyor (nameserver: `kayleigh.ns.cloudflare.com` + `nitin.ns.cloudflare.com`; registrar Hostinger/Güzelnet'te NS değişecek). Cloudflare DNS: `@`+`www` → Vercel (A `76.76.21.21` / CNAME `cname.vercel-dns.com`, **proxy KAPALI**), `cdn` → R2 (proxy açık). Vercel → Domains'e `mobelinegol.com` eklenecek (SSL otomatik).
    ⚠️ **Bilinen sorun:** `*.vercel.app` ortak domaininde **mobil admin girişi** (Safari ITP cookie kısıtı) çalışmıyor — kendi domain canlıya geçince düzelmesi bekleniyor.
 
 Env değişkenleri: `.env.example` → `.env.local` kopyala ve doldur. `.env*` **asla commit edilmez**.
+
+### 5.1 Admin Paneli Denetimi (v58 · 4 paralel ajan · Layer 2/3/5)
+
+Tüm admin bölümleri "eksiksiz + çok hızlı" için baştan sona tarandı. **Uygulanan düzeltmeler:**
+- **Dashboard:** 7 sıralı sorgu → tek `Promise.all` (paralel); ham `page_views` satır toplama → SQL RPC; çift reviews sorgusu kaldırıldı (ortalama artık `admin_stats`'tan); kullanılmayan `images` kolonu atıldı; hardcoded `aktif_kategori: 9` → gerçek sayım; fallback tetiği düzeltildi.
+- **Pazarlama (KRİTİK):** `pazarlama_kampanya_ozeti` view'ı `authenticated`'dan REVOKE'lu olduğu için panel **hep boş** dönüyordu → server-side **service-role** ile okunuyor. `loading.jsx` eklendi.
+- **Ürünler:** sil/toggle/toplu işlem sonrası **public revalidate** eklendi (silinen ürün cache'te kalıyordu); `next/image` thumbnail (tam-boy indirme yok); `useMemo` filtre; kategori-join tazeleme; çift-tık koruması; arama-hata toast'u.
+- **Blog:** liste `select('*')` → hafif kolonlar (tüm makale gövdeleri çekilmiyordu); düzenlemede tam satır id ile yeniden çekilir.
+- **Kategoriler:** tüm ürünleri çekip JS'te sayma → kategori başına paralel `head:true count`.
+- **Sayfalar:** kaydet sonrası revalidate YOKTU → yasal sayfalar (KVKK/hakkımızda) 1 saate kadar bayat kalıyordu; `icerikSayfaRevalidatePaths` eklendi.
+- **Güvenlik (Ajan #07):** Şifre değiştirme artık **mevcut şifreyle reauth** ister (ele geçirilen oturum sessizce şifre değiştiremez) + min 12 karakter.
+- **Hero:** Yayında/Gizli pill'i artık **anında DB'ye yazar** (eskiden Kaydet'e basılmadan kayboluyordu); per-row loading.
+- **Kılavuz/YeniOzellikler:** gereksiz `force-dynamic` + `'use client'` kaldırıldı (client bundle küçüldü).
+- **WhatsApp Şablonları:** per-row loading + **dürüstlük notu** (aşağıdaki ertelenen işe bkz).
+
+**Ertelenen / bir sonraki oturum işi:**
+- **WhatsApp şablonları canlıya bağlama:** admin DB'ye kaydediyor ama `lib/whatsapp.js` yerleşik varsayılan metinleri kullanıyor (15+ client çağrı noktası → riskli refactor). Doğru çözüm: templates'i public layout'ta server-side çekip bir context ile builder'lara geçirmek. Şimdilik admin'de dürüstlük banner'ı var.
+- **Talepler & Yorumlar sayfalama:** `select('*').limit(200)` sabit tavan + JS'te sekme sayımları (>200 satırda sessiz veri kaybı + yanlış sayım). Yeni mağaza için sorun değil; büyüyünce server-side pagination + SQL count gerekli.
+- **Ürün silince R2 görsel temizliği** (yetim görseller kalıyor) · **settings tekil-satır upsert** (teorik çift-satır) · **toplu-yükleme chunk'lama** (büyük ZIP'te 504 riski).
 
 ---
 

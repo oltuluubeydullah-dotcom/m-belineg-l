@@ -7,7 +7,8 @@
 'use client';
 import { revalidatePaths, urunRevalidatePaths } from '@/lib/revalidate';
 
-import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import {
   IconPlus, IconEdit, IconTrash, IconStar, IconStarFilled,
   IconEye, IconEyeOff, IconSearch, IconPackage,
@@ -41,6 +42,9 @@ export default function UrunlerYonetim({ ilkUrunler, toplamSayi = 0, sayfaBoyu =
   const [silOnay, setSilOnay] = useState(null);
   const [silYukleniyor, setSilYukleniyor] = useState(false);
 
+  // Hızlı toggle'da uçan istekleri izle (çift tık yarışını önle)
+  const [toggleBekleyen, setToggleBekleyen] = useState(new Set());
+
   // ─── Bulk seçim ───
   const [seciliIds, setSeciliIds] = useState(new Set());
   const [topluYukleniyor, setTopluYukleniyor] = useState(false);
@@ -50,15 +54,29 @@ export default function UrunlerYonetim({ ilkUrunler, toplamSayi = 0, sayfaBoyu =
 
   const hepsiYuklu = urunler.length >= toplam;
 
-  // Lokal filtre (yüklü liste üzerinde)
-  const lokalFiltre = urunler.filter((u) => {
+  // Lokal filtre (yüklü liste üzerinde) — PERF: her render/tuş vuruşunda
+  // yeniden hesaplama yok, sadece bağımlılık değişince (useMemo).
+  const lokalFiltre = useMemo(() => urunler.filter((u) => {
     if (seciliKategori !== 'hepsi' && u.category_id !== seciliKategori) return false;
     if (arama && !(u.name || '').toLowerCase().includes(arama.toLowerCase())) return false;
     return true;
-  });
+  }), [urunler, seciliKategori, arama]);
 
   // Sunucu sonucu varsa onu göster (eksik listede arama kaçırmasın), yoksa lokal
   const filtrelenmis = uzakSonuc ?? lokalFiltre;
+
+  // Mutasyon sonrası ilgili public sayfaların ISR cache'ini temizle.
+  // FIX (v58 · Ajan #03): sil/toggle/toplu işlem sonrası revalidate YOKTU →
+  // silinen/pasifleştirilen ürün public sitede cache süresince görünmeye
+  // devam ediyordu. Artık etkilenen ürün+kategori yolları temizlenir.
+  function revalUrunler(liste) {
+    const paths = new Set(['/', '/tr', '/en', '/de']);
+    (liste || []).forEach((u) => {
+      if (!u) return;
+      urunRevalidatePaths(u.slug, u.categories?.slug).forEach((p) => paths.add(p));
+    });
+    revalidatePaths([...paths]).catch(() => {});
+  }
 
   // v37: Liste eksikken arama/kategori filtresi → sunucudan tamamla (350ms debounce)
   useEffect(() => {
@@ -84,12 +102,15 @@ export default function UrunlerYonetim({ ilkUrunler, toplamSayi = 0, sayfaBoyu =
       } catch (e) {
         console.error('[admin] sunucu arama hatası:', e?.message);
         setUzakSonuc(null); // hata → lokal filtreye düş
+        // FIX (Ajan #54): sessiz degrade etme — kullanıcı tüm katalogda
+        // aradığını sanmasın, yalnızca yüklenen listede arandığını bilsin.
+        goster('Tüm ürünlerde arama başarısız — yalnızca yüklenenlerde arandı', 'uyari');
       } finally {
         setUzakYukleniyor(false);
       }
     }, 350);
     return () => clearTimeout(aramaZamanlayici.current);
-  }, [arama, seciliKategori, hepsiYuklu, supabase]);
+  }, [arama, seciliKategori, hepsiYuklu, supabase, goster]);
 
   // v37: "Daha Fazla Yükle" — sonraki sayfayı çek, tekrarsız ekle
   async function dahaFazlaYukle() {
@@ -136,9 +157,14 @@ export default function UrunlerYonetim({ ilkUrunler, toplamSayi = 0, sayfaBoyu =
     try {
       if (duzenlenenUrun) {
         const guncel = await urunGuncelle(supabase, duzenlenenUrun.id, veri);
+        // FIX (Ajan #03 C6): urunGuncelle'nin birincil dönüşünde categories
+        // join'i yok; kategori değiştirilmişse liste eski kategori adını
+        // gösteriyordu. category_id'den taze join'i yeniden ekle.
+        const kat = kategoriler.find((k) => k.id === guncel.category_id);
+        const joinliGuncel = { ...guncel, categories: kat ? { name: kat.name, slug: kat.slug } : guncel.categories || null };
         // Listede güncelle
         ikiListeGuncelle((mevcut) =>
-          mevcut.map((u) => (u.id === guncel.id ? { ...u, ...guncel } : u))
+          mevcut.map((u) => (u.id === joinliGuncel.id ? { ...u, ...joinliGuncel } : u))
         );
         goster('Ürün güncellendi', 'basari');
       } else {
@@ -171,9 +197,11 @@ export default function UrunlerYonetim({ ilkUrunler, toplamSayi = 0, sayfaBoyu =
     if (!silOnay) return;
     setSilYukleniyor(true);
     try {
-      await urunSil(supabase, silOnay.id);
-      ikiListeGuncelle((mevcut) => mevcut.filter((u) => u.id !== silOnay.id));
+      const silinen = silOnay;
+      await urunSil(supabase, silinen.id);
+      ikiListeGuncelle((mevcut) => mevcut.filter((u) => u.id !== silinen.id));
       setToplam((t) => Math.max(0, t - 1));
+      revalUrunler([silinen]);   // public cache'ten kaldır
       goster('Ürün silindi', 'basari');
       setSilOnay(null);
     } catch (err) {
@@ -185,13 +213,21 @@ export default function UrunlerYonetim({ ilkUrunler, toplamSayi = 0, sayfaBoyu =
 
   // ─── HIZLI TOGGLE (öne çıkar / aktif) ────────────────
   async function hizliToggle(urun, alan) {
+    // FIX (Ajan #03 C3): çift tık koruması — istek uçarken buton kilitli.
+    if (toggleBekleyen.has(urun.id)) return;
+    setToggleBekleyen((p) => new Set(p).add(urun.id));
     try {
       const guncel = await urunGuncelle(supabase, urun.id, { [alan]: !urun[alan] });
+      const kat = kategoriler.find((k) => k.id === guncel.category_id);
+      const joinli = { ...guncel, categories: kat ? { name: kat.name, slug: kat.slug } : urun.categories || null };
       ikiListeGuncelle((mevcut) =>
-        mevcut.map((u) => (u.id === guncel.id ? { ...u, ...guncel } : u))
+        mevcut.map((u) => (u.id === joinli.id ? { ...u, ...joinli } : u))
       );
+      revalUrunler([joinli]);   // aktif/öne-çıkan değişince public site yenilensin
     } catch (err) {
       goster('Güncelleme başarısız', 'hata');
+    } finally {
+      setToggleBekleyen((p) => { const n = new Set(p); n.delete(urun.id); return n; });
     }
   }
 
@@ -227,6 +263,8 @@ export default function UrunlerYonetim({ ilkUrunler, toplamSayi = 0, sayfaBoyu =
 
     try {
       const ids = Array.from(seciliIds);
+      // Etkilenen ürünleri revalidate için önden yakala (silmeden önce)
+      const etkilenen = filtrelenmis.filter((u) => seciliIds.has(u.id));
       if (islem === 'sil') {
         const { error } = await supabase.from('products').delete().in('id', ids);
         if (error) throw error;
@@ -242,6 +280,7 @@ export default function UrunlerYonetim({ ilkUrunler, toplamSayi = 0, sayfaBoyu =
         if (error) throw error;
         ikiListeGuncelle((p) => p.map((u) => seciliIds.has(u.id) ? { ...u, ...guncellemeler } : u));
       }
+      revalUrunler(etkilenen);   // toplu değişikliği public sitede yansıt
       goster(`${ids.length} ürün güncellendi`, 'basari');
       setSeciliIds(new Set());
     } catch (e) {
@@ -386,10 +425,18 @@ export default function UrunlerYonetim({ ilkUrunler, toplamSayi = 0, sayfaBoyu =
                       />
                     </td>
                     <td className="px-4 py-3">
-                      <div className="w-12 h-12 rounded-lg bg-brand-dark/5 overflow-hidden flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-lg bg-brand-dark/5 overflow-hidden flex items-center justify-center relative">
                         {u.images?.[0] ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={u.images[0]} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                          // PERF (Ajan #24): next/image ile 48px optimize varyant
+                          // servis edilir — tam boy 1920px WebP indirilmez.
+                          <Image
+                            src={u.images[0]}
+                            alt=""
+                            width={48}
+                            height={48}
+                            sizes="48px"
+                            className="w-full h-full object-cover"
+                          />
                         ) : (
                           <IconPackage size={20} className="text-brand-ink/30" />
                         )}
@@ -416,9 +463,10 @@ export default function UrunlerYonetim({ ilkUrunler, toplamSayi = 0, sayfaBoyu =
                         <button
                           type="button"
                           onClick={() => hizliToggle(u, 'is_active')}
+                          disabled={toggleBekleyen.has(u.id)}
                           title={u.is_active ? 'Aktif (tıkla = pasif)' : 'Pasif (tıkla = aktif)'}
                           className={cn(
-                            'p-1.5 rounded-md transition-colors',
+                            'p-1.5 rounded-md transition-colors disabled:opacity-40',
                             u.is_active
                               ? 'text-green-600 hover:bg-green-50'
                               : 'text-brand-ink/30 hover:bg-brand-dark/5'
@@ -429,9 +477,10 @@ export default function UrunlerYonetim({ ilkUrunler, toplamSayi = 0, sayfaBoyu =
                         <button
                           type="button"
                           onClick={() => hizliToggle(u, 'is_featured')}
+                          disabled={toggleBekleyen.has(u.id)}
                           title={u.is_featured ? 'Öne çıkan (tıkla = kaldır)' : 'Tıkla = öne çıkar'}
                           className={cn(
-                            'p-1.5 rounded-md transition-colors',
+                            'p-1.5 rounded-md transition-colors disabled:opacity-40',
                             u.is_featured
                               ? 'text-brand-gold hover:bg-brand-gold/10'
                               : 'text-brand-ink/30 hover:bg-brand-dark/5'

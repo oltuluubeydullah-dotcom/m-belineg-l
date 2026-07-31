@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { IconDeviceFloppy, IconFileText, IconChevronRight } from '@tabler/icons-react';
 import { useToast } from '@/context/ToastContext';
 import { createClient } from '@/lib/supabase/client';
+import { revalidatePaths, icerikSayfaRevalidatePaths } from '@/lib/revalidate';
 import Button from '@/components/ui/Button';
 
 const SAYFA_BASLIKLARI = {
@@ -53,6 +54,10 @@ export default function SayfalarYonetim({ baslangic }) {
         })
         .eq('id', secili.id);
       if (error) throw error;
+      // FIX (Ajan #03/#19): kaydet sonrası revalidate YOKTU → hakkımızda/KVKK
+      // gibi yasal sayfalar public'te 1 saate kadar bayat kalıyordu. Artık
+      // ilgili slug'ın TR/EN/DE yolları anında temizlenir.
+      revalidatePaths(icerikSayfaRevalidatePaths(secili.slug)).catch(() => {});
       goster('Sayfa güncellendi', 'basari');
     } catch (e) {
       goster('Hata: ' + e.message, 'hata');

@@ -19,129 +19,100 @@ export default async function AdminAnasayfa() {
 
   // ─── Temel istatistikler ─────────────────────────────────
   let stats = {
-    aktif_urun: 0, toplam_urun: 0, aktif_kategori: 9,
+    aktif_urun: 0, toplam_urun: 0, aktif_kategori: 0,
     son_30_gun_talep: 0, toplam_talep: 0,
     son_30_gun_ziyaret: 0, bugun_ziyaret: 0, toplam_ziyaret: 0,
     tekil_ziyaret_30g: 0, tekil_ziyaret_bugun: 0, sepete_ekleme_30g: 0,
-    toplam_yorum: 0, yayinda_blog: 0,
+    toplam_yorum: 0, ortalama_yorum: 0, yayinda_blog: 0,
   };
 
+  let statsView = null;
   try {
     const { data } = await supabase.from('admin_stats').select('*').maybeSingle();
-    if (data) stats = { ...stats, ...data };
+    if (data) { statsView = data; stats = { ...stats, ...data }; }
   } catch (e) { console.error("[admin] veri hatasi:", e); }
 
-  // Fallback — admin_stats view yoksa manuel çek
-  if (!stats.aktif_urun) {
+  // Fallback — admin_stats view YOKSA (data null) temel sayımları çek.
+  // FIX (v58): tetik koşulu artık gerçek view yokluğu (statsView === null);
+  // eskiden aktif_urun===0 (tüm ürünler pasif) her yüklemede fallback tetikliyordu.
+  if (statsView === null) {
     try {
-      const [p, i, pv] = await Promise.all([
-        supabase.from('products').select('id, is_active').eq('is_active', true),
-        supabase.from('inquiries').select('id').gte('created_at', new Date(Date.now() - 30*86400000).toISOString()),
-        supabase.from('page_views').select('id').gte('created_at', new Date(Date.now() - 30*86400000).toISOString()),
+      const otuzGun = new Date(Date.now() - 30*86400000).toISOString();
+      const say = (tablo, kur) => {
+        const q = supabase.from(tablo).select('id', { count: 'exact', head: true });
+        return kur ? kur(q) : q;
+      };
+      const [p, k, i, pv] = await Promise.all([
+        say('products', q => q.eq('is_active', true)),
+        say('categories', q => q.eq('is_active', true)),
+        say('inquiries', q => q.gte('created_at', otuzGun)),
+        say('page_views', q => q.gte('created_at', otuzGun)),
       ]);
-      stats.aktif_urun = p.data?.length || 0;
-      stats.son_30_gun_talep = i.data?.length || 0;
-      stats.son_30_gun_ziyaret = pv.data?.length || 0;
+      stats.aktif_urun = p.count || 0;
+      stats.aktif_kategori = k.count || 0;
+      stats.son_30_gun_talep = i.count || 0;
+      stats.son_30_gun_ziyaret = pv.count || 0;
     } catch (e) { console.error("[admin] veri hatasi:", e); }
   }
 
-  // ─── v51: Dönüşüm hunisi (son 30 gün) ────────────────────
-  let huni = { ziyaret: 0, urunTik: 0, sepet: 0, whatsapp: 0 };
-  try {
-    const otuzGun = new Date(Date.now() - 30 * 86400000).toISOString();
-    // PERF: satır çekme YOK — sadece sayım (head:true). 3 paralel hafif sorgu.
-    const say = (tip) => supabase.from('site_events')
-      .select('id', { count: 'exact', head: true })
-      .eq('event_type', tip).gte('created_at', otuzGun);
-    const [tik, sep, wa] = await Promise.all([say('urun_tiklama'), say('sepete_ekleme'), say('whatsapp_tiklama')]);
-    huni = {
-      ziyaret: stats.tekil_ziyaret_30g || stats.son_30_gun_ziyaret || 0,
-      urunTik: tik.count || 0,
-      sepet: sep.count || 0,
-      whatsapp: wa.count || 0,
-    };
-  } catch (e) { console.warn('[admin] huni verisi alınamadı:', e?.message); }
+  // ─── Kalan tüm veriyi TEK Promise.all ile paralel çek ────
+  // PERF (v58 · Ajan #24): eskiden 7 blok sıralı await'liydi (~9 gidiş-dönüş
+  // ardışık). Hepsi birbirinden bağımsız → paralel. Ham satır toplama SQL'e
+  // taşındı: admin_daily_views / admin_top_paths RPC (≤8 satır döner).
+  const otuzGunISO = new Date(Date.now() - 30 * 86400000).toISOString();
+  const sayEvent = (tip) => supabase.from('site_events')
+    .select('id', { count: 'exact', head: true })
+    .eq('event_type', tip).gte('created_at', otuzGunISO);
 
-  // ─── En çok görüntülenen ürünler ─────────────────────────
-  let populerUrunler = [];
-  try {
-    const { data } = await supabase
-      .from('products')
-      .select('id, name, slug, view_count, favorite_count, images')
-      .eq('is_active', true)
-      .order('view_count', { ascending: false })
-      .limit(10);
-    populerUrunler = data || [];
-  } catch (e) { console.error("[admin] veri hatasi:", e); }
-
-  // ─── En çok favorilenen ─────────────────────────────────
-  let favoriUrunler = [];
-  try {
-    const { data } = await supabase
-      .from('products')
-      .select('id, name, slug, favorite_count, images')
-      .eq('is_active', true)
-      .gt('favorite_count', 0)
-      .order('favorite_count', { ascending: false })
-      .limit(5);
-    favoriUrunler = data || [];
-  } catch (e) { console.error("[admin] veri hatasi:", e); }
-
-  // ─── Son 7 günlük ziyaret (günlük) ───────────────────────
-  let gunlukZiyaret = [];
-  try {
-    const { data } = await supabase
-      .from('page_views')
-      .select('created_at')
-      .gte('created_at', new Date(Date.now() - 7*86400000).toISOString())
-      .order('created_at', { ascending: true });
-
-    if (data) {
-      const gunler = {};
-      data.forEach(r => {
-        const gun = new Date(r.created_at).toLocaleDateString('tr-TR', { weekday: 'short', day: 'numeric' });
-        gunler[gun] = (gunler[gun] || 0) + 1;
-      });
-      gunlukZiyaret = Object.entries(gunler).slice(-7);
-    }
-  } catch (e) { console.error("[admin] veri hatasi:", e); }
-
-  // ─── Son yorumlar ─────────────────────────────────────────
-  let yorumOzeti = { adet: 0, ortalama: 0, sonlar: [] };
-  try {
-    const { data } = await supabase
-      .from('reviews')
+  const [
+    tikRes, sepRes, waRes,
+    populerRes, favoriRes,
+    gunlukRes, sonYorumRes, topPathRes,
+  ] = await Promise.all([
+    sayEvent('urun_tiklama').then(r => r).catch(() => ({ count: 0 })),
+    sayEvent('sepete_ekleme').then(r => r).catch(() => ({ count: 0 })),
+    sayEvent('whatsapp_tiklama').then(r => r).catch(() => ({ count: 0 })),
+    supabase.from('products').select('id, name, slug, view_count, favorite_count')
+      .eq('is_active', true).order('view_count', { ascending: false }).limit(10)
+      .then(r => r).catch(() => ({ data: [] })),
+    supabase.from('products').select('id, name, slug, favorite_count')
+      .eq('is_active', true).gt('favorite_count', 0)
+      .order('favorite_count', { ascending: false }).limit(5)
+      .then(r => r).catch(() => ({ data: [] })),
+    supabase.rpc('admin_daily_views', { days: 7 }).then(r => r).catch(() => ({ data: null })),
+    supabase.from('reviews')
       .select('id, name, rating, text, created_at, products(name, slug)')
-      .eq('is_hidden', false)
-      .order('created_at', { ascending: false })
-      .limit(5);
-    if (data && data.length > 0) {
-      const { data: tum } = await supabase.from('reviews').select('rating').eq('is_hidden', false);
-      const sum = (tum || []).reduce((s, r) => s + r.rating, 0);
-      yorumOzeti = {
-        adet: tum?.length || 0,
-        ortalama: tum?.length > 0 ? Math.round((sum / tum.length) * 10) / 10 : 0,
-        sonlar: data,
-      };
-    }
-  } catch (e) { console.error("[admin] veri hatasi:", e); }
+      .eq('is_hidden', false).order('created_at', { ascending: false }).limit(5)
+      .then(r => r).catch(() => ({ data: [] })),
+    supabase.rpc('admin_top_paths', { days: 30, lim: 8 }).then(r => r).catch(() => ({ data: null })),
+  ]);
 
-  // ─── En çok ziyaret edilen sayfalar ─────────────────────
-  let popSayfalar = [];
-  try {
-    const { data } = await supabase
-      .from('page_views')
-      .select('path')
-      .gte('created_at', new Date(Date.now() - 30*86400000).toISOString());
-    if (data) {
-      const sayac = {};
-      data.forEach(r => { sayac[r.path] = (sayac[r.path] || 0) + 1; });
-      popSayfalar = Object.entries(sayac)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 8)
-        .map(([path, count]) => ({ path, count }));
-    }
-  } catch (e) { console.error("[admin] veri hatasi:", e); }
+  // ─── v51: Dönüşüm hunisi (son 30 gün) ────────────────────
+  const huni = {
+    ziyaret: stats.tekil_ziyaret_30g || stats.son_30_gun_ziyaret || 0,
+    urunTik: tikRes.count || 0,
+    sepet: sepRes.count || 0,
+    whatsapp: waRes.count || 0,
+  };
+
+  const populerUrunler = populerRes.data || [];
+  const favoriUrunler = favoriRes.data || [];
+
+  // ─── Son 7 günlük ziyaret (SQL RPC → JS'te sadece etiketle) ─
+  const gunlukZiyaret = (gunlukRes.data || []).map((r) => [
+    new Date(r.gun).toLocaleDateString('tr-TR', { weekday: 'short', day: 'numeric' }),
+    Number(r.count) || 0,
+  ]);
+
+  // ─── Son yorumlar — sayım/ortalama admin_stats'tan (2. sorgu YOK) ─
+  const yorumOzeti = {
+    adet: stats.toplam_yorum || 0,
+    ortalama: Number(stats.ortalama_yorum) || 0,
+    sonlar: sonYorumRes.data || [],
+  };
+
+  // ─── En çok ziyaret edilen sayfalar (SQL RPC) ────────────
+  const popSayfalar = (topPathRes.data || []).map((r) => ({ path: r.path, count: Number(r.count) || 0 }));
 
   const ANA_KARTLAR = [
     { ad: 'Aktif Ürün',         deger: stats.aktif_urun,          icon: IconPackage,         renk: 'bg-brand-gold/10 text-brand-gold',      link: '/admin/urunler' },

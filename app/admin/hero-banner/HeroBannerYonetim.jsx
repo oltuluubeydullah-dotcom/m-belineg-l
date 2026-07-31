@@ -24,7 +24,8 @@ const ALANLAR = [
 
 export default function HeroBannerYonetim({ baslangic }) {
   const [banners, setBanners] = useState(baslangic);
-  const [yukleniyor, setYukleniyor] = useState(false);
+  // Per-row kayıt durumu (Ajan #30): bir banner kaydedilirken diğerleri dönmesin.
+  const [kaydedilenId, setKaydedilenId] = useState(null);
   const { goster } = useToast();
   const supabase = createClient();
 
@@ -40,8 +41,29 @@ export default function HeroBannerYonetim({ baslangic }) {
     }));
   };
 
+  // FIX (Ajan #03): Yayında/Gizli pill'i eskiden sadece lokal state'i
+  // değiştiriyordu → Kaydet'e basılmadan sayfadan çıkınca kayboluyordu
+  // ("kaydedildi sanılıp kaybolma" tuzağı). Artık ANINDA DB'ye yazar.
+  const durumToggle = async (banner) => {
+    const yeni = !banner.is_active;
+    setBanners((prev) => prev.map((b) => (b.id === banner.id ? { ...b, is_active: yeni } : b)));
+    try {
+      const { error } = await supabase
+        .from('hero_banners')
+        .update({ is_active: yeni })
+        .eq('id', banner.id);
+      if (error) throw error;
+      revalidatePaths(tumSiteRevalidatePaths()).catch(() => {});
+      goster(yeni ? 'Banner yayına alındı' : 'Banner gizlendi', 'basari');
+    } catch (e) {
+      // Geri al
+      setBanners((prev) => prev.map((b) => (b.id === banner.id ? { ...b, is_active: !yeni } : b)));
+      goster('Durum güncellenemedi: ' + (e?.message || ''), 'hata');
+    }
+  };
+
   const kaydet = async (banner) => {
-    setYukleniyor(true);
+    setKaydedilenId(banner.id);
     try {
       const { error } = await supabase
         .from('hero_banners')
@@ -59,7 +81,7 @@ export default function HeroBannerYonetim({ baslangic }) {
     } catch (e) {
       goster('Hata: ' + e.message, 'hata');
     } finally {
-      setYukleniyor(false);
+      setKaydedilenId(null);
     }
   };
 
@@ -80,7 +102,8 @@ export default function HeroBannerYonetim({ baslangic }) {
             banner={banner}
             guncelle={guncelle}
             kaydet={kaydet}
-            yukleniyor={yukleniyor}
+            durumToggle={durumToggle}
+            yukleniyor={kaydedilenId === banner.id}
           />
         ))}
       </div>
@@ -88,7 +111,7 @@ export default function HeroBannerYonetim({ baslangic }) {
   );
 }
 
-function BannerCard({ banner, guncelle, kaydet, yukleniyor }) {
+function BannerCard({ banner, guncelle, kaydet, durumToggle, yukleniyor }) {
   const [aktif, setAktif] = useState('tr');
 
   return (
@@ -102,11 +125,12 @@ function BannerCard({ banner, guncelle, kaydet, yukleniyor }) {
         </div>
         <button
           type="button"
-          onClick={() => guncelle(banner.id, 'is_active', !banner.is_active)}
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${
+          onClick={() => durumToggle(banner)}
+          title="Tıkla — durum anında kaydedilir"
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
             banner.is_active
-              ? 'bg-green-100 text-green-700'
-              : 'bg-brand-dark/5 text-brand-ink/50'
+              ? 'bg-green-100 text-green-700 hover:bg-green-200'
+              : 'bg-brand-dark/5 text-brand-ink/50 hover:bg-brand-dark/10'
           }`}
         >
           {banner.is_active ? <IconEye size={14} /> : <IconEyeOff size={14} />}

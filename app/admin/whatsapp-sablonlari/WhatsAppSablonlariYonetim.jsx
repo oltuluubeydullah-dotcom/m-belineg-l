@@ -8,7 +8,8 @@ import Button from '@/components/ui/Button';
 
 export default function WhatsAppSablonlariYonetim({ baslangic }) {
   const [sablonlar, setSablonlar] = useState(baslangic);
-  const [yukleniyor, setYukleniyor] = useState(false);
+  // Per-row kayıt durumu — bir kartı kaydederken diğerleri dönmesin (Ajan #30).
+  const [kaydedilenId, setKaydedilenId] = useState(null);
   const { goster } = useToast();
   const supabase = createClient();
 
@@ -17,7 +18,7 @@ export default function WhatsAppSablonlariYonetim({ baslangic }) {
   };
 
   const kaydet = async (sablon) => {
-    setYukleniyor(true);
+    setKaydedilenId(sablon.id);
     try {
       const { error } = await supabase
         .from('whatsapp_templates')
@@ -32,7 +33,7 @@ export default function WhatsAppSablonlariYonetim({ baslangic }) {
     } catch (e) {
       goster('Hata: ' + e.message, 'hata');
     } finally {
-      setYukleniyor(false);
+      setKaydedilenId(null);
     }
   };
 
@@ -43,6 +44,17 @@ export default function WhatsAppSablonlariYonetim({ baslangic }) {
         <p className="text-brand-ink/60 mt-2">
           Müşteri site üzerinden WhatsApp&apos;a tıkladığında otomatik açılan mesajları düzenleyin.
           <strong> &#123;urun&#125;</strong> gibi yer tutucular destekleniyor.
+        </p>
+      </div>
+
+      {/* Dürüstlük notu (Ajan #54): şablonlar DB'ye kaydediliyor ancak site
+          şu an yerleşik varsayılan metinleri kullanıyor. Yanıltıcı olmasın. */}
+      <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <IconInfoCircle size={18} className="shrink-0 mt-0.5" />
+        <p>
+          <strong>Bilgi:</strong> Buradaki değişiklikler kaydediliyor, ancak sitedeki WhatsApp mesajları
+          şu an <strong>yerleşik varsayılan metinleri</strong> kullanıyor. Özel şablonların canlıya
+          bağlanması bir sonraki güncellemede yapılacak. (Mevcut mesajlar zaten profesyonel ve üç dilde hazır.)
         </p>
       </div>
 
@@ -88,7 +100,7 @@ export default function WhatsAppSablonlariYonetim({ baslangic }) {
             </div>
 
             <div className="mt-5 flex justify-end">
-              <Button variant="gold" onClick={() => kaydet(sablon)} yukleniyor={yukleniyor}>
+              <Button variant="gold" onClick={() => kaydet(sablon)} yukleniyor={kaydedilenId === sablon.id}>
                 <IconDeviceFloppy size={18} />
                 Kaydet
               </Button>
