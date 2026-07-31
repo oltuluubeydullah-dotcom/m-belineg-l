@@ -22,6 +22,39 @@ import { gorselSrc } from '@/lib/gorsel';
 import { genelDestekLinki } from '@/lib/whatsapp';
 import { whatsappSablonlariniGetir } from '@/lib/whatsapp-server';
 
+// ─── SEO: ana sayfa hedef-kelime metadata (İnegöl Mobilya + Avrupa'ya Teslimat) ───
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobelinegol.com';
+const ANA_META = {
+  tr: {
+    title: 'İnegöl Mobilya — Koltuk, Köşe Koltuk, Yatak Odası | Avrupa\'ya Teslimat',
+    description: 'İnegöl mobilyası: koltuk takımı, odaya özel ölçü köşe koltuk, yatak & yemek odası. Tüm Türkiye\'ye ve Avrupa\'ya (Almanya, Hollanda, Belçika, Fransa…) nakliye + kurulum. Möbel İnegöl — Evinize Değer Katar.',
+  },
+  en: {
+    title: 'İnegöl Furniture — Sofas, Corner Sofas, Bedrooms | Delivery to Europe',
+    description: 'İnegöl furniture: sofa sets, custom-size corner sofas, bedroom & dining sets. Delivery and professional assembly across Türkiye and to Europe (Germany, Netherlands, Belgium, France…). Möbel İnegöl.',
+  },
+  de: {
+    title: 'İnegöl Möbel — Sofas, Ecksofas, Schlafzimmer | Lieferung nach Europa',
+    description: 'İnegöl Möbel: Sofagarnituren, Ecksofas nach Maß, Schlaf- & Esszimmer. Lieferung und professionelle Montage in der Türkei und nach Europa (Deutschland, Niederlande, Belgien, Frankreich…). Möbel İnegöl.',
+  },
+};
+
+export async function generateMetadata({ params: { locale } }) {
+  const M = ANA_META[locale] || ANA_META.tr;
+  const url = locale === 'tr' ? SITE_URL : `${SITE_URL}/${locale}`;
+  return {
+    title: { absolute: M.title },
+    description: M.description,
+    alternates: {
+      canonical: url,
+      languages: {
+        tr: SITE_URL, en: `${SITE_URL}/en`, de: `${SITE_URL}/de`, 'x-default': SITE_URL,
+      },
+    },
+    openGraph: { title: M.title, description: M.description, url, type: 'website' },
+  };
+}
+
 /**
  * Kategori kapak görseli — admin seçimi öncelikli.
  * cover_product_id seçiliyse o ürünün ilk görseli; değilse otomatik (ilk ürün).

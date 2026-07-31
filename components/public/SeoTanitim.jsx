@@ -2,13 +2,12 @@
 // v55: Möbel — garanti + whatsapp gerçek marka rozeti (şeffaf); nakliye + avrupa temiz marka ikonu
 // (afişler küçük kartta kalabalık/kalitesiz duruyordu → net SVG ikon; afişler hero/geniş alanda kullanılır)
 import Image from 'next/image';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { sanitizeHtml } from '@/lib/sanitize';
 
 export default function SeoTanitim() {
   const t = useTranslations('SeoTanitim');
   const tStats = useTranslations('Stats');
-  const locale = useLocale();
   const yil = new Date().getFullYear();
 
   // garanti + whatsapp şeffaf rozet (ortada); nakliye + avrupa kare afiş (tam-kanama kapak)
@@ -69,15 +68,15 @@ export default function SeoTanitim() {
           ))}
         </div>
 
-        {/* ── Uzun form SEO metni — İnegöl mobilya yerel arama (v44, sadece TR) ── */}
-        {locale === 'tr' && (
-          <div className="mt-14 md:mt-20 pt-12 md:pt-16 border-t border-brand-teal/15">
-            <div
-              className="seo-longform max-w-3xl mx-auto text-sm md:text-[15px] text-brand-ink/75 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: sanitizeHtml(t.raw('longform_html')) }}
-            />
-          </div>
-        )}
+        {/* ── Uzun form SEO metni — İnegöl mobilya / İnegöl furniture / İnegöl-Möbel.
+            v60: TR/EN/DE üçü de render edilir (longform_html üç dilde de mevcut) →
+            Avrupa (DE/EN) hedef kitlesi için yerel arama içeriği açıldı. ── */}
+        <div className="mt-14 md:mt-20 pt-12 md:pt-16 border-t border-brand-teal/15">
+          <div
+            className="seo-longform max-w-3xl mx-auto text-sm md:text-[15px] text-brand-ink/75 leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(t.raw('longform_html')) }}
+          />
+        </div>
       </div>
     </section>
   );

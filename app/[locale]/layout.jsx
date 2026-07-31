@@ -37,6 +37,7 @@ export async function generateMetadata({ params: { locale } }) {
         tr: SITE_URL,
         en: `${SITE_URL}/en`,
         de: `${SITE_URL}/de`,
+        'x-default': SITE_URL,
       },
     },
   };
@@ -74,7 +75,7 @@ export default async function LocaleLayout({ children, params: { locale } }) {
     currenciesAccepted: 'TRY, EUR',
     address: {
       '@type': 'PostalAddress',
-      streetAddress:   process.env.NEXT_PUBLIC_BUSINESS_STREET  || '',
+      streetAddress:   process.env.NEXT_PUBLIC_BUSINESS_STREET  || 'Wobilimo AVM, 2. Kat No.122',
       addressLocality: process.env.NEXT_PUBLIC_BUSINESS_CITY   || 'İnegöl',
       addressRegion:   process.env.NEXT_PUBLIC_BUSINESS_REGION || 'Bursa',
       postalCode:      process.env.NEXT_PUBLIC_BUSINESS_ZIP    || '16400',
@@ -85,7 +86,7 @@ export default async function LocaleLayout({ children, params: { locale } }) {
       latitude:  ISLETME.mapLat || '40.07660',
       longitude: ISLETME.mapLng || '29.51540',
     },
-    hasMap: ISLETME.mapShort || undefined,
+    hasMap: ISLETME.mapShort || 'https://maps.app.goo.gl/a58ock1E2WvdHkTL7',
     telephone: telE164,
     email: ISLETME.email || undefined,
     knowsLanguage: ['tr', 'en', 'de'],
@@ -117,6 +118,27 @@ export default async function LocaleLayout({ children, params: { locale } }) {
         opens: '10:00', closes: '20:00',
       },
     ],
+    // SEO/GEO: mağazanın sunduğu mobilya kategorileri (arama motoru + AI eşleşmesi)
+    makesOffer: ['Koltuk Takımı', 'Köşe Koltuk', 'Yatak Odası', 'Yemek Odası', 'TV Ünitesi', 'Masa-Sandalye Takımı'].map((n) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Product', name: n, category: 'Mobilya', brand: { '@type': 'Brand', name: ISLETME.ad } },
+    })),
+  };
+
+  // GEO/AEO: "İnegöl'den Avrupa'ya nakliye + kurulum" hizmeti — arama niyetiyle birebir eşleşir.
+  const serviceSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: "İnegöl'den Avrupa'ya Mobilya Nakliyesi ve Kurulumu",
+    serviceType: 'Mobilya nakliyesi, kapıya teslim ve profesyonel montaj',
+    provider: { '@id': SITE_URL },
+    description: 'İnegöl mobilyasını tüm Türkiye ve Avrupa ülkelerine güvenli paketleme, kapıya teslim ve profesyonel kurulum ile ulaştırıyoruz.',
+    areaServed: orgSchema.areaServed,
+    availableChannel: {
+      '@type': 'ServiceChannel',
+      serviceUrl: `${SITE_URL}/teslimat-kurulum`,
+      servicePhone: telE164,
+    },
   };
 
   return (
@@ -135,6 +157,10 @@ export default async function LocaleLayout({ children, params: { locale } }) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema).replace(/</g, '\\u003c') }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema).replace(/</g, '\\u003c') }}
       />
       {/* v43 AEO: WebSite + SearchAction — Google sitelinks arama kutusu + AI motorlarına site yapısı */}
       <script
