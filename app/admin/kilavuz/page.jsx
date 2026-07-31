@@ -5,7 +5,7 @@
 // gereksizdi — kaldırıldı; admin layout auth'u zaten üstte koruyor.
 
 import {
-  IconBook, IconPackage, IconCategory, IconCloudUpload,
+  IconBook, IconPackage, IconCategory,
   IconArticle, IconMessageCircle, IconPhoto, IconFileText,
   IconBrandWhatsapp, IconSettings, IconShieldCheck,
   IconAlertTriangle, IconCheck, IconInfoCircle, IconCurrencyLira,
@@ -42,11 +42,9 @@ export default function KilavuzSayfasi() {
           <li><a href="#baslarken" className="text-brand-dark hover:text-brand-gold">1. Başlarken</a></li>
           <li><a href="#urunler" className="text-brand-dark hover:text-brand-gold">2. Ürün Yönetimi</a></li>
           <li><a href="#fiyat-yazma" className="text-brand-dark hover:text-brand-gold">3. ⭐ Fiyat Yazma Kuralları</a></li>
-          <li><a href="#toplu-yukleme" className="text-brand-dark hover:text-brand-gold">4. Toplu Yükleme (ZIP)</a></li>
           <li><a href="#kategoriler" className="text-brand-dark hover:text-brand-gold">5. Kategoriler</a></li>
           <li><a href="#dil" className="text-brand-dark hover:text-brand-gold">6. Çoklu Dil İçerik</a></li>
           <li><a href="#sayfalar" className="text-brand-dark hover:text-brand-gold">7. Sayfa İçerikleri (Hakkımızda vs)</a></li>
-          <li><a href="#hero" className="text-brand-dark hover:text-brand-gold">8. Hero Bannerlar</a></li>
           <li><a href="#whatsapp" className="text-brand-dark hover:text-brand-gold">9. WhatsApp Şablonları</a></li>
           <li><a href="#talepler" className="text-brand-dark hover:text-brand-gold">10. Müşteri Talepleri</a></li>
           <li><a href="#yorumlar" className="text-brand-dark hover:text-brand-gold">11. ⭐ Müşteri Yorumları</a></li>
@@ -78,10 +76,8 @@ export default function KilavuzSayfasi() {
           <Para><strong>Hızlı tur:</strong></Para>
           <ul className="list-disc pl-5 space-y-1 text-sm">
             <li><strong>Panel</strong> — özet rakamlar (ürün sayısı, talep sayısı)</li>
-            <li><strong>Ürünler</strong> — tek tek ürün ekle/sil/düzenle</li>
-            <li><strong>Toplu Yükleme</strong> — yüzlerce ürünü tek ZIP ile yükle</li>
+            <li><strong>Ürünler</strong> — ürün ekle/sil/düzenle (her ürüne 20+ görsel yükleyebilirsiniz)</li>
             <li><strong>Kategoriler</strong> — Koltuk Takımı, Yatak Odası gibi grupları yönet</li>
-            <li><strong>Hero Bannerlar</strong> — anasayfa üstündeki büyük dönen pankartlar</li>
             <li><strong>Sayfa İçerikleri</strong> — Hakkımızda, KVKK gibi sayfaları düzenle</li>
             <li><strong>WhatsApp Şablonları</strong> — müşterinin tıkladığında açılan otomatik mesaj</li>
             <li><strong>Talepler</strong> — sepetten gelen sipariş talepleri</li>
@@ -174,43 +170,6 @@ export default function KilavuzSayfasi() {
           </Box>
         </Section>
 
-        {/* ─── 4. TOPLU YÜKLEME ─── */}
-        <Section id="toplu-yukleme" icon={<IconCloudUpload />} title="4. Toplu Yükleme (ZIP)">
-          <Para>
-            Yüzlerce ürünü tek seferde yüklemek için. ZIP klasör yapısı çok önemli — birebir takip edin.
-          </Para>
-          <pre className="bg-brand-dark text-brand-cream rounded-lg p-4 text-xs overflow-x-auto">
-{`ÜRÜNLER.zip
-├── Koltuk Takımı/                  ← KATEGORİ
-│   ├── Beyaz Lüks Koltuk/          ← ÜRÜN
-│   │   ├── 1.jpg                   ← ana görsel
-│   │   ├── 2.jpg
-│   │   └── 3.jpg
-│   └── Modern Köşe/
-│       └── 1.jpg
-└── Yatak Odası/
-    └── Ferah Yatak Odası/
-        ├── 1.jpg
-        └── 2.jpg`}
-          </pre>
-          <ul className="list-disc pl-5 space-y-1 text-sm">
-            <li>Klasör adı = Kategori (yoksa otomatik oluşturulur)</li>
-            <li>Alt klasör = Ürün</li>
-            <li>İçindeki resimler ürünün görselleri olur</li>
-            <li>Resimleri 1.jpg, 2.jpg, 3.jpg olarak adlandırın — sıra korunur</li>
-            <li>Aynı isimli ürün varsa atlanır (silinmez, eski hali korunur)</li>
-            <li>Fiyatlar boş yüklenir — sonra <strong>Ürünler</strong> sayfasından tek tek düzenleyin</li>
-          </ul>
-          <Box uyari="dikkat">
-            <strong>macOS kullanıcıları:</strong> ZIP'i sağ tık → "Sıkıştır" ile yapın. Terminal'den yapmayın
-            (gizli .DS_Store dosyaları sorun çıkarır, gerçi sistem atlıyor ama yine de temiz olsun).
-          </Box>
-          <Box tip="ip-ucu">
-            Yükleme sonrası rapor gösterilir: kaç yeni kategori, kaç ürün, kaç görsel yüklendi.
-            Hata olduysa altta detaylı liste gözükür.
-          </Box>
-        </Section>
-
         {/* ─── 5. KATEGORİLER ─── */}
         <Section id="kategoriler" icon={<IconCategory />} title="5. Kategoriler">
           <Para>
@@ -237,7 +196,7 @@ export default function KilavuzSayfasi() {
             <li>İngilizce ve Almanca <em>boş bırakırsanız</em>: sistem yaklaşık 200 mobilya terimini içeren bir sözlükle otomatik çevirir.
                 Örnek: "Köşe Koltuk" → "Corner Sofa" / "Ecksofa"</li>
             <li>Otomatik çeviri %75-85 doğru. Tam istediğiniz şekilde olsun istiyorsanız <strong>elle düzeltebilirsiniz</strong>:
-                Hero Bannerlar, Sayfa İçerikleri, WhatsApp Şablonları sayfalarında dil sekmelerinden gir</li>
+                Ürünler, Sayfa İçerikleri, WhatsApp Şablonları sayfalarında dil sekmelerinden gir</li>
           </ul>
           <Box tip="ip-ucu">
             Müşteri sağ üst köşedeki dil seçicisiyle (🌐 TR/EN/DE) istediği dile geçebilir. Tarayıcısı Almanca ise otomatik DE açılır.
@@ -263,24 +222,6 @@ export default function KilavuzSayfasi() {
 
 [Bağlantı metni](https://mobelinegol.com)`}
           </pre>
-        </Section>
-
-        {/* ─── 8. HERO ─── */}
-        <Section id="hero" icon={<IconPhoto />} title="8. Hero Bannerlar">
-          <Para>
-            Anasayfa üstündeki büyük dönen pankartlar. <strong>Hero Bannerlar</strong> menüsünden düzenlersiniz.
-            Şu an <strong>4 slide</strong> var ve her biri 3 dilde (TR/EN/DE) çalışır:
-          </Para>
-          <ul className="list-disc pl-5 space-y-1.5 text-sm">
-            <li><strong>Yaşam Alanı</strong> — koltuk koleksiyonuna yönlendirir (\u201cEvinizin kalbi\u201d).</li>
-            <li><strong>Yatak Odası</strong> — yatak odası koleksiyonu (\u201cHuzurlu uykular\u201d).</li>
-            <li><strong>Nakliye + Kurulum</strong> — kamyon görseli solda, \u201cTüm Türkiye\u2019ye Nakliye + Kurulum\u201d metni sağda. Metin artık görsele gömülü değil; mobilde de düzgün sığar ve 3 dilde otomatik çevrilir.</li>
-            <li><strong>Avrupa Teslimat</strong> — \u201cİnegöl\u2019den Avrupa\u2019ya kapınıza teslim\u201d, ülke listesiyle.</li>
-          </ul>
-          <Para>
-            Her banner için metinleri (başlık, vurgulu kelime, açıklama, buton) düzenleyebilirsiniz; tasarım ve
-            görsel düzeni sabittir. Görsel değiştirmek isterseniz ubivo\u2019ya iletin (mobil uyumu korunmalı).
-          </Para>
         </Section>
 
         {/* ─── 9. WHATSAPP ─── */}

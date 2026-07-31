@@ -83,4 +83,19 @@
 - ⚠️ **Sandbox ağ kısıtı:** Supabase REST'e ve Canva export'una doğrudan `curl` ENGELLİ (403). Supabase için MCP araçlarını kullan (`apply_migration`, `execute_sql`, `get_logs`). Canva export'u indirilemiyor.
 
 ---
+## 🚀 NAMESERVER GELİNCE LAUNCH CHECKLIST (kullanıcı yapacak)
+Nameserver Cloudflare'a geçince tek oturumda yapılacaklar:
+1. **DNS (Cloudflare):** `@`+`www` → Vercel (A `76.76.21.21` / CNAME `cname.vercel-dns.com`, proxy KAPALI), `cdn` → R2 (proxy açık).
+2. **Vercel → Domains:** `mobelinegol.com` ekle (SSL otomatik).
+3. **Vercel env (aynı anda gir):**
+   - **R2 (görsel CDN):** `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET=mobel-medya`, `NEXT_PUBLIC_R2_PUBLIC_URL=https://cdn.mobelinegol.com`
+   - **⚠️ UPSTASH (rate-limit — Agent #07 P1, kullanıcı "hatırlat" dedi):** `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`. Yoksa rate-limit in-memory'ye düşer, prod'da dağıtık bypass edilir (spam talep/yorum riski). **DNS için Vercel'e girerken bunu da gir.**
+4. Redeploy → tam canlı.
+
+## v60 oturumu kararları (kullanıcı onaylı)
+- **Yorumlar:** misafir yorumu ANINDA görünür kalsın; admin isterse siler (ön-moderasyon YOK — kullanıcı kararı).
+- **Hero Bannerlar:** admin panelinden GİZLENDİ (AdminShell menüsünden çıkarıldı). Sayfa/kod duruyor ama hero 6 slide KOD tarafından yönetiliyor; admin yönetmiyor.
+- **Toplu ZIP yükleme: KOMPLE SİLİNDİ** (E özelliği geri alındı — kullanıcı "gerek yok, ürüne 20 görsel zaten yüklenebiliyor" dedi). Silinenler: `app/admin/toplu-yukleme/`, `app/api/admin/toplu-yukleme/`, `sql/21`, `jszip` bağımlılığı, kılavuz bölümü. Canlı `mobel-arsiv` bucket policy düşürüldü (boş bucket kaldı — Supabase SQL'den silinemiyor, zararsız).
+- **Denetim düzeltmeleri (5 ajan):** güvenlik bucket policy is_admin_email, sessiz-hata (admin sorgu error kontrolü, whatsapp-server log, yorum sayfalama toplamı), frontend (ana sayfa sr-only h1, afiş picture+lokalize alt, checkout yarışı), i18n (İletişim/Kategori/Mağazalarımız TR/EN/DE). Hepsi main'de.
+
 _Son güncelleme: v59 — hero teslimat afişleri (main'de CANLI) + WhatsApp şablonları canlıya + talepler/yorumlar sayfalama + ürün-sil görsel temizliği + settings singleton + toplu-yükleme backend'i (branch'te). TAMAMLANANLAR (main'de canlı): A-E hepsi merge edildi + sql/21 canlı Supabase'de çalıştırıldı (mobel-arsiv bucket kuruldu) + harita konum linkleri yeni Wobilimo AVM pinine güncellendi (link-only, koordinat girilmedi — SEO fallback 40.07660/29.51540 = İnegöl merkez, yeterli). Bekleyen: (1) hukuki [DOLDUR] alanları (kullanıcı: ünvan/vergi/MERSİS bilgisi bekliyor), (2) R2 görsel CDN + domain DNS (nameserver değişimi bekliyor), (3) ürün yüklemesi (toplu yükleme hazır). Yeni oturum bu dosyadan devam etmeli. by ubivo._

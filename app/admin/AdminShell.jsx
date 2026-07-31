@@ -12,7 +12,7 @@ import {
   IconLayoutDashboard, IconPackage, IconCategory,
   IconMessageCircle, IconSettings, IconExternalLink, IconLogout,
   IconMenu2, IconX, IconArticle,
-  IconBook, IconPhoto, IconFileText, IconBrandWhatsapp, IconStarFilled,
+  IconBook, IconFileText, IconBrandWhatsapp, IconStarFilled,
   IconSpeakerphone,
   IconActivity,
 } from '@tabler/icons-react';
@@ -28,8 +28,9 @@ const ADMIN_MENU = [
   { ad: 'Blog',               href: '/admin/blog',                  icon: IconArticle },
   { ad: 'Talepler',           href: '/admin/talepler',              icon: IconMessageCircle },
   { ad: 'Yorumlar',           href: '/admin/yorumlar',              icon: IconStarFilled },
-  { ad: 'Pazarlama',          href: '/admin/pazarlama',             icon: IconSpeakerphone },
-  { ad: 'Hero Bannerlar',     href: '/admin/hero-banner',           icon: IconPhoto, sonEk: true },
+  { ad: 'Pazarlama',          href: '/admin/pazarlama',             icon: IconSpeakerphone, sonEk: true },
+  // Hero Bannerlar admin panelinden gizlendi (hero kod tarafından yönetiliyor —
+  // 6 slide sabit). Sayfa/kod duruyor; sadece menüden çıkarıldı.
   { ad: 'Sayfa İçerikleri',   href: '/admin/sayfalar',              icon: IconFileText },
   { ad: 'WhatsApp Şablonları',href: '/admin/whatsapp-sablonlari',   icon: IconBrandWhatsapp },
   { ad: 'Ayarlar',            href: '/admin/ayarlar',               icon: IconSettings, sonEk: true },
