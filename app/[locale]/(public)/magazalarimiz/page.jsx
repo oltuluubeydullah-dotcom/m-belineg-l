@@ -31,7 +31,7 @@ export async function generateMetadata({ params: { locale } }) {
 // Google Maps deep link — place ID varsa daha güvenilir
 function googleMapsUrl() {
   // Direkt kısa link — en doğru yönlendirme
-  return 'https://maps.app.goo.gl/JrjRkJyCePG6CBvA6?g_st=ic';
+  return 'https://maps.app.goo.gl/a58ock1E2WvdHkTL7?g_st=ic';
 }
 
 // Apple Maps (iOS'ta öncelikli açılır)

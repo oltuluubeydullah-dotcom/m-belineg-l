@@ -143,7 +143,7 @@ export default async function IletisimSayfasi({ params: { locale } }) {
                 {TAM_ADRES}
               </p>
               <a
-                href="https://maps.app.goo.gl/JrjRkJyCePG6CBvA6?g_st=ic"
+                href="https://maps.app.goo.gl/a58ock1E2WvdHkTL7?g_st=ic"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-sm text-brand-gold hover:opacity-80 mt-3 pl-16"
