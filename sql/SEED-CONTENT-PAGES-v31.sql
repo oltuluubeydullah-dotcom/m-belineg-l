@@ -7,9 +7,9 @@
 -- TR öncelikli (admin panelden EN/DE eklenebilir).
 --
 -- ⚠️ HUKUKİ NOT: Garanti/İade, Gizlilik, KVKK, Mesafeli Satış
--- sayfaları HUKUKİ belgelerdir. İçerik işletme bilgilerinle dolduruldu;
--- ancak [DOLDUR: ...] işaretli resmi alanları (tam unvan, vergi dairesi/no,
--- MERSİS, açık adres) tamamla ve canlıya almadan bir hukukçuya onaylat.
+-- sayfaları HUKUKİ belgelerdir. İçerik işletme adı + açık adres (Wobilimo AVM)
+-- ile dolduruldu. Resmi vergi dairesi/no ve MERSİS no eklemek isterseniz ilgili
+-- bölümlere (Veri Sorumlusu / Satıcı) ekleyebilir ve bir hukukçuya onaylatabilirsiniz.
 -- ════════════════════════════════════════════════════════════
 
 INSERT INTO public.content_pages (slug, title, content, is_published) VALUES
@@ -39,9 +39,9 @@ Türkiye'nin **tüm illerine** teslimat ve **kurulum imkanı**, Avrupa'daki gurb
 
 ---
 
-📍 İnegöl / Bursa
-📞 +90 534 306 65 92
-📧 info@mobelinegol.com
+📍 Wobilimo AVM, 2. Kat No.122, İnegöl / Bursa
+📞 +90 536 040 01 08
+📧 mobelinegol16@gmail.com
 $md$, true),
 
 -- ─────────────────────────────────────────────────────────────
@@ -67,7 +67,7 @@ Möbel İnegöl olarak ürünlerinizi özenle paketleyip güvenle adresinize ula
 
 ### İletişim
 Teslimat ve kurulumla ilgili tüm sorularınız için:
-📞 +90 534 306 65 92 · 📧 info@mobelinegol.com
+📞 +90 536 040 01 08 · 📧 mobelinegol16@gmail.com
 $md$, true),
 
 -- ─────────────────────────────────────────────────────────────
@@ -102,7 +102,7 @@ Evet, ürünlerimiz **2 yıl garantilidir**. Bariz kullanıcı hatasından kayna
 Sorun **firma kaynaklı bir üretim hatasıysa ücretsiz değişim** yapılabilir. Kullanıcı hatasından kaynaklanan durumlarda ise onarım/değişim ek ücrete tabidir.
 
 ### Size nasıl ulaşırım?
-📞 +90 534 306 65 92 · 📧 info@mobelinegol.com
+📞 +90 536 040 01 08 · 📧 mobelinegol16@gmail.com
 $md$, true),
 
 -- ─────────────────────────────────────────────────────────────
@@ -129,10 +129,10 @@ Kullanıcı hatasından kaynaklanan arıza/hasarlarda onarım veya değişim **e
 
 ### İletişim
 Garanti ve iade talepleriniz için:
-📞 +90 534 306 65 92 · 📧 info@mobelinegol.com
+📞 +90 536 040 01 08 · 📧 mobelinegol16@gmail.com
 
 ---
-*[DOLDUR: Resmi firma unvanı ve açık adres — sözleşmesel geçerlilik için. Bu metnin yürürlük öncesi bir hukuk danışmanınca gözden geçirilmesi önerilir.]*
+**Möbel İnegöl** — Wobilimo AVM, 2. Kat No.122, İnegöl / Bursa
 $md$, true),
 
 -- ─────────────────────────────────────────────────────────────
@@ -159,10 +159,10 @@ Verileriniz yalnızca hizmetin gerektirdiği ölçüde, gizlilik yükümlülüğ
 ### Haklarınız
 6698 sayılı KVKK kapsamındaki haklarınız için "KVKK Aydınlatma Metni" sayfamızı inceleyebilir, talebinizi aşağıdaki kanallardan iletebilirsiniz.
 
-📞 +90 534 306 65 92 · 📧 info@mobelinegol.com
+📞 +90 536 040 01 08 · 📧 mobelinegol16@gmail.com
 
 ---
-*[DOLDUR: Veri sorumlusu resmi unvanı/adresi. Bu metnin hukuk danışmanınca gözden geçirilmesi önerilir.]*
+**Veri Sorumlusu:** Möbel İnegöl — Wobilimo AVM, 2. Kat No.122, İnegöl / Bursa
 $md$, true),
 
 -- ─────────────────────────────────────────────────────────────
@@ -172,9 +172,9 @@ $md$, true),
 İşbu metin, 6698 sayılı **Kişisel Verilerin Korunması Kanunu ("KVKK")** kapsamında, veri sorumlusu sıfatıyla Möbel İnegöl tarafından hazırlanmıştır.
 
 ### Veri Sorumlusu
-**Möbel İnegöl** — İnegöl / Bursa
-İletişim: +90 534 306 65 92 · info@mobelinegol.com
-*[DOLDUR: Tam ticari unvan, açık adres, vergi dairesi/no, MERSİS no]*
+**Möbel İnegöl**
+Adres: Wobilimo AVM, 2. Kat No.122, İnegöl / Bursa
+İletişim: +90 536 040 01 08 · mobelinegol16@gmail.com
 
 ### İşlenen Kişisel Veriler
 Ad-soyad, telefon, teslimat adresi ve sipariş/talep içeriği; ayrıca siteyi kullanımınıza dair özet istatistiksel veriler.
@@ -196,10 +196,10 @@ Kişisel verileriniz, işleme amacının gerektirdiği ve ilgili mevzuatın öng
 ### İlgili Kişi Olarak Haklarınız (KVKK m.11)
 Kişisel verilerinizin işlenip işlenmediğini öğrenme, bilgi talep etme, düzeltilmesini/silinmesini isteme ve kanunda sayılan diğer haklarınızı kullanmak için bizimle iletişime geçebilirsiniz.
 
-📞 +90 534 306 65 92 · 📧 info@mobelinegol.com
+📞 +90 536 040 01 08 · 📧 mobelinegol16@gmail.com
 
 ---
-*[DOLDUR: Resmi unvan/adres/vergi-MERSİS bilgileri. Bu metnin hukuk danışmanınca onaylanması önerilir.]*
+**Möbel İnegöl** — Wobilimo AVM, 2. Kat No.122, İnegöl / Bursa
 $md$, true),
 
 -- ─────────────────────────────────────────────────────────────
@@ -207,9 +207,9 @@ $md$, true),
 ## Mesafeli Satış Sözleşmesi
 
 ### 1. Taraflar
-**Satıcı:** Möbel İnegöl — İnegöl / Bursa
-İletişim: +90 534 306 65 92 · info@mobelinegol.com
-*[DOLDUR: Tam ticari unvan, açık adres, vergi dairesi/no, MERSİS no]*
+**Satıcı:** Möbel İnegöl
+Adres: Wobilimo AVM, 2. Kat No.122, İnegöl / Bursa
+İletişim: +90 536 040 01 08 · mobelinegol16@gmail.com
 
 **Alıcı:** Sipariş/talep formunda ve WhatsApp iletişiminde bilgilerini paylaşan tüketici.
 
@@ -235,7 +235,7 @@ Mesafeli Sözleşmeler Yönetmeliği uyarınca, **tüketicinin istekleri veya ki
 Taraflar, işbu sözleşmeden doğabilecek uyuşmazlıklarda ilgili mevzuat ve yetkili Tüketici Hakem Heyetleri ile Tüketici Mahkemelerinin yetkili olduğunu kabul eder.
 
 ---
-*[DOLDUR: Resmi unvan/adres/vergi-MERSİS ve varsa ek ticari şartlar. Bu sözleşmenin yürürlük öncesi bir hukuk danışmanınca gözden geçirilmesi ÖNEMLE önerilir.]*
+**Satıcı:** Möbel İnegöl — Wobilimo AVM, 2. Kat No.122, İnegöl / Bursa
 $md$, true)
 
 ON CONFLICT (slug) DO UPDATE
