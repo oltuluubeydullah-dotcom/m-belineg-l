@@ -22,7 +22,26 @@ import { getSupabaseClient } from '@/lib/supabase/client';
 import {
   urunOlustur, urunGuncelle, urunSil,
 } from '@/lib/supabase/queries';
+import { resimSil } from '@/lib/imageUpload';
 import { formatFiyat, cn } from '@/lib/utils';
+
+// Bir ürünün tüm görsel URL'lerini (kapak + galeri) tekilleştirir.
+function urunGorselUrlleri(urun) {
+  const list = [];
+  if (urun?.image_url) list.push(urun.image_url);
+  if (Array.isArray(urun?.images)) list.push(...urun.images);
+  return [...new Set(list.filter(Boolean))];
+}
+
+// Silinen ürünlerin yetim görsellerini best-effort temizler (R2 + Supabase
+// Storage). resimSil R2 URL'lerini /api/upload DELETE ile, Storage URL'lerini
+// doğrudan siler; R2 dışı/tanınmayan URL'lere dokunmaz. Ürün satırı zaten
+// silinmiş olduğu için hata olsa bile sessizce geçilir (yalnızca konsol).
+async function urunGorselleriniTemizle(supabase, urunler) {
+  const urls = [...new Set(urunler.flatMap(urunGorselUrlleri))];
+  if (urls.length === 0) return;
+  await Promise.allSettled(urls.map((u) => resimSil(supabase, u)));
+}
 
 export default function UrunlerYonetim({ ilkUrunler, toplamSayi = 0, sayfaBoyu = 100, kategoriler }) {
   const [urunler, setUrunler] = useState(ilkUrunler);
@@ -202,6 +221,7 @@ export default function UrunlerYonetim({ ilkUrunler, toplamSayi = 0, sayfaBoyu =
       ikiListeGuncelle((mevcut) => mevcut.filter((u) => u.id !== silinen.id));
       setToplam((t) => Math.max(0, t - 1));
       revalUrunler([silinen]);   // public cache'ten kaldır
+      urunGorselleriniTemizle(supabase, [silinen]).catch(() => {}); // yetim görselleri temizle (best-effort)
       goster('Ürün silindi', 'basari');
       setSilOnay(null);
     } catch (err) {
@@ -270,6 +290,7 @@ export default function UrunlerYonetim({ ilkUrunler, toplamSayi = 0, sayfaBoyu =
         if (error) throw error;
         ikiListeGuncelle((p) => p.filter((u) => !seciliIds.has(u.id)));
         setToplam((t) => Math.max(0, t - ids.length));
+        urunGorselleriniTemizle(supabase, etkilenen).catch(() => {}); // yetim görselleri temizle (best-effort)
       } else {
         const guncellemeler = {
           aktif:   { is_active: true  },

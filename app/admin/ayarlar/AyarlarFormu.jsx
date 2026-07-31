@@ -13,6 +13,7 @@ import Button from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useToast } from '@/context/ToastContext';
 import { getSupabaseClient } from '@/lib/supabase/client';
+import { ayarlariKaydet } from '@/lib/supabase/queries';
 import { revalidatePaths, tumSiteRevalidatePaths } from '@/lib/revalidate';
 
 export default function AyarlarFormu({ ilkAyarlar }) {
@@ -50,15 +51,11 @@ export default function AyarlarFormu({ ilkAyarlar }) {
     e.preventDefault();
     setYukleniyor(true);
     try {
-      const { id, ...degisiklikler } = veri;
-      if (!id) {
-        // İlk seferinde insert
-        const { error } = await supabase.from('settings').insert([degisiklikler]);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from('settings').update(degisiklikler).eq('id', id);
-        if (error) throw error;
-      }
+      // Singleton-güvenli kayıt: id yoksa körlemesine insert yerine mevcut
+      // satırı hedefler (çift-satır riski kapatıldı).
+      const kayit = await ayarlariKaydet(supabase, veri);
+      // Dönen id'yi forma yaz → sonraki kayıtlar update yolunu kullanır.
+      if (kayit?.id) setVeri((m) => (m.id ? m : { ...m, id: kayit.id }));
       goster('Ayarlar kaydedildi', 'basari');
       revalidatePaths(tumSiteRevalidatePaths()).catch(() => {});
     } catch (err) {
