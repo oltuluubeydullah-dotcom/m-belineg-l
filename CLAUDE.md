@@ -87,7 +87,7 @@ Logo repoya **PNG olarak** entegre edildi ve her alanda kullanılıyor.
 ## 5. Kurulum & Deploy Durumu
 
 > ✅ **Supabase + Vercel CANLI** (site `m-belineg-l.vercel.app`, ürün/kategori eklendi, RLS aktif).
-> 🔄 **Cloudflare R2 (görsel) + domain (`mobelinegol.com`) kurulumu DEVAM EDİYOR.**
+> 🔄 **DOMAIN CUTOVER SÜRÜYOR (v61):** nameserver Cloudflare'a bağlandı, apex `A 76.76.21.21` (DNS only) çalışıyor, `www` SSL üretiliyor. Vercel env'leri (`NEXT_PUBLIC_SITE_URL` + R2 beşlisi + Upstash) girildi. Kalan: www "Valid" → redirect (apex ana) + Redeploy + `https://mobelinegol.com` & mobil admin girişi testi. Detay: `.claude/MEMORY.md` → Launch Checklist.
 
 1. **Supabase:** ✅ Canlı, migration'lar uygulandı, RLS her tabloda aktif.
    ⚠️ **GÜVENLİK (v57 · Agent #07 H-1):** `sql/06-security-rls.sql` güncellendi — `inquiries_insert_public` anon INSERT açığını kapatan DROP eklendi. **Bu satır canlı Supabase'de de MUTLAKA çalıştırılmalı** (SQL Editor):
@@ -95,7 +95,7 @@ Logo repoya **PNG olarak** entegre edildi ve her alanda kullanılıyor.
    ✅ **PERF (v58 · Agent #24 admin denetimi):** `sql/20-mobel-admin-dashboard-perf.sql` **canlı Supabase'de çalıştırıldı ve doğrulandı** — `admin_top_paths`/`admin_daily_views` RPC'leri (JS'te satır toplama → SQL agregasyon) + `admin_stats` view'ına `ortalama_yorum` kolonu + `idx_reviews_visible_recent` aktif. (Migration idempotent; yeni ortamda tekrar çalıştırılabilir.)
 2. **Vercel:** ✅ Bağlı, `main → production` otomatik deploy. `ADMIN_EMAILS` env set.
 3. **Cloudflare R2:** 🔄 Kuruluyor — bucket `mobel-medya`, production görsel CDN'i `cdn.mobelinegol.com` (custom domain). Vercel env: `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET=mobel-medya`, `NEXT_PUBLIC_R2_PUBLIC_URL=https://cdn.mobelinegol.com` → girilip Redeploy. Beşi eksikse görseller Supabase Storage'a düşer.
-4. **Domain (`mobelinegol.com`):** 🔄 DNS Cloudflare'a taşınıyor (nameserver: `kayleigh.ns.cloudflare.com` + `nitin.ns.cloudflare.com`; registrar Hostinger/Güzelnet'te NS değişecek). Cloudflare DNS: `@`+`www` → Vercel (A `76.76.21.21` / CNAME `cname.vercel-dns.com`, **proxy KAPALI**), `cdn` → R2 (proxy açık). Vercel → Domains'e `mobelinegol.com` eklenecek (SSL otomatik).
+4. **Domain (`mobelinegol.com`):** 🔄 **NS Cloudflare'da (v61 — bağlandı).** Cloudflare DNS: `@` → Vercel `A 76.76.21.21` (**proxy KAPALI** — çalışıyor ✓), `www` → `CNAME cname.vercel-dns.com` (proxy KAPALI, SSL üretiliyor), `cdn` → R2 (proxy açık). Vercel → Domains apex "DNS Change Recommended" (öneri, hata değil). Not: Cloudflare kaydın TİPİNİ (A→CNAME) yerinde değiştirmez; A çalıştığı için CNAME'e geçmeye GEREK YOK.
    ⚠️ **Bilinen sorun:** `*.vercel.app` ortak domaininde **mobil admin girişi** (Safari ITP cookie kısıtı) çalışmıyor — kendi domain canlıya geçince düzelmesi bekleniyor.
 
 Env değişkenleri: `.env.example` → `.env.local` kopyala ve doldur. `.env*` **asla commit edilmez**.
