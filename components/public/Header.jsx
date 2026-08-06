@@ -135,25 +135,14 @@ export default function Header({ kategoriler }) {
             </div>
           </div>
 
-          {/* ─── MASAÜSTÜ ÜST BAR: [logo sol | arama orta | dil + sepet sağ] ─── */}
-          <div className="hidden md:flex items-center gap-6 px-4 py-4">
-            <Link href="/" className="flex items-center min-w-0 flex-shrink-0 pl-2" aria-label={ISLETME.ad}>
-              <Image
-                src="/marka/mobel-logo.png"
-                alt={ISLETME.ad}
-                width={361}
-                height={120}
-                priority
-                className="h-28 w-auto object-contain"
-                sizes="520px"
-              />
-            </Link>
-
+          {/* ─── MASAÜSTÜ ÜST BAR: [arama sol | LOGO orta | dil + sepet sağ] ─── */}
+          <div className="hidden md:grid grid-cols-3 items-center gap-4 px-4 py-4">
+            {/* Sol: arama */}
             <form
               action={locale === 'tr' ? '/arama' : `/${locale}/arama`}
               method="GET"
               onSubmit={(e) => { const q = e.currentTarget.q?.value; if (q) reklamEvent('Search', { search_string: q }); }}
-              className="flex items-center w-full max-w-md ml-auto mr-4 lg:mr-8 bg-white border border-brand-dark/15 rounded-full
+              className="flex items-center w-full max-w-xs lg:max-w-sm justify-self-start bg-white border border-brand-dark/15 rounded-full
                          focus-within:border-brand-teal focus-within:ring-1 focus-within:ring-brand-teal/30 transition-colors"
             >
               <input
@@ -161,7 +150,7 @@ export default function Header({ kategoriler }) {
                 name="q"
                 placeholder={t('search_placeholder')}
                 aria-label={t('search_label')}
-                className="flex-1 bg-transparent px-5 py-2.5 text-base outline-none placeholder:text-brand-ink/40"
+                className="flex-1 min-w-0 bg-transparent px-5 py-2.5 text-base outline-none placeholder:text-brand-ink/40"
               />
               <button
                 type="submit"
@@ -172,7 +161,21 @@ export default function Header({ kategoriler }) {
               </button>
             </form>
 
-            <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Orta: Logo */}
+            <Link href="/" className="justify-self-center flex items-center" aria-label={ISLETME.ad}>
+              <Image
+                src="/marka/mobel-logo.png"
+                alt={ISLETME.ad}
+                width={361}
+                height={120}
+                priority
+                className="h-24 lg:h-28 w-auto object-contain"
+                sizes="520px"
+              />
+            </Link>
+
+            {/* Sağ: dil + sepet */}
+            <div className="flex items-center gap-2 justify-self-end">
               <LanguageSwitcher />
               <Link
                 href="/sepet"
