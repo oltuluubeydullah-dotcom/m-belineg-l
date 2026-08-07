@@ -15,6 +15,7 @@ import {
   IconBook, IconFileText, IconBrandWhatsapp, IconStarFilled,
   IconSpeakerphone,
   IconActivity,
+  IconCloudUpload,
 } from '@tabler/icons-react';
 import { useState, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
@@ -36,6 +37,7 @@ const ADMIN_MENU = [
   { ad: 'Ayarlar',            href: '/admin/ayarlar',               icon: IconSettings, sonEk: true },
   { ad: 'Kullanım Kılavuzu',  href: '/admin/kilavuz',               icon: IconBook },
   { ad: 'Sistem Testi',       href: '/admin/sistem-testi',          icon: IconActivity },
+  { ad: 'Görsel Taşıma (R2)', href: '/admin/gorsel-tasima',         icon: IconCloudUpload },
 ];
 
 export default function AdminShell({ children, user }) {
