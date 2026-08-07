@@ -8,9 +8,9 @@
 
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
-  IconCloudUpload, IconCheck, IconLoader2,
+  IconCloudUpload, IconCheck, IconLoader2, IconX,
 } from '@tabler/icons-react';
 import Button from '@/components/ui/Button';
 import { useToast } from '@/context/ToastContext';
@@ -22,8 +22,19 @@ export default function GorselTasima() {
   const [hataSayi, setHataSayi] = useState(0);
   const [kalan, setKalan] = useState(null);   // ilk turdan sonra dolar
   const [gunluk, setGunluk] = useState([]);   // son işlemler
+  const [teshis, setTeshis] = useState(null);   // R2 env durumu
   const { goster } = useToast();
   const iptalRef = useRef(false);
+
+  // Açılışta R2 env teşhisini çek
+  useEffect(() => {
+    let iptal = false;
+    fetch('/api/admin/gorsel-tasima', { method: 'GET' })
+      .then((r) => r.json())
+      .then((j) => { if (!iptal && j?.ok) setTeshis(j); })
+      .catch(() => {});
+    return () => { iptal = true; };
+  }, []);
 
   function logEkle(satir) {
     setGunluk((g) => [satir, ...g].slice(0, 40));
@@ -121,6 +132,42 @@ export default function GorselTasima() {
           ⚠️ Önce Vercel'de R2 env değişkenleri girilmiş ve Redeploy yapılmış olmalı. Değilse buton "R2 yapılandırılmamış" hatası verir.
         </p>
       </div>
+
+      {/* R2 env teşhisi */}
+      {teshis && (
+        <div className={`rounded-2xl p-5 mb-6 border text-sm ${
+          teshis.aktif
+            ? 'bg-green-50 border-green-200'
+            : 'bg-red-50 border-red-200'
+        }`}>
+          <p className="font-semibold text-brand-dark mb-2">
+            {teshis.aktif
+              ? '✅ R2 aktif — taşımaya hazır'
+              : '❌ R2 aktif değil — aşağıdaki eksik değişkeni Vercel\'e girip Redeploy yap'}
+          </p>
+          <ul className="space-y-1 font-mono text-xs">
+            {Object.entries(teshis.durum || {}).map(([k, v]) => (
+              <li key={k} className="flex items-center gap-2">
+                {v
+                  ? <IconCheck size={15} className="text-green-600 shrink-0" />
+                  : <IconX size={15} className="text-red-600 shrink-0" />}
+                <span className={v ? 'text-brand-ink/70' : 'text-red-700 font-semibold'}>{k}</span>
+                {!v && <span className="text-red-600">← eksik</span>}
+              </li>
+            ))}
+          </ul>
+          {teshis.public_url_deger && (
+            <p className="text-xs text-brand-ink/60 mt-2">
+              Public URL: <code>{teshis.public_url_deger}</code> · Bucket: <code>{teshis.bucket_deger || '—'}</code>
+            </p>
+          )}
+          {!teshis.service_client && (
+            <p className="text-xs text-red-700 mt-2 font-semibold">
+              ⚠️ SUPABASE_SERVICE_ROLE_KEY de eksik — taşıma DB güncellemesi yapamaz.
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Durum panosu */}
       <div className="grid grid-cols-3 gap-3 mb-6">

@@ -108,15 +108,47 @@ function birimAnahtar(b) {
   return `${b.tablo}:${b.kolon}:${b.id}`;
 }
 
-export async function POST(request) {
-  // ── Auth: sadece admin ──
+// Admin doğrulama yardımcısı
+async function adminMi() {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ ok: false, error: 'Yetkisiz' }, { status: 401 });
-    if (!isAdminUser(user)) return NextResponse.json({ ok: false, error: 'Yetki yok' }, { status: 403 });
+    if (!user) return { ok: false, kod: 401, mesaj: 'Yetkisiz' };
+    if (!isAdminUser(user)) return { ok: false, kod: 403, mesaj: 'Yetki yok' };
+    return { ok: true };
   } catch {
-    return NextResponse.json({ ok: false, error: 'Auth hatası' }, { status: 401 });
+    return { ok: false, kod: 401, mesaj: 'Auth hatası' };
+  }
+}
+
+// GET — R2 env teşhisi (hangi değişken var/yok). Secret DEĞERİ dönmez,
+// sadece dolu-mu (boolean). NEXT_PUBLIC_R2_PUBLIC_URL zaten public → gösterilir.
+export async function GET() {
+  const a = await adminMi();
+  if (!a.ok) return NextResponse.json({ ok: false, error: a.mesaj }, { status: a.kod });
+
+  const durum = {
+    R2_ACCOUNT_ID:              Boolean(process.env.R2_ACCOUNT_ID),
+    R2_ACCESS_KEY_ID:           Boolean(process.env.R2_ACCESS_KEY_ID),
+    R2_SECRET_ACCESS_KEY:       Boolean(process.env.R2_SECRET_ACCESS_KEY),
+    R2_BUCKET:                  Boolean(process.env.R2_BUCKET),
+    NEXT_PUBLIC_R2_PUBLIC_URL:  Boolean(process.env.NEXT_PUBLIC_R2_PUBLIC_URL),
+  };
+  return NextResponse.json({
+    ok: true,
+    aktif: r2Aktif(),
+    durum,
+    bucket_deger: process.env.R2_BUCKET || null,
+    public_url_deger: process.env.NEXT_PUBLIC_R2_PUBLIC_URL || null,
+    service_client: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
+  });
+}
+
+export async function POST(request) {
+  // ── Auth: sadece admin ──
+  {
+    const a = await adminMi();
+    if (!a.ok) return NextResponse.json({ ok: false, error: a.mesaj }, { status: a.kod });
   }
 
   if (!r2Aktif()) {
